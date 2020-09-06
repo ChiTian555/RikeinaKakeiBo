@@ -7,6 +7,8 @@
 //
 
 import UIKit
+import Realm
+import RealmSwift
 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
@@ -24,9 +26,26 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         
         print("didFinishLaunchingWithOptions: アプリ起動時")
         let ud = UserDefaults.standard
-        if ud.stringArray3(forKey: .list) == nil {
-            ud.setArray3([[["項目"],["決済方法"]],[["項目"],["入金口座"]],[["出金"],["入金"]]], forKey: .list)
+//        if ud.stringArray3(forKey: .list) == nil {
+//            ud.setArray3([[["項目"],["決済方法"]],[["項目"],["入金口座"]],[["出金"],["入金"]]], forKey: .list)
+//        }
+        //レルム初期データほぞん
+        let realm = try! Realm()
+        if realm.objects(CategoryList.self).count == 0 {
+            let categoryArray = [[("項目", false),("決済方法", true)],
+                                 [("項目", false),("入金口座", true)],
+                                 [("出金", true),("入金", true)]]
+            for i in 0 ..< 3 {
+                categoryArray[i].forEach { (menuName) in
+                    let menu = CategoryList.create()
+                    menu.mainCategory = i
+                    menu.categoryName = menuName.0
+                    menu.selectAccount = menuName.1
+                    menu.save()
+                }
+            }
         }
+        
         if ud.bool(forKey: .isCordMode) == nil {
             ud.setBool(false, forKey: .isCordMode)
         }

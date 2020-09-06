@@ -8,17 +8,18 @@
 
 import UIKit
 import PKHUD
+import RealmSwift
 
 class AddCategoryViewController: UIViewController, UITableViewDataSource {
 
-    var lists = [[[String]]]()
+    var categoryList: CategoryList!
     var list = [String]()
     var accountList = [String]()
     
     var menu = String()
     
     var mainCategoryNumber: Int!
-    var tappedNumber: Int!
+    var tappedCategoriesName: String!
     
     let ud = UserDefaults.standard
     
@@ -40,16 +41,16 @@ class AddCategoryViewController: UIViewController, UITableViewDataSource {
     
     override func viewWillAppear(_ animated: Bool) {
         
-        lists = ud.stringArray3(forKey: .list)!
-        list = lists[mainCategoryNumber][tappedNumber].dropFirst() + []
-        menu = lists[mainCategoryNumber][tappedNumber].first!
+        categoryList = CategoryList.readCategory(mainCategoryNumber, tappedCategoriesName)
         
-        let selectAccount:[[Int]] = [[0,1],[1,1],[2,0],[2,1]]
-        if selectAccount.contains([self.mainCategoryNumber,self.tappedNumber]) {
+        list = categoryList.list + []
+        
+        if categoryList.selectAccount {
             selectAccountMode = true
-            accountList = ud.stringArray2(forKey: .account)!.map({ $0.first ?? "" })
+            accountList = Account.readAll().map({ $0.accountName })
+            print(accountList)
             accountList.removeAll { (account) -> Bool in
-                return list.contains(account)
+                return list.map({$0}).contains(account)
             }
         } else {
             selectAccountMode = false
@@ -112,17 +113,17 @@ class AddCategoryViewController: UIViewController, UITableViewDataSource {
         let textAlert = UIAlertController(title: "項目を追加します", message: "追加する内容を入力ください", preferredStyle: .alert)
         let okAction = UIAlertAction(title: "OK", style: .default) { (action) in
             let text = textAlert.textFields!.first!.text!
-            if text.count == 0 || text.count > 8 {
+            if text.count == 0 || text.count > 5 {
                 textAlert.dismiss(animated: true, completion: nil)
                 HUD.flash(.labeledError(title: "入力エラー",
-                                        subtitle: "1~8字で入力してください。"),
+                                        subtitle: "1~5字で入力してください。"),
                           delay: 2){_ in
                     self.present(textAlert, animated: true, completion: nil)
                     
                 }
                 return
             }
-            if self.list.contains(text) {
+            if self.list.map({$0}).contains(text) {
                 textAlert.dismiss(animated: true, completion: nil)
                 HUD.flash(.labeledError(title: "入力エラー",
                                         subtitle: "重複しています"),
@@ -132,8 +133,7 @@ class AddCategoryViewController: UIViewController, UITableViewDataSource {
                 return
             }
             self.list.append(text)
-            self.lists[self.mainCategoryNumber][self.tappedNumber] = [self.menu] + self.list
-            self.ud.setArray3(self.lists, forKey: .list)
+            self.categoryList.upDate(newList: self.list, name: nil)
             self.tableView.reloadData()
             textAlert.dismiss(animated: true, completion: nil)
         }
@@ -144,8 +144,7 @@ class AddCategoryViewController: UIViewController, UITableViewDataSource {
         textAlert.addAction(cancelAction)
         textAlert.addTextField { (textField) in
             textField.placeholder = "ここにコメントを入力"
-            let selectAccount:[[Int]] = [[0,1],[1,1],[2,0],[2,1]]
-            if selectAccount.contains([self.mainCategoryNumber,self.tappedNumber]) {
+            if self.categoryList.selectAccount {
                 self.settingTextField = textField
                 self.addPickerView()
             }
@@ -191,10 +190,10 @@ extension AddCategoryViewController: UITableViewDelegate {
     }
     
     func tableView(_ tableView: UITableView, moveRowAt sourceIndexPath: IndexPath, to destinationIndexPath: IndexPath) {
-        let sourceCellItem = list.remove(at: sourceIndexPath.row)
-        list.insert(sourceCellItem, at: destinationIndexPath.row)
-        lists[mainCategoryNumber][tappedNumber] = [menu] + list
-        ud.setArray3(lists, forKey: .list)
+        let sourceItem = list.remove(at: sourceIndexPath.row)
+        list.insert(sourceItem, at: destinationIndexPath.row)
+        categoryList.upDate(newList: list, name: nil)
+        
     }
     
 //    func tableView(_ tableView: UITableView, titleForDeleteConfirmationButtonForRowAt indexPath: IndexPath) -> String? {
@@ -218,9 +217,7 @@ extension AddCategoryViewController: UITableViewDelegate {
                     }
                 } else {
                     self.list[indexPath.row] = text
-                    self.lists[self.mainCategoryNumber][self.tappedNumber]
-                        = [self.menu] + self.list
-                    self.ud.setArray3(self.lists, forKey: .list)
+                    self.categoryList.upDate(newList: self.list, name: nil)
                     self.tableView.reloadData()
                     textAlert.dismiss(animated: true, completion: nil)
                     completionHandler(true)
@@ -244,8 +241,7 @@ extension AddCategoryViewController: UITableViewDelegate {
             action.backgroundColor = .systemRed
             self.list.remove(at: indexPath.row)
             tableView.deleteRows(at: [indexPath], with: .fade)
-            self.lists[self.mainCategoryNumber][self.tappedNumber] = [self.menu] + self.list
-            self.ud.setArray3(self.lists, forKey: .list)
+            self.categoryList.upDate(newList: self.list, name: nil)
             completionHandler(true)
         }
         
@@ -299,14 +295,14 @@ extension AddCategoryViewController: UIPickerViewDataSource, UIPickerViewDelegat
     }
     
     func pickerView(_ pickerView: UIPickerView, numberOfRowsInComponent component: Int) -> Int {
-        if accountList == [] {
+        if accountList == [""] {
             return 1
         }
         return accountList.count
     }
     
     func pickerView(_ pickerView: UIPickerView, titleForRow row: Int, forComponent component: Int) -> String? {
-        if accountList == [] {
+        if accountList == [""] {
             return "追加できる講座がありません"
         }
         return accountList[row]

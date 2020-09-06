@@ -218,9 +218,9 @@ class AddPaymentViewController: UIViewController, UITableViewDataSource, UITable
     
     func ChangeMenu(menu mode: Int) {
         settingTableView.delegate = self
-        guard let lists = ud.stringArray3(forKey: .list) else { return }
-        menu = lists[mode].map({ $0.first! })
-        list = lists[mode].map({ $0.dropFirst() + [] })
+        let categoryList = CategoryList.readAllCategory(mode)
+        menu = categoryList.map({ $0.categoryName })
+        list = categoryList.map({ $0.list + [] })
     }
     
     //CGRectを簡単に作る
@@ -345,7 +345,7 @@ class AddPaymentViewController: UIViewController, UITableViewDataSource, UITable
         } else if segue.identifier == "toAdd" {
             let vc = segue.destination as! AddCategoryViewController
             vc.mainCategoryNumber = changeMainCategoryTab.selectedSegmentIndex
-            vc.tappedNumber = menu.firstIndex(of: sender as! String)!
+            vc.tappedCategoriesName = (sender as! String)
         }
     }
     

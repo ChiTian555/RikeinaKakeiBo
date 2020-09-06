@@ -18,8 +18,6 @@ class PLViewController: UIViewController, UIPickerViewDelegate, UIPickerViewData
     private let realm = try! Realm()
     private var payments = [Payment]()
     
-    var list: [[[String]]] = []
-    
     @IBOutlet var changeMainCategoryTab: UISegmentedControl!
     
     @IBOutlet var paymentListTableView: UITableView!
@@ -103,8 +101,6 @@ class PLViewController: UIViewController, UIPickerViewDelegate, UIPickerViewData
             month = Date().month
         }
         titleLabel.text = "\(year)年 \(month)月の\( changeMainCategoryTab.titleForSegment(at: changeMainCategoryTab.selectedSegmentIndex) ?? "")"
-        let ud = UserDefaults.standard
-        list = ud.stringArray3(forKey: .list)!
         reLoadDataAndChart()
         self.tabBarController?.tabBar.isHidden = false
     }
@@ -161,7 +157,7 @@ class PLViewController: UIViewController, UIPickerViewDelegate, UIPickerViewData
             allSum *= -1
         }
         
-        for category in categories{
+        for category in categories {
             let realmPayments = monthRealmPayments.filter("category == %@", category)
             var sum: Int = realmPayments.sum(ofProperty: "price")
             if changeMainCategoryTab.selectedSegmentIndex == 0 {
@@ -333,7 +329,8 @@ class PLViewController: UIViewController, UIPickerViewDelegate, UIPickerViewData
         pieChartView.holeRadiusPercent = 0.7
         pieChartView.transparentCircleRadiusPercent = 0.75
         pieChartView.setExtraOffsets(left: 5, top: 5, right: 5, bottom: 5)
-        pieChartView.highlightValue(nil, callDelegate: true)
+//        pieChartView.highlightValue(nil, callDelegate: true)
+        //完成版で実装予定
         pieChartView.legend.enabled = false
         pieChartView.drawEntryLabelsEnabled = true
         pieChartView.entryLabelColor = .label
@@ -364,11 +361,15 @@ class PLViewController: UIViewController, UIPickerViewDelegate, UIPickerViewData
             if changeMainCategoryTab.selectedSegmentIndex == 0 {
                 set.colors = ChartColorTemplates.vordiplom()
                 set.colors.append(contentsOf: ChartColorTemplates.vordiplom())
-                set.colors[dataPoints.count - 1] = UIColor.systemGray
+                if dataPoints[dataPoints.count - 1] == "その他" {
+                    set.colors[dataPoints.count - 1] = UIColor.systemGray
+                }
             } else {
                 set.colors = ChartColorTemplates.colorful()
                 set.colors.append(contentsOf: ChartColorTemplates.colorful())
-                set.colors[dataPoints.count - 1] = UIColor.systemGray
+                if dataPoints[dataPoints.count - 1] == "その他" {
+                    set.colors[dataPoints.count - 1] = UIColor.systemGray
+                }
             }
             colors = set.colors.prefix(dataPoints.count) + []
 

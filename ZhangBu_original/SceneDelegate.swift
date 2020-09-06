@@ -50,11 +50,11 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 
     func sceneWillResignActive(_ scene: UIScene) {
         print("sceneWillResignActive: フォアグラウンドからバックグラウンドへ移行しようとした時")
-        
         if !UserDefaults.standard.bool(forKey: .isCheckMode)! {
         // パスコードロック画面を表示する
         displayPasscodeLockScreenIfNeeded()
         }
+        
     }
 
     func sceneWillEnterForeground(_ scene: UIScene) {
@@ -79,14 +79,9 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
             return
         }
 
-        let keyWindow = UIApplication.shared.connectedScenes
-        .filter({$0.activationState == .foregroundActive})
-        .map({$0 as? UIWindowScene})
-        .compactMap({$0})
-        .first?.windows
-        .filter({$0.isKeyWindow}).first
         
-        if let rootViewController = keyWindow?.rootViewController {
+        
+        if let rootViewController = window!.rootViewController {
 
             // 現在のrootViewControllerにおいて一番上に表示されているViewControllerを取得する
             var topViewController: UIViewController = rootViewController

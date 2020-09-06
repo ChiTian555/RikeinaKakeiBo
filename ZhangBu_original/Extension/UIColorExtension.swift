@@ -25,4 +25,21 @@ extension UIColor {
         }
         self.init(red: r, green: g, blue: b, alpha: alpha)
     }
+    
+    public func hex(withHash hash: Bool = false, uppercase up: Bool = false) -> String {
+        if let components = self.cgColor.components {
+            let r = ("0" + String(Int(components[0] * 255.0), radix: 16, uppercase: up)).suffix(2)
+            let g = ("0" + String(Int(components[1] * 255.0), radix: 16, uppercase: up)).suffix(2)
+            let b = ("0" + String(Int(components[2] * 255.0), radix: 16, uppercase: up)).suffix(2)
+            return (hash ? "#" : "") + String(r + g + b)
+        }
+        return "000000"
+    }
+    
+    static var randomColor: UIColor {
+        let r = CGFloat.random(in: 0 ... 255) / 255.0
+        let g = CGFloat.random(in: 0 ... 255) / 255.0
+        let b = CGFloat.random(in: 0 ... 255) / 255.0
+        return UIColor(red: r, green: g, blue: b, alpha: 1.0)
+    }
 }

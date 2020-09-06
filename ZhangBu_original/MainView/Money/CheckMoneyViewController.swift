@@ -12,36 +12,11 @@ import RealmSwift
 import PKHUD
 import UserNotifications
 
-//public enum NotificationActionID: String {
-//    case repry
-//    case cancel
-//}
-//
-//    /// 通知開封時のデリゲート
-//    ///
-//    /// - parameter center:            NotificationCenter
-//    /// - parameter response:          Notification
-//    /// - parameter completionHandler: Handler
-//internal func userNotificationCenter(_ center: UNUserNotificationCenter,
-//                                didReceive response: UNNotificationResponse,
-//                                withCompletionHandler completionHandler: () -> Void) {
-//
-//        switch response.actionIdentifier {
-//        case NotificationActionID.repry.rawValue: ()
-//            /* 返信処理 */
-//        case NotificationActionID.cancel.rawValue: ()
-//            /* キャンセル処理 */
-//        default:
-//            ()
-//        }
-//
-//        debugPrint("opened")
-//        completionHandler()
-//    }
+
 
 class CheckMoneyViewController: UIViewController {
 
-    var accountLists = [[String]]()
+    var accountLists: [Account] = []
     
     var userBudget: [(name: String, budget: Int)] = [
         ("おこづかい",0),
@@ -56,30 +31,36 @@ class CheckMoneyViewController: UIViewController {
     
     @IBOutlet var checkMoneyTableView: UITableView!
     
-    var notificationCenter: NotificationCenter!
+    var notificationCenter = NotificationCenter.default
     
     override func viewDidLoad() {
         super.viewDidLoad()
-
-        notificationCenter = NotificationCenter.default
-        checkMoneyTableView.estimatedRowHeight = 40
+        notificationCenter.addObserver(self, selector: #selector(willResignActive),
+                                               name: UIApplication.willResignActiveNotification,
+                                               object: nil)
+        notificationCenter.addObserver(self, selector: #selector(becameActive),
+                                               name: UIApplication.didBecomeActiveNotification,
+                                               object: nil)
+        checkMoneyTableView.estimatedRowHeight = 50
         checkMoneyTableView.rowHeight = UITableView.automaticDimension
         checkMoneyTableView.dataSource = self
         checkMoneyTableView.delegate = self
+        checkMoneyTableView.tableFooterView = UIView()
     }
     
     override func viewWillAppear(_ animated: Bool) {
-        accountLists = UserDefaults.standard.stringArray2(forKey: .account)!
+        print(accountLists)
+        accountLists = Account.readAll()
         checkMoneyTableView.reloadData()
     }
     
     func calculateBalance(row i: Int) -> String {
             
         let sum: Int = realm.objects(Payment.self)
-        .filter("paymentMethod == '\(accountLists[i].first!)'")
-        .sum(ofProperty: "price")
+            .filter("paymentMethod == '\(accountLists[i].accountName)'")
+            .sum(ofProperty: "price")
 //        .filter("date >= %@ AND date < %@", firstDate, endDate)
-        let firstBalance = Int(accountLists[i].last!)!
+        let firstBalance = Int(accountLists[i].getNewCheck().balance ?? 0)
         return String(sum + firstBalance)
         
     }
@@ -88,8 +69,8 @@ class CheckMoneyViewController: UIViewController {
 extension CheckMoneyViewController: UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        if accountLists[0] == [] {
-            return 0
+        if accountLists.count < 1 {
+            return userBudget.count + 1
         }
         return accountLists.count + userBudget.count
     }
@@ -112,18 +93,24 @@ extension CheckMoneyViewController: UITableViewDataSource {
             cell.selectionStyle = .none
             
             return cell
-        } else {
+        } else if accountLists.count >= 1 {
             let cell = tableView.dequeueReusableCell(withIdentifier: "Cell2")!
             let label = cell.viewWithTag(1) as! UILabel
-            cell.textLabel?.text = accountLists[indexPath.row - userBudget.count].first!
             label.font = font
-            label.text = "¥" + calculateBalance(row: indexPath.row - userBudget.count)
             
+            cell.textLabel?.text = accountLists[indexPath.row - userBudget.count].accountName
+            label.text = "¥" + calculateBalance(row: indexPath.row - userBudget.count)
             let selectionView = UIView()
             //タップするとオレンジ色になる
             selectionView.backgroundColor = .systemOrange
             cell.selectedBackgroundView = selectionView
-            
+            return cell
+        } else {
+            //まだアカウント登録されてない時
+            let cell = tableView.dequeueReusableCell(withIdentifier: "Cell3")!
+            let label = cell.viewWithTag(1) as! UILabel
+            label.textAlignment = .center
+            label.text = "まだ、口座が登録されていません！\n設定画面から、まず、\n現金を登録してみてください。"
             return cell
         }
     }
@@ -136,17 +123,17 @@ extension CheckMoneyViewController: UITableViewDelegate {
         if indexPath.row < userBudget.count { return }
         UserDefaults.standard.setBool(true, forKey: .isCheckMode)
         
-        notificationCenter.addObserver(self, selector: #selector(willResignActive),
-                                       name: UIApplication.willResignActiveNotification,
-                                       object: nil)
-        notificationCenter.addObserver(self, selector: #selector(becameActive),
-                                       name: UIApplication.didBecomeActiveNotification,
-                                       object: nil)
+//        notificationCenter.addObserver(self, selector: #selector(willResignActive),
+//                                       name: UIApplication.willResignActiveNotification,
+//                                       object: nil)
+//        notificationCenter.addObserver(self, selector: #selector(becameActive),
+//                                       name: UIApplication.didBecomeActiveNotification,
+//                                       object: nil)
         
         let alert = UIAlertController(title: "確認モードです", message: "画面を閉じてください", preferredStyle: .alert)
         let cancelAction = UIAlertAction(title: "cancel", style: .cancel) { (action) in
             UserDefaults.standard.setBool(false, forKey: .isCheckMode)
-            self.notificationCenter.removeObserver(self)
+//            self.notificationCenter.removeObserver(self)
             alert.dismiss(animated: true, completion: nil)
             tableView.deselectRow(at: indexPath, animated: true)
         }
@@ -161,7 +148,7 @@ extension CheckMoneyViewController: UITableViewDelegate {
             var account = String()
             var accountBudged = String()
             if let indexPath = self.checkMoneyTableView.indexPathForSelectedRow {
-                account = accountLists[indexPath.row - userBudget.count].first!
+                account = accountLists[indexPath.row - userBudget.count].accountName
                 accountBudged = "¥" + calculateBalance(row: indexPath.row - userBudget.count)
             }
             let content = UNMutableNotificationContent()
@@ -205,9 +192,7 @@ extension CheckMoneyViewController: UITableViewDelegate {
                 }
                 UNUserNotificationCenter.current()
                     .removeDeliveredNotifications(withIdentifiers: [self.uuID])
-                
                 //最終確認日を更新
-                
             }
             let noAction = UIAlertAction(title: "いいえ", style: .cancel) { (action) in
                 checkAlert.dismiss(animated: true, completion: nil)
@@ -216,7 +201,7 @@ extension CheckMoneyViewController: UITableViewDelegate {
             checkAlert.addAction(yesAction)
             self.present(checkAlert, animated: true, completion: nil)
         }
-        notificationCenter.removeObserver(self)
+//        notificationCenter.removeObserver(self)
     }
     
 }

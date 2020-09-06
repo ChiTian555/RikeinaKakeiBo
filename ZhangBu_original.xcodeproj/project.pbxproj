@@ -64,6 +64,12 @@
 		4AB55BCF25008385009173B5 /* iTunesArtwork@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 4AB55BBB25008385009173B5 /* iTunesArtwork@3x.png */; };
 		4AB55BD125022976009173B5 /* RootVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4AB55BD025022976009173B5 /* RootVC.swift */; };
 		4AB55BD325022F35009173B5 /* SplashVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4AB55BD225022F35009173B5 /* SplashVC.swift */; };
+		4AB55BD52503D5A4009173B5 /* Account.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4AB55BD42503D5A1009173B5 /* Account.swift */; };
+		4AB55BD72503D5E6009173B5 /* CategoryList.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4AB55BD62503D5E6009173B5 /* CategoryList.swift */; };
+		4AB55BD92504A5BF009173B5 /* WalkThroughVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4AB55BD82504A5BF009173B5 /* WalkThroughVC.swift */; };
+		4AB55BDB2504ACC2009173B5 /* BackGround.jpeg in Resources */ = {isa = PBXBuildFile; fileRef = 4AB55BDA2504ACC1009173B5 /* BackGround.jpeg */; };
+		4AB55BDD2504B073009173B5 /* UIImageExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4AB55BDC2504B073009173B5 /* UIImageExtension.swift */; };
+		4AB55BDF2504B601009173B5 /* えり字.otf in Resources */ = {isa = PBXBuildFile; fileRef = 4AB55BDE2504B600009173B5 /* えり字.otf */; };
 		4AC8905D24DE5D0800A4948A /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4AC8905C24DE5D0800A4948A /* AppDelegate.swift */; };
 		4AC8905F24DE5D0800A4948A /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4AC8905E24DE5D0800A4948A /* SceneDelegate.swift */; };
 		4AC8906624DE5D0A00A4948A /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 4AC8906524DE5D0A00A4948A /* Assets.xcassets */; };
@@ -167,6 +173,12 @@
 		4AB55BBB25008385009173B5 /* iTunesArtwork@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "iTunesArtwork@3x.png"; sourceTree = "<group>"; };
 		4AB55BD025022976009173B5 /* RootVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RootVC.swift; sourceTree = "<group>"; };
 		4AB55BD225022F35009173B5 /* SplashVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SplashVC.swift; sourceTree = "<group>"; };
+		4AB55BD42503D5A1009173B5 /* Account.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Account.swift; sourceTree = "<group>"; };
+		4AB55BD62503D5E6009173B5 /* CategoryList.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CategoryList.swift; sourceTree = "<group>"; };
+		4AB55BD82504A5BF009173B5 /* WalkThroughVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WalkThroughVC.swift; sourceTree = "<group>"; };
+		4AB55BDA2504ACC1009173B5 /* BackGround.jpeg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = BackGround.jpeg; sourceTree = "<group>"; };
+		4AB55BDC2504B073009173B5 /* UIImageExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIImageExtension.swift; sourceTree = "<group>"; };
+		4AB55BDE2504B600009173B5 /* えり字.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "えり字.otf"; sourceTree = "<group>"; };
 		4AC8905924DE5D0800A4948A /* ZhangBu_original.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ZhangBu_original.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		4AC8905C24DE5D0800A4948A /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		4AC8905E24DE5D0800A4948A /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -218,7 +230,6 @@
 				4AB55A8524FA0A55009173B5 /* Model */,
 				4AB55A8224FA09F9009173B5 /* Presenter */,
 				4AB55A7924FA08F7009173B5 /* Enum */,
-				4AB55A8924FA16EE009173B5 /* Extension */,
 				4AB55AAF24FA4A59009173B5 /* SettingViewController.swift */,
 				4AB55A6224FA00B6009173B5 /* Passcode.storyboard */,
 				4AB55A6B24FA01B7009173B5 /* PasscodeViewController.swift */,
@@ -277,6 +288,7 @@
 			isa = PBXGroup;
 			children = (
 				4AB55A8A24FA16EE009173B5 /* UIColorExtension.swift */,
+				4AB55BDC2504B073009173B5 /* UIImageExtension.swift */,
 				4AB55A8B24FA16EE009173B5 /* UIViewControllerExtension.swift */,
 				4AB55A8D24FA16EE009173B5 /* StringExtension.swift */,
 				4AB55A8E24FA16EE009173B5 /* NSObjectProtocolExtension.swift */,
@@ -361,11 +373,15 @@
 		4AC8905B24DE5D0800A4948A /* ZhangBu_original */ = {
 			isa = PBXGroup;
 			children = (
+				4AB55A8924FA16EE009173B5 /* Extension */,
 				4AC8905C24DE5D0800A4948A /* AppDelegate.swift */,
 				4AB55AAA24FA405C009173B5 /* TouchIDExample-Bridging-Header.h */,
 				4AB55A5A24F4E0CD009173B5 /* cordFont5.otf */,
+				4AB55BDE2504B600009173B5 /* えり字.otf */,
 				4AC8905E24DE5D0800A4948A /* SceneDelegate.swift */,
 				4AC890A124E7C4B000A4948A /* Payment.swift */,
+				4AB55BD42503D5A1009173B5 /* Account.swift */,
+				4AB55BD62503D5E6009173B5 /* CategoryList.swift */,
 				4AC8909024E63B8200A4948A /* pickerTextField.swift */,
 				4A91900724F152F800B1CA1B /* UserDefault.swift */,
 				4AB55BD025022976009173B5 /* RootVC.swift */,
@@ -383,6 +399,8 @@
 			isa = PBXGroup;
 			children = (
 				4AB55BD225022F35009173B5 /* SplashVC.swift */,
+				4AB55BD82504A5BF009173B5 /* WalkThroughVC.swift */,
+				4AB55BDA2504ACC1009173B5 /* BackGround.jpeg */,
 			);
 			path = FirstView;
 			sourceTree = "<group>";
@@ -533,12 +551,14 @@
 				4AB55AAC24FA4118009173B5 /* Default-568h@2x.png in Resources */,
 				4AB55BC725008385009173B5 /* Icon-App-40x40@2x.png in Resources */,
 				4AC8906624DE5D0A00A4948A /* Assets.xcassets in Resources */,
+				4AB55BDF2504B601009173B5 /* えり字.otf in Resources */,
 				4AB55BBE25008385009173B5 /* Icon-App-29x29@1x.png in Resources */,
 				4AB55BCA25008385009173B5 /* Icon-App-76x76@1x.png in Resources */,
 				4AC8907724DFFD3100A4948A /* Main.storyboard in Resources */,
 				4AB55A6A24FA015B009173B5 /* InputPasscodeKeyboardView.xib in Resources */,
 				4AB55BCD25008385009173B5 /* README.md in Resources */,
 				4AB55A5B24F4E0CD009173B5 /* cordFont5.otf in Resources */,
+				4AB55BDB2504ACC2009173B5 /* BackGround.jpeg in Resources */,
 				4AB55BC025008385009173B5 /* Icon-App-20x20@1x.png in Resources */,
 				4AB55AB424FC9C48009173B5 /* GoogleService-Info.plist in Resources */,
 				4AB55BBF25008385009173B5 /* Icon-App-40x40@1x.png in Resources */,
@@ -616,12 +636,14 @@
 				4AB55BD325022F35009173B5 /* SplashVC.swift in Sources */,
 				4AB55BD125022976009173B5 /* RootVC.swift in Sources */,
 				4A91900824F152F800B1CA1B /* UserDefault.swift in Sources */,
+				4AB55BD52503D5A4009173B5 /* Account.swift in Sources */,
 				4AC8908724E52BD500A4948A /* EditMemoViewController.swift in Sources */,
 				4AC890AF24EDF6B300A4948A /* SettingMainViewController.swift in Sources */,
 				4AC890A224E7C4B000A4948A /* Payment.swift in Sources */,
 				4AC890B124EDF9E000A4948A /* IndividualSettingViewController.swift in Sources */,
 				4AB55A8124FA08F8009173B5 /* InputPasscodeType.swift in Sources */,
 				4AB55A9C24FA18DA009173B5 /* LocalAuthenticationType.swift in Sources */,
+				4AB55BD72503D5E6009173B5 /* CategoryList.swift in Sources */,
 				4AB55A8424FA09F9009173B5 /* PasscodePresenter.swift in Sources */,
 				4AC8905D24DE5D0800A4948A /* AppDelegate.swift in Sources */,
 				4AB55A9024FA16EE009173B5 /* UIViewControllerExtension.swift in Sources */,
@@ -629,7 +651,9 @@
 				4AB55A7E24FA08F8009173B5 /* TabBarItemType.swift in Sources */,
 				4AB55A8F24FA16EE009173B5 /* UIColorExtension.swift in Sources */,
 				4AB55A9A24FA1860009173B5 /* LocalAuthenticationManager.swift in Sources */,
+				4AB55BDD2504B073009173B5 /* UIImageExtension.swift in Sources */,
 				4AC8905F24DE5D0800A4948A /* SceneDelegate.swift in Sources */,
+				4AB55BD92504A5BF009173B5 /* WalkThroughVC.swift in Sources */,
 				4AB55A5D24F4FFA4009173B5 /* AddAccountViewController.swift in Sources */,
 				4AB55A7124FA01CE009173B5 /* InputPasscodeDisplayView.swift in Sources */,
 				4AB55AB024FA4A59009173B5 /* SettingViewController.swift in Sources */,

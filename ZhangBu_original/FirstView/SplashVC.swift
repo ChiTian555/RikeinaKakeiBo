@@ -31,8 +31,8 @@ final class SplashVC: UIViewController {
     private lazy var titleLabel: UILabel = {
         let titleLabel = UILabel()
         titleLabel.text = "理系の家継簿"
-        titleLabel.font = UIFont.systemFont(ofSize: 30)
-        let frame = CGRectMake(screenSize.width, screenSize.height, 200, 50)
+        titleLabel.font = UIFont(name: "ERIJI", size: 40)
+        let frame = CGRectMake(0, 0, screenSize.width, 50)
         titleLabel.frame = frame
         titleLabel.textColor = .label
         titleLabel.textAlignment = .center
@@ -65,7 +65,7 @@ final class SplashVC: UIViewController {
             
             //青い点(UIImageView)を設定する！
             let addCircle = UIImageView()
-            addCircle.tintColor = UIColor.orange
+            addCircle.tintColor = UIColor.orange.withAlphaComponent(0.6)
             addCircle.image = UIImage(systemName: "circle.fill")
             addCircle.frame.size = CGSize(width: 5, height: 5)
             
@@ -84,16 +84,22 @@ final class SplashVC: UIViewController {
                 titleLabel.center = CGPoint(x: screenSize.width / 2,
                                        y: screenSize.height * ((t / (CGFloat.pi)) - 0.5))
             }
-            t += 0.01
-            return
         }
+        
+        t += 0.01
+        if t <= 4 { return }
         
         timer.invalidate()
         
         if SceneDelegate.shared.rootVC.current == self {
-            // メイン画面へ移動
-            SceneDelegate.shared.rootVC.transitionToMain()
-            print("メイン画面へ移動")
+//            if UserDefaults.standard.bool(forKey: .isWatchedWalkThrough) != true {
+                let walkThroughVC = WalkThroughVC()
+                SceneDelegate.shared.rootVC.transition(to: walkThroughVC)
+//            } else {
+//                // メイン画面へ移動
+//                SceneDelegate.shared.rootVC.transitionToMain()
+//                print("メイン画面へ移動")
+//            }
         }
             
 //        displayPasscodeLockScreenIfNeeded(keyWindow: keyWindow)

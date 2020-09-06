@@ -2,7 +2,11 @@ PODS:
   - Charts (3.5.0):
     - Charts/Core (= 3.5.0)
   - Charts/Core (3.5.0)
+  - EAIntroView (2.12.0):
+    - EARestrictedScrollView (~> 1.1.0)
+  - EARestrictedScrollView (1.1.0)
   - FontAwesome.swift (1.9.0)
+  - Instructions (2.0.0)
   - PKHUD (5.3.0)
   - Realm (5.3.5):
     - Realm/Headers (= 5.3.5)
@@ -14,7 +18,9 @@ PODS:
 
 DEPENDENCIES:
   - Charts
+  - EAIntroView
   - FontAwesome.swift
+  - Instructions
   - PKHUD
   - RealmSwift
   - SwiftDate
@@ -23,7 +29,10 @@ DEPENDENCIES:
 SPEC REPOS:
   trunk:
     - Charts
+    - EAIntroView
+    - EARestrictedScrollView
     - FontAwesome.swift
+    - Instructions
     - PKHUD
     - Realm
     - RealmSwift
@@ -32,13 +41,16 @@ SPEC REPOS:
 
 SPEC CHECKSUMS:
   Charts: 40a08591df1f8ad5c223ddedfb1a06da92f24f7c
+  EAIntroView: 249559079ddfdbe80e5bcb755c04c3b964b2ac27
+  EARestrictedScrollView: b0c2a3f92fb2610bb44d71c5e4893777c89e45ef
   FontAwesome.swift: a403b88cec950511745ba8f2decd1b6a07346d13
+  Instructions: debf9cedeaf8d095108fd35d2c54b97ccf769e65
   PKHUD: 98f3e4bc904b9c916f1c5bb6d765365b5357291b
   Realm: 2b52fcc86fc0ed3d75a56ac0eb1e73c4f1a60e16
   RealmSwift: a6ea2ea561039fc3833c08dec81371a9a3bb5ca6
   SwiftDate: fa2bb3962056bb44047b4b85a30044e5eae30b03
   "UITextView+Placeholder": d7b0c400921f66523f3a85d74f774512e14f6502
 
-PODFILE CHECKSUM: 0854b583097323de39c5a60121eb073a3c43f36c
+PODFILE CHECKSUM: a246dbdbb1e9a66fdc249dce5524d6689c17243d
 
 COCOAPODS: 1.9.3

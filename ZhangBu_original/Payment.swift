@@ -9,11 +9,14 @@ import RealmSwift
 
 class Payment: Object {
     
-    @objc dynamic var id: Int = 0
+    @objc dynamic private var id: Int = 0
     @objc dynamic var date: Date = Date()
     @objc dynamic var category = String()
+    @objc dynamic var colorCode: String = ""
     @objc dynamic var memo = String()
+    //出金、入金の支払い方法
     @objc dynamic var paymentMethod = String()
+    //金銭移動の出金
     @objc dynamic var withdrawal = String()
     @objc dynamic var price: Int = 0
     @objc dynamic var mainCategoryNumber: Int = 0
@@ -32,6 +35,7 @@ class Payment: Object {
             return 1
         }
     }
+    
     // 作成(Create)のためのコード
     static func create() -> Payment {
         let payment = Payment()

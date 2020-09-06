@@ -96,6 +96,8 @@ extension UserDefaults : DefaultSettable {
     enum BoolKey : String {
         case isCordMode
         case isCheckMode
+        case isWatchedWalkThrough
+        case isNotFirstOpen
     }
     enum Array3Key : String {
         case list

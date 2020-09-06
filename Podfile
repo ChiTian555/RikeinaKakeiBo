@@ -13,5 +13,7 @@ target 'ZhangBu_original' do
   pod 'Charts'
   pod 'SwiftDate'
   pod 'FontAwesome.swift'
+  pod 'EAIntroView'
+  pod 'Instructions'
   
 end

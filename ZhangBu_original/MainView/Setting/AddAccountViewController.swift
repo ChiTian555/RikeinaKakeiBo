@@ -78,20 +78,19 @@ class AddAccountViewController: UIViewController {
         }
         
         if isEditMode {
-            var accounts = UserDefaults.standard.stringArray2(forKey: .account)!
-            accounts[selectedNumber][0] = accountNameTextField.text!
-            accounts[selectedNumber][1] = accountMoney.text!
-            UserDefaults.standard.setArray2(accounts, forKey: .account)
+            let account = Account.readValue(id: selectedNumber)
+            account.accountName = accountNameTextField.text!
+            account.newBalance = Int(accountMoney.text!)!
+            account.setValue()
         } else {
-            var accounts = UserDefaults.standard.stringArray2(forKey: .account)!
-            if accounts[0].count == 0 {
-                accounts.removeFirst()
-            }
-            accounts.append([accountNameTextField.text!, accountMoney.text!])
-            UserDefaults.standard.setArray2(accounts, forKey: .account)
+            let newAccount = Account.create()
+            newAccount.accountName = accountNameTextField.text!
+            newAccount.newBalance = Int(accountMoney.text!)!
+//            newAccount.accountUIColor = UIColor.randomColor
+            newAccount.save()
         }
         // 親VCを取り出し
-        let parentTBC = self.presentingViewController as! UITabBarController
+        let parentTBC = SceneDelegate.shared.rootVC.current as! UITabBarController
         let parentNC = parentTBC.selectedViewController as! UINavigationController
         let parentVC = parentNC.topViewController as! IndividualSettingViewController
         // ユーザデフォルトでラベル更新

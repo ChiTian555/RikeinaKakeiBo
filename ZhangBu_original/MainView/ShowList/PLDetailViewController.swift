@@ -23,7 +23,7 @@ class PLDetailViewController: UIViewController, UIPickerViewDelegate, UIPickerVi
     
     var datePicker = UIDatePicker()
     
-    var list: [[[String]]] = [[[]]]
+    var list: [[String]] = [[]]
     
     var textFields = [UITextField]()
     
@@ -54,7 +54,6 @@ class PLDetailViewController: UIViewController, UIPickerViewDelegate, UIPickerVi
         settingTableView.dataSource = self
         let mainCategory = detailPayment.mainCategoryNumber
         changeMainCategoryTab.selectedSegmentIndex = mainCategory
-        selectMenu(menu: mainCategory)
         settingTableView.separatorInset = .init(top: 0, left: 120, bottom: 0, right: 0)
         settingTableView.estimatedRowHeight = 40
         settingTableView.rowHeight = UITableView.automaticDimension
@@ -73,8 +72,7 @@ class PLDetailViewController: UIViewController, UIPickerViewDelegate, UIPickerVi
     }
     
     override func viewWillAppear(_ animated: Bool) {
-        let ud = UserDefaults.standard
-        list = ud.stringArray3(forKey: .list)!
+        ChangeMenu(menu: detailPayment.mainCategoryNumber)
         settingTableView.reloadData()
 //        navigationController?.navigationItem.backBarButtonItem = nil
     }
@@ -109,11 +107,11 @@ class PLDetailViewController: UIViewController, UIPickerViewDelegate, UIPickerVi
         }
     }
     
-    @IBAction func changeMenu(_ sender: UISegmentedControl) {
+    @IBAction func selectedMenu(_ sender: UISegmentedControl) {
         
         if changed == true {
             textFields = [UITextField]()
-            selectMenu(menu: sender.selectedSegmentIndex)
+            ChangeMenu(menu: sender.selectedSegmentIndex)
             UIView.animate(
                 withDuration: 0.0,
                 animations:{
@@ -134,7 +132,7 @@ class PLDetailViewController: UIViewController, UIPickerViewDelegate, UIPickerVi
             alert.dismiss(animated: true, completion: nil)
             self.changed = true
             self.textFields = [UITextField]()
-            self.selectMenu(menu: sender.selectedSegmentIndex)
+            self.ChangeMenu(menu: sender.selectedSegmentIndex)
             UIView.animate(
                 withDuration: 0.0,
                 animations:{
@@ -256,22 +254,11 @@ class PLDetailViewController: UIViewController, UIPickerViewDelegate, UIPickerVi
         
     }
     
-    func selectMenu(menu mode: Int) {
+    func ChangeMenu(menu mode: Int) {
         settingTableView.delegate = self
-        
-        switch mode {
-        case 0:
-            menu = ["項目","決済方法","日付"]
-            print(menu)
-        case 1:
-            menu = ["項目","入金講座","日付"]
-            print(menu)
-        case 2:
-            menu = ["出金","入金","日付"]
-            print(menu)
-        default:
-            print("エラー")
-        }
+        let categoryList = CategoryList.readAllCategory(mode)
+        menu = categoryList.map({ $0.categoryName })
+        list = categoryList.map({ $0.list + [] })
     }
     
     //CGRectを簡単に作る
@@ -317,7 +304,7 @@ class PLDetailViewController: UIViewController, UIPickerViewDelegate, UIPickerVi
         guard let i = reloadEditing() else { return }
         let textField = textFields[i]
         if textFields[i].text == "" {
-            textFields[i].text = list[changeMainCategoryTab.selectedSegmentIndex][i][0]
+            textFields[i].text = menu[i]
         }
         textField.resignFirstResponder()
     }
@@ -329,7 +316,7 @@ class PLDetailViewController: UIViewController, UIPickerViewDelegate, UIPickerVi
     @objc func done() {
         guard let i = reloadEditing() else { return }
         if textFields[i].text == "" {
-            textFields[i].text = list[changeMainCategoryTab.selectedSegmentIndex][i][0]
+            textFields[i].text = menu[i]
         }
         if textFields.count - 1 > i {
             textFields[i + 1].becomeFirstResponder()
@@ -362,7 +349,7 @@ class PLDetailViewController: UIViewController, UIPickerViewDelegate, UIPickerVi
     }
     
     func pickerView(_ pickerView: UIPickerView, titleForRow row: Int, forComponent component: Int) -> String? {
-        let titleOfRow = list[changeMainCategoryTab.selectedSegmentIndex][pickerView.tag][row]
+        let titleOfRow = list[pickerView.tag][row]
         if textFields[pickerView.tag].text == titleOfRow {
             pickerView.selectRow(row, inComponent: component, animated: false)
         }
@@ -371,7 +358,7 @@ class PLDetailViewController: UIViewController, UIPickerViewDelegate, UIPickerVi
     
     func pickerView(_ pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int) {
         let textField = textFields[pickerView.tag]
-        textField.text = list[changeMainCategoryTab.selectedSegmentIndex][pickerView.tag][row]
+        textField.text = list[pickerView.tag][row]
 //        textFields[editingNumber].resignFirstResponder()
     }
     
