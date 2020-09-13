@@ -22,8 +22,14 @@
 	<string>1.0</string>
 	<key>CFBundleVersion</key>
 	<string>1</string>
+	<key>LSApplicationCategoryType</key>
+	<string>public.app-category.lifestyle</string>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
+	<key>NFCReaderUsageDescription</key>
+	<string>FeliCa card to read data into the application</string>
+	<key>NSFaceIDUsageDescription</key>
+	<string>Can use touch or face ID to open application?</string>
 	<key>PasscodeSalt</key>
 	<string>Asis7ahaTa9uJa3S4uGAdOi8oP04RgHlaK8jG07Ya7h6HkOalAaK87o6IaSiaLa1</string>
 	<key>UIApplicationSceneManifest</key>
@@ -64,5 +70,10 @@
 	</array>
 	<key>UIViewControllerBasedStatusBarAppearance</key>
 	<false/>
+	<key>com.apple.developer.nfc.readersession.felica.systemcodes</key>
+	<array>
+		<string>0003</string>
+		<string>FE00</string>
+	</array>
 </dict>
 </plist>

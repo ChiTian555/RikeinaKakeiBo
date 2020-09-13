@@ -13,16 +13,8 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     var window: UIWindow?
     
     func scene(_ scene: UIScene, willConnectTo session: UISceneSession, options connectionOptions: UIScene.ConnectionOptions) {
-        // Use this method to optionally configure and attach the UIWindow `window` to the provided UIWindowScene `scene`.
-        // If using a storyboard, the `window` property will automatically be initialized and attached to the scene.
-        // This delegate does not imply the connecting scene or session are new (see `application:configurationForConnectingSceneSession` instead).
-        print("SceneDelegateWillConnectTo: アプリ起動時")
         
-//        // 最初に表示させるViewControllerにRootVCを指定する
-//        let window = UIWindow(frame: UIScreen.main.bounds)
-//        window.rootViewController = RootVC()
-//        self.window = window
-//        self.window!.makeKeyAndVisible()
+        print("SceneDelegateWillConnectTo: アプリ起動時")
         
         guard let scene = (scene as? UIWindowScene) else { return }
         window = UIWindow(windowScene: scene)
@@ -44,12 +36,20 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         if UserDefaults.standard.bool(forKey: .isCheckMode)! {
             UserDefaults.standard.setBool(false, forKey: .isCheckMode)
         }
+        
+        UNUserNotificationCenter.current().getNotificationSettings { (settings) in
+            let canNotice = settings.authorizationStatus == .authorized
+            UserDefaults.standard.setBool(canNotice, forKey: .canUseNotification)
+            print("\(settings.authorizationStatus)")
+                
+        }
+        
         // Called when the scene has moved from an inactive state to an active state.
         // Use this method to restart any tasks that were paused (or not yet started) when the scene was inactive.
     }
 
     func sceneWillResignActive(_ scene: UIScene) {
-        print("sceneWillResignActive: フォアグラウンドからバックグラウンドへ移行しようとした時")
+        print("sceneWillResignActive: バックグラウンドへ移行しようとした時")
         if !UserDefaults.standard.bool(forKey: .isCheckMode)! {
         // パスコードロック画面を表示する
         displayPasscodeLockScreenIfNeeded()
@@ -58,7 +58,22 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     }
 
     func sceneWillEnterForeground(_ scene: UIScene) {
-        print("sceneWillEnterForeground: フォアグラウンドへ移行完了した時")
+        print("sceneWillEnterForeground: フォアグラウンドへ移行しようとした時")
+        
+        let passcodeModel = PasscodeModel()
+        // パスコードロックを設定していない場合は何もしない
+        if !passcodeModel.existsHashedPasscode() {
+            return
+        }
+        if let isDisplayedPasscodeLock = isDisplayedPasscodeLock() {
+            // パスコードロック画面がかぶせてある時に、情報を更新
+            if isDisplayedPasscodeLock.0 {
+                if let passcodeVC = isDisplayedPasscodeLock.VC as? PasscodeViewController {
+                    passcodeVC.setupPasscodeNumberKeyboardView()
+                }
+            }
+        }
+        
         // Called as the scene transitions from the background to the foreground.
         // Use this method to undo the changes made on entering the background.
     }
@@ -71,17 +86,27 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 
     // MARK: - Private Function
 
-    private func displayPasscodeLockScreenIfNeeded() {
+    func displayPasscodeLockScreenIfNeeded() {
         let passcodeModel = PasscodeModel()
 
         // パスコードロックを設定していない場合は何もしない
         if !passcodeModel.existsHashedPasscode() {
             return
         }
-
         
-        
-        if let rootViewController = window!.rootViewController {
+        if let isDisplayedPasscodeLock = isDisplayedPasscodeLock() {
+            // パスコードロック画面がかぶせてなければかぶせる
+            if !isDisplayedPasscodeLock.0 {
+                let nav = UINavigationController(rootViewController: getPasscodeViewController())
+                nav.modalPresentationStyle = .overFullScreen
+                nav.modalTransitionStyle   = .crossDissolve
+                isDisplayedPasscodeLock.VC.present(nav, animated: true, completion: nil)
+            }
+        }
+    }
+    
+    private func isDisplayedPasscodeLock() -> (Bool, VC:UIViewController)?  {
+        if let rootViewController = SceneDelegate.shared.window!.rootViewController {
 
             // 現在のrootViewControllerにおいて一番上に表示されているViewControllerを取得する
             var topViewController: UIViewController = rootViewController
@@ -93,15 +118,15 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
             let isDisplayedPasscodeLock: Bool = topViewController.children.map{
                 return $0 is PasscodeViewController
             }.contains(true)
-
-            // パスコードロック画面がかぶせてなければかぶせる
-            if !isDisplayedPasscodeLock {
-                let nav = UINavigationController(rootViewController: getPasscodeViewController())
-                nav.modalPresentationStyle = .overFullScreen
-                nav.modalTransitionStyle   = .crossDissolve
-                topViewController.present(nav, animated: true, completion: nil)
+            
+            if let passcodeLockDisplay: UIViewController = topViewController.children
+                .first(where: {$0 is PasscodeViewController}) {
+                
+                return (isDisplayedPasscodeLock, passcodeLockDisplay)
             }
+            return (isDisplayedPasscodeLock, topViewController)
         }
+        return nil
     }
 
     private func getPasscodeViewController() -> PasscodeViewController {

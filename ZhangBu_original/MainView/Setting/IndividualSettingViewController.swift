@@ -8,8 +8,9 @@
 
 import UIKit
 import PKHUD
-import Realm
 import RealmSwift
+import FontAwesome_swift
+
 
 class IndividualSettingViewController: UIViewController {
 
@@ -22,6 +23,7 @@ class IndividualSettingViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        tableView.tableFooterView = UIView()
         tableView.dataSource = self
         tableView.delegate = self
         tableView.allowsSelection = false
@@ -35,8 +37,18 @@ class IndividualSettingViewController: UIViewController {
     func load() {
 //        accounts = UserDefaults.standard.stringArray2(forKey: .account)!
         accounts = Account.readAll() + []
+        
+        if accounts.count != 0 {
+            tableView.rowHeight = 50
+            tableView.estimatedRowHeight = 50
+        }
+        moveButton.tintColor = accounts.count > 1 ? .systemBlue : .systemGray3
+        moveButton.isEnabled = accounts.count > 1
+        
         tableView.reloadData()
     }
+    
+    @IBOutlet var moveButton: UIBarButtonItem!
     
     @IBOutlet var tableView: UITableView!
     
@@ -49,9 +61,7 @@ class IndividualSettingViewController: UIViewController {
             let nc = segue.destination as! UINavigationController
             let vc = nc.visibleViewController as! AddAccountViewController
             let i = sender as! Int
-            let account = UserDefaults.standard.stringArray2(forKey: .account)![i]
-            vc.selectedMoney = account[1]
-            vc.selectedName = account[0]
+            vc.selectedAccount = accounts[i]
             vc.selectedNumber = i
             vc.isEditMode = true
         }
@@ -62,15 +72,22 @@ class IndividualSettingViewController: UIViewController {
 extension IndividualSettingViewController: UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return accounts.count
+        return accounts.count == 0 ? 1 : accounts.count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        
         let cell = tableView.dequeueReusableCell(withIdentifier: "Cell")!
         let label = cell.viewWithTag(2) as! UILabel
-//        let colorView = cell.viewWithTag(1)!
-        label.text = accounts[indexPath.row].accountName
-//        colorView.backgroundColor = accounts[indexPath.row].accountUIColor
+        
+        if accounts.count == 0 {
+            label.text = "登録済み口座がありません\n右上の'＋'から、\nまず現金口座を追加してみしょう"
+            label.textAlignment = .center
+            cell.isUserInteractionEnabled = false
+        } else {
+            label.text = accounts[indexPath.row].name
+            label.textAlignment = .left
+        }
         
         return cell
     }
@@ -79,49 +96,78 @@ extension IndividualSettingViewController: UITableViewDataSource {
 
 extension IndividualSettingViewController: UITableViewDelegate {
     
-//    func tableView(_ tableView: UITableView, canMoveRowAt indexPath: IndexPath) -> Bool {
-//        return true
-//    }
-//
-//    func tableView(_ tableView: UITableView, moveRowAt sourceIndexPath: IndexPath, to destinationIndexPath: IndexPath) {
-////        let sourceCellItem = list[mainCategoryNumber][tappedNumber][sourceIndexPath.row]
-////        guard let indexPath = list[mainCategoryNumber][tappedNumber].firstIndex(of: sourceCellItem) else { return }
-////        list[mainCategoryNumber][tappedNumber].remove(at: indexPath)
-////        list[mainCategoryNumber][tappedNumber].insert(sourceCellItem, at: destinationIndexPath.row)
-////        ud.setArray3(list, forKey: .list)
-//    }
-//
-//    func tableView(_ tableView: UITableView, trailingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
-//
-//        let ud = UserDefaults.standard
-//        let normalAction = UIContextualAction(style: .normal, title: "編集") {
-//            (action, view, completionHandler) in
-//
-//            self.performSegue(withIdentifier: "toAddAccount", sender:
-//                indexPath.row)
-//            completionHandler(true)
+    //編集モード切り替え
+    @IBAction func tappedEditButton() {
+        tableView.isEditing = !tableView.isEditing
+    }
+    //テーブルビューの並び替えモード
+    func tableView(_ tableView: UITableView, canEditRowAt indexPath: IndexPath) -> Bool {
+        return true
+    }
+
+    //編集モード時の左のマークを選択
+    func tableView(_ tableView: UITableView, editingStyleForRowAt indexPath: IndexPath) -> UITableViewCell.EditingStyle {
+        return .none
+    }
+
+    //編集モード時に左を開ける
+    func tableView(_ tableView: UITableView, shouldIndentWhileEditingRowAt indexPath: IndexPath) -> Bool {
+        return true
+    }
+
+    //列の入れ替え
+    func tableView(_ tableView: UITableView, moveRowAt sourceIndexPath: IndexPath, to destinationIndexPath: IndexPath) {
+        let sourceRow: Int = sourceIndexPath.row
+        let destinationRow: Int = destinationIndexPath.row
+        if !Account.moveAccount(accounts[sourceRow], accounts[destinationRow]) {
+            HUD.flash(.error, delay: 1.5)
+        }
+        let source = accounts.remove(at: sourceRow)
+        accounts.insert(source, at: destinationRow)
+    }
+    
+    //後方スワイプ
+    func tableView(_ tableView: UITableView, trailingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
+        
+        let action = UIContextualAction(style: .destructive, title: nil) { (ctxAction, view, completionHandler) in
+            
+            let alert = UIAlertController(title: "削除", message: "ほんとに削除してもよろしいですか？", preferredStyle: .alert)
+            let okAction = UIAlertAction(title: "削除", style: .destructive) { (action) in
+                alert.dismiss(animated: true, completion: nil)
+                self.accounts[indexPath.row].delete()
+                self.accounts.remove(at: indexPath.row)
+                tableView.deleteRows(at: [indexPath], with: .automatic)
+                
+                //並び替えボタンの更新
+                self.moveButton.tintColor = self.accounts.count > 1 ? .systemBlue : .systemGray3
+                self.moveButton.isEnabled = self.accounts.count > 1
+                
+                completionHandler(true)
+            }
+            let cancelAction = UIAlertAction(title: "キャンセル", style: .cancel) { (action) in
+                alert.dismiss(animated: true, completion: nil)
+                completionHandler(false)
+            }
+            alert.addAction(okAction)
+            alert.addAction(cancelAction)
+            self.present(alert, animated: true, completion: nil)
+        }
+        action.image = UIImage.fontAwesomeIcon(name: .trashAlt, style: .regular, textColor: .label, size: CGSize(width: 50, height: 50))
+        let swipeAction = UISwipeActionsConfiguration(actions: [action])
+        swipeAction.performsFirstActionWithFullSwipe = false
+        return swipeAction
+    }
+    
+    func tableView(_ tableView: UITableView, canMoveRowAt indexPath: IndexPath) -> Bool {
+        return true
+    }
+
+//    //上の2この位置を変えないようにする。
+//    func tableView(_ tableView: UITableView, targetIndexPathForMoveFromRowAt sourceIndexPath: IndexPath, toProposedIndexPath proposedDestinationIndexPath: IndexPath) -> IndexPath {
+//        if proposedDestinationIndexPath.row < userBudget.count {
+//            return sourceIndexPath
 //        }
-//
-//        let destructiveAction = UIContextualAction(style: .destructive, title: "削除") {
-//            (action, view,completionHandler) in
-//            action.backgroundColor = .systemRed
-//            self.accounts.remove(at: indexPath.row)
-//            if self.accounts.count == 0 {
-//                self.accounts.append([])
-//            }
-//            tableView.deleteRows(at: [indexPath], with: .fade)
-//            ud.setArray2(self.accounts, forKey: .account)
-//            completionHandler(true)
-//        }
-//
-//        let configuration = UISwipeActionsConfiguration(actions: [destructiveAction, normalAction])
-//        configuration.performsFirstActionWithFullSwipe = false
-//
-//        return configuration
-//    }
-//
-//    func tableView(_ tableView: UITableView, editingStyleForRowAt indexPath: IndexPath) -> UITableViewCell.EditingStyle {
-//        return .none
+//        return proposedDestinationIndexPath
 //    }
     
 }

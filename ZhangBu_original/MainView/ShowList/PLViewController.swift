@@ -75,8 +75,10 @@ class PLViewController: UIViewController, UIPickerViewDelegate, UIPickerViewData
         categoryTableView.delegate = self
         categoryTableView.dataSource = self
         categoryTableView.tableFooterView = UIView()
-        categoryTableView.estimatedRowHeight = 32
-        categoryTableView.rowHeight = UITableView.automaticDimension
+        categoryTableView.estimatedRowHeight = categoryTableView.layer.frame.height / 10
+        categoryTableView.rowHeight = categoryTableView.layer.frame.height / 10
+//        categoryTableView.rowHeight = UITableView.automaticDimension
+        categoryTableView.allowsSelection = false
         pieChartView.delegate = self
         
         let titleView =  UIView(frame: CGRect(x: 0, y: 0, width: 200, height: 44))
@@ -321,7 +323,7 @@ class PLViewController: UIViewController, UIPickerViewDelegate, UIPickerViewData
             ]))
         }
         pieChartView.centerAttributedText = attrStr
-        pieChartView.noDataFont =  UIFont(name: "cordFont", size: 15)!
+        pieChartView.noDataFont =  UIFont.systemFont(ofSize: 14, weight: .regular)
         pieChartView.holeColor = UIColor.secondarySystemBackground
 //        pieChartView.highlightPerTapEnabled = false
         pieChartView.rotationEnabled = false
@@ -329,8 +331,9 @@ class PLViewController: UIViewController, UIPickerViewDelegate, UIPickerViewData
         pieChartView.holeRadiusPercent = 0.7
         pieChartView.transparentCircleRadiusPercent = 0.75
         pieChartView.setExtraOffsets(left: 5, top: 5, right: 5, bottom: 5)
-//        pieChartView.highlightValue(nil, callDelegate: true)
         //完成版で実装予定
+//        pieChartView.highlightValue(nil, callDelegate: true)
+        pieChartView.isUserInteractionEnabled = false
         pieChartView.legend.enabled = false
         pieChartView.drawEntryLabelsEnabled = true
         pieChartView.entryLabelColor = .label
@@ -360,13 +363,13 @@ class PLViewController: UIViewController, UIPickerViewDelegate, UIPickerViewData
         if dataPoints.count != 0 {
             if changeMainCategoryTab.selectedSegmentIndex == 0 {
                 set.colors = ChartColorTemplates.vordiplom()
-                set.colors.append(contentsOf: ChartColorTemplates.vordiplom())
+                set.colors.append(contentsOf: ChartColorTemplates.colorful())
                 if dataPoints[dataPoints.count - 1] == "その他" {
                     set.colors[dataPoints.count - 1] = UIColor.systemGray
                 }
             } else {
                 set.colors = ChartColorTemplates.colorful()
-                set.colors.append(contentsOf: ChartColorTemplates.colorful())
+                set.colors.append(contentsOf: ChartColorTemplates.vordiplom())
                 if dataPoints[dataPoints.count - 1] == "その他" {
                     set.colors[dataPoints.count - 1] = UIColor.systemGray
                 }
@@ -384,8 +387,9 @@ class PLViewController: UIViewController, UIPickerViewDelegate, UIPickerViewData
         
         set.valueLinePart1OffsetPercentage = 0.5
         set.valueLineVariableLength = true
+        //放射線状に伸びる部分
         set.valueLinePart1Length = 0.3
-        set.valueLinePart2Length = 0.3
+        set.valueLinePart2Length = 0.1
         set.valueLineColor = .label
         set.xValuePosition = .outsideSlice
         set.yValuePosition = .outsideSlice
@@ -400,7 +404,7 @@ class PLViewController: UIViewController, UIPickerViewDelegate, UIPickerViewData
         pFormatter.percentSymbol = "%"
         pieChartData.setValueFormatter(DefaultValueFormatter(formatter: pFormatter))
         if UserDefaults.standard.bool(forKey: .isCordMode)! {
-            pieChartData.setValueFont(UIFont(name: "cordFont", size: 20)!)
+            pieChartData.setValueFont(UIFont(name: "cordFont", size: 18)!)
         } else {
             pieChartData.setValueFont(.systemFont(ofSize: 12, weight: .light))
         }
@@ -465,16 +469,16 @@ extension PLViewController: UITableViewDelegate, UITableViewDataSource {
                 priceLabel.text = "¥\(price)"
                 priceLabel.textColor = UIColor.label
             }
-            let category = payments[indexPath.row].category
-            categoryLabel.text = category
-            if payments[indexPath.row].category.count == 5 {
-                categoryLabel.font = UIFont.systemFont(ofSize: 14, weight: .regular)
-            }
+            let nowPayment = payments[indexPath.row]
+            let isUseSavedMoney = payments[indexPath.row].isUsePoketMoney == false
+                                && nowPayment.mainCategoryNumber == 0
+            let markUseSavedMoney = isUseSavedMoney ? " (貯)" : ""
+            categoryLabel.text = nowPayment.category + markUseSavedMoney
             let dateFormatter: DateFormatter = DateFormatter()
             dateFormatter.calendar = Calendar(identifier: .gregorian)
             dateFormatter.dateFormat = "MM/dd"
             dateLabel.text = dateFormatter.string(from: payments[indexPath.row].date)
-            let categoryIndex = allCategories.firstIndex(of: category)!
+            let categoryIndex = allCategories.firstIndex(of: nowPayment.category)!
             if categoryIndex < colors.count {
                 colorView?.backgroundColor = colors[categoryIndex]
             } else {

@@ -13,6 +13,7 @@ import MessageUI
 class SettingMainViewController: UIViewController {
     
     override func viewWillAppear(_ animated: Bool) {
+        tableView.reloadData()
         if let tabBarVC = self.tabBarController {
             tabBarVC.tabBar.isHidden = false
         }
@@ -26,12 +27,13 @@ class SettingMainViewController: UIViewController {
     
     let titleArray: [(name:String ,cellTipe: Int)] = [
         
-        ("支払い方法の追加", 1),
+        ("口座管理", 1),
         ("暗号モード", 2),
         ("パスワードの設定", 1),
         ("作成者に意見を送信", 1),
+        ("NFCTest", 1),
         ("定期的な出費の登録(β版未対応)", 0),
-        ("チュートリアル(β版未対応)", 0),
+        ("ユーザー分類の追加(β版未対応)", 0),
         ("背景画像とテーマ色の変更(β版未対応)", 0)
     
     ]
@@ -44,6 +46,7 @@ class SettingMainViewController: UIViewController {
         tableView.dataSource = self
         tableView.delegate = self
     }
+    
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         if segue.identifier == "toIndividual" {
             let vc = segue.destination as! IndividualSettingViewController
@@ -112,6 +115,8 @@ extension SettingMainViewController: UITableViewDelegate {
                 self.performSegue(withIdentifier: "toEditPasscode", sender: indexPath.row)
             } else if titleArray[indexPath.row].name == "作成者に意見を送信" {
                 sendEmail()
+            } else if titleArray[indexPath.row].name == "NFCTest" {
+                SceneDelegate.shared.rootVC.transitionToNFCTest()
             }
         }
         tableView.deselectRow(at: indexPath, animated: true)
@@ -125,15 +130,12 @@ extension SettingMainViewController: UITableViewDelegate {
         }
         let mailViewController = MFMailComposeViewController()
         let toRecipients = ["rikei.no.kakeibo.developper@gmail.com"] //Toのアドレス指定
-//        var CcRecipients = ["cc@1gmail.com","Cc2@1gmail.com"] //Ccのアドレス指定
-//        var BccRecipients = ["Bcc@1gmail.com","Bcc2@1gmail.com"] //Bccのアドレス指定
 
         mailViewController.mailComposeDelegate = self
         mailViewController.setSubject("意見,アドバイスを送信")
         mailViewController.setToRecipients(toRecipients) //Toアドレスの表示
-//        mailViewController.setCcRecipients(CcRecipients) //Ccアドレスの表示
-//        mailViewController.setBccRecipients(BccRecipients) //Bccアドレスの表示
-        mailViewController.setMessageBody("↓↓意見を下に入力ください↓↓", isHTML: false)
+        
+        mailViewController.setMessageBody("↓↓意見を下に入力ください↓↓\n", isHTML: false)
         self.present(mailViewController, animated: true, completion: nil)
     }
     
@@ -193,6 +195,24 @@ extension SettingMainViewController: UITableViewDataSource {
         default: break
         }
         cell.textLabel?.text = titleTaple.name
+        //初回起動時にラベルを表示
+        if indexPath.row == 0 {
+            let startStepLabel = cell.viewWithTag(2) as! UILabel
+            if UserDefaults.standard.integer(forKey: .startStep)! == 0 {
+                startStepLabel.textAlignment = .center
+                startStepLabel.text = "New"
+                startStepLabel.backgroundColor = .systemRed
+                startStepLabel.textColor = .white
+                startStepLabel.layer.cornerRadius = startStepLabel.layer.bounds.height / 2
+                startStepLabel.clipsToBounds = true
+            } else {
+                let startStepLabel = cell.viewWithTag(2) as! UILabel
+                startStepLabel.text = ""
+                startStepLabel.backgroundColor = .clear
+            }
+        }
+        
+        
         return cell
     }
     

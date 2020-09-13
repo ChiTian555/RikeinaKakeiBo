@@ -50,16 +50,17 @@ final class RootVC: UIViewController {
         // 現在のVCを更新
         current = vc
         
-//        // ViewControllerをRootVCの子VCとして追加
-//        addChild(current)
-//        current.view.frame = view.bounds
-//        view.addSubview(current.view)
-//        current.didMove(toParent: self)
     }
     // 移動したいViewControllerごとに用意しておくと簡単に使用できる
     func transitionToMain() {
         // 切り替えたい先のViewControllerを用意
         let vc = UIStoryboard(name: "Main", bundle: nil).instantiateInitialViewController()!
+        transition(to: vc)
+    }
+    
+    func transitionToNFCTest() {
+        // 切り替えたい先のViewControllerを用意
+        let vc = UIStoryboard(name: "NFCReaderTest", bundle: nil).instantiateInitialViewController()!
         transition(to: vc)
     }
 }

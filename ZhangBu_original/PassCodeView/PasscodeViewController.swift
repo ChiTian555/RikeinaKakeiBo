@@ -63,7 +63,7 @@ class PasscodeViewController: UIViewController {
         inputPasscodeMessageLabel.text = inputPasscodeType.getMessage()
     }
 
-    private func setupPasscodeNumberKeyboardView() {
+    func setupPasscodeNumberKeyboardView() {
         inputPasscodeKeyboardView.delegate = self
 
         // MEMO: 利用している端末のFaceIDやTouchIDの状況やどの画面で利用しているか見てボタン状態を判断する

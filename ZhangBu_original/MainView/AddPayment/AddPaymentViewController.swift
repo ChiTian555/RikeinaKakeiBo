@@ -10,6 +10,7 @@ import UIKit
 import RealmSwift
 import PKHUD
 import SwiftDate
+import Instructions
 
 class AddPaymentViewController: UIViewController, UITableViewDataSource, UITableViewDelegate, UITextFieldDelegate{
     
@@ -37,10 +38,19 @@ class AddPaymentViewController: UIViewController, UITableViewDataSource, UITable
     
     var isNavigationMove: Bool!
     
+    var startStepLabel: UILabel!
+    
+    var selectAccountNomber = Int()
+    
+    var coachController = CoachMarksController()
+    
+    @IBOutlet var useSavedMoneyCheckLabel: UILabel!
+    
     @IBAction func selectMenu(_ sender: UISegmentedControl) {
-        
+        useSavedMoneyCheckLabel.text = "貯金利用 ×"
         textFields = [UITextField]()
         ChangeMenu(menu: sender.selectedSegmentIndex)
+        useSavedMoneyCheckLabel.isHidden = (sender.selectedSegmentIndex != 0)
         memo = memoTextView.text
         UIView.animate(
             withDuration: 0.0,
@@ -60,19 +70,10 @@ class AddPaymentViewController: UIViewController, UITableViewDataSource, UITable
     
     let ud = UserDefaults.standard
     
-//    var count: Int = 0
-//
-//
-//    override func motionEnded(_ motion: UIEvent.EventSubtype, with event: UIEvent?) {
-//        if motion == .motionShake {
-//            count += 1
-//            label.text = String(count)
-//            ud.setInteger(count, forKey: .shake)
-//        }
-//    }
-    
     override func viewWillAppear(_ animated: Bool) {
-        ChangeMenu(menu: changeMainCategoryTab.selectedSegmentIndex)
+        let menuNomber = changeMainCategoryTab.selectedSegmentIndex
+        useSavedMoneyCheckLabel.isHidden = (menuNomber != 0)
+        ChangeMenu(menu: menuNomber)
         UIView.animate(
             withDuration: 0.0,
             animations:{
@@ -84,6 +85,7 @@ class AddPaymentViewController: UIViewController, UITableViewDataSource, UITable
                         textField.text = ""
                     }
                     self.memoTextView.text = ""
+                    self.useSavedMoneyCheckLabel.text = "貯金利用 ×"
                 }
                 self.isNavigationMove = false
         });
@@ -97,6 +99,7 @@ class AddPaymentViewController: UIViewController, UITableViewDataSource, UITable
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        
         isNavigationMove = false
         settingTableView.dataSource = self
         ChangeMenu(menu: changeMainCategoryTab.selectedSegmentIndex)
@@ -106,11 +109,24 @@ class AddPaymentViewController: UIViewController, UITableViewDataSource, UITable
         settingTableView.tableFooterView = UIView()
         textFields = [UITextField]()
         
-//        if let i = ud.integer(forKey: .shake) {
-//            count = i
-//        } else {
-//            count = 0
-//        }
+        let taped = UITapGestureRecognizer(target: self, action: #selector(changeUseSaveMoney(_:)))
+        taped.numberOfTouchesRequired = 1
+        useSavedMoneyCheckLabel.addGestureRecognizer(taped)
+        useSavedMoneyCheckLabel.isUserInteractionEnabled = true
+        useSavedMoneyCheckLabel.textAlignment = .center
+        useSavedMoneyCheckLabel.backgroundColor = .secondarySystemBackground
+        useSavedMoneyCheckLabel.layer.borderWidth = 0.5
+        useSavedMoneyCheckLabel.layer.borderColor = UIColor.systemGray.cgColor
+        useSavedMoneyCheckLabel.layer.cornerRadius = useSavedMoneyCheckLabel.layer.bounds.height / 5
+        useSavedMoneyCheckLabel.clipsToBounds = true
+    }
+    
+    @objc func changeUseSaveMoney(_ sender: UITapGestureRecognizer) {
+        if useSavedMoneyCheckLabel.text == "貯金利用 ×" {
+            useSavedMoneyCheckLabel.text = "貯金利用 ○"
+        } else {
+            useSavedMoneyCheckLabel.text = "貯金利用 ×"
+        }
     }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
@@ -184,10 +200,15 @@ class AddPaymentViewController: UIViewController, UITableViewDataSource, UITable
                 addDatePicer(textField: textField)
             } else {
                 label.text = menu[row]
+                //最初のチュートリアル用
+                if menu[row] == "決済方法" && UserDefaults.standard.integer(forKey: .startStep) == 1 {
+                    startStepLabel = label
+                } else if menu[row] == "項目" && UserDefaults.standard.integer(forKey: .startStep) == 2 {
+                    startStepLabel = label
+                }
                 let tapGesture = UITapGestureRecognizer(target: self, action: #selector(tapped(_:)))
                 tapGesture.numberOfTouchesRequired = 1
                 label.addGestureRecognizer(tapGesture)
-                
                 textFields.append(textField)
                 addPickerView(textField: textField)
             }
@@ -378,14 +399,15 @@ class AddPaymentViewController: UIViewController, UITableViewDataSource, UITable
             print(payment.date)
             switch mainCategoryNomber {
             case 0:
+                payment.paymentMethod = self.textFields[1].text!
+                payment.category = self.textFields[0].text!
                 if self.labelZero.text == "-" {
-                    payment.paymentMethod = self.textFields[1].text!
                     payment.price = Int(self.priceTextField.text!)! * -1
-                    payment.category = self.textFields[0].text!
                 } else {
-                    payment.paymentMethod = self.textFields[1].text!
                     payment.price = Int(self.priceTextField.text!)!
-                    payment.category = self.textFields[0].text!
+                }
+                if self.useSavedMoneyCheckLabel.text == "貯金利用 ○" {
+                    payment.isUsePoketMoney = false
                 }
             case 1:
                 payment.paymentMethod = self.textFields[1].text!
@@ -395,6 +417,7 @@ class AddPaymentViewController: UIViewController, UITableViewDataSource, UITable
                 payment.paymentMethod = self.textFields[1].text!
                 payment.withdrawal = self.textFields[0].text!
                 payment.price = Int(self.priceTextField.text!)!
+                payment.isUsePoketMoney = false
             default:
                 print("Error")
             }
@@ -461,6 +484,44 @@ extension AddPaymentViewController: UIPickerViewDelegate, UIPickerViewDataSource
             return
         }
         textField.text = list[pickerView.tag][row]
+    }
+    
+}
+
+extension AddPaymentViewController: CoachMarksControllerDataSource {
+    
+    override func viewDidAppear(_ animated: Bool) {
+        if [1,2].contains(self.ud.integer(forKey: .startStep)) {
+            coachController.dataSource = self
+            self.coachController.start(in: .viewController(self))
+            changeMainCategoryTab.isUserInteractionEnabled = false
+        } else {
+            changeMainCategoryTab.isUserInteractionEnabled = true
+        }
+    }
+    override func viewWillDisappear(_ animated: Bool) {
+        self.coachController.stop(immediately: true)
+    }
+    
+    func numberOfCoachMarks(for coachMarksController: CoachMarksController) -> Int {
+        return 1
+    }
+    
+    func coachMarksController(_ coachMarksController: CoachMarksController, coachMarkAt index: Int) -> CoachMark {
+        return self.coachController.helper.makeCoachMark(for: startStepLabel, pointOfInterest: nil, cutoutPathMaker: nil)
+        // for: にUIViewを指定すれば、マークがそのViewに対応します
+    }
+    
+    func coachMarksController(_ coachMarksController: CoachMarksController, coachMarkViewsAt index: Int, madeFrom coachMark: CoachMark) -> (bodyView: (UIView & CoachMarkBodyView), arrowView: (UIView & CoachMarkArrowView)?) {
+        
+        let coachViews = coachMarksController.helper.makeDefaultCoachViews(withArrow: true, arrowOrientation: coachMark.arrowOrientation)
+        let texts = ["ここをタップして\n登録済みの\n口座を登録してください",
+                     "ここをタップして\n新しい項目を登録しましょう\n例えば、食費、交通費、\n交際費などなど！"]
+        
+        coachViews.bodyView.hintLabel.text = texts[ud.integer(forKey: .startStep)! - 1]
+        coachViews.bodyView.nextLabel.text = "了解" // 「次へ」などの文章
+
+        return (bodyView: coachViews.bodyView, arrowView: coachViews.arrowView)
     }
     
 }

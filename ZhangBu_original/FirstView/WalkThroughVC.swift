@@ -9,7 +9,7 @@
 import EAIntroView
 import UIKit
 
-final class WalkThroughVC: UIViewController, EAIntroDelegate {
+final class WalkThroughVC: UIViewController, EAIntroDelegate, UNUserNotificationCenterDelegate {
 
     var pages = [EAIntroPage]()
     
@@ -18,19 +18,7 @@ final class WalkThroughVC: UIViewController, EAIntroDelegate {
 
         let page1 = EAIntroPage()
         page1.title = "はじめまして！"
-        page1.desc = "理系の家継簿をインストールいただき\nありがとうございます！"
-        
-        let attrStr = NSMutableAttributedString()
-        attrStr.append(NSAttributedString(string: "計:", attributes: [
-            NSAttributedString.Key.font : UIFont.systemFont(ofSize: 14, weight: .regular),
-            NSAttributedString.Key.foregroundColor : UIColor.label
-        ]))
-        attrStr.append(NSAttributedString(string: "¥12345", attributes: [
-                        NSAttributedString.Key.font : UIFont(name: "cordFont", size: 20)!,
-                        NSAttributedString.Key.foregroundColor : UIColor.label
-                        ]))
-        
-        page1.accessibilityAttributedLabel = attrStr
+        page1.desc = "アプリをインストールいただき\nありがとうございます！"
         
         pages.append(page1)
         
@@ -42,6 +30,7 @@ final class WalkThroughVC: UIViewController, EAIntroDelegate {
         let page3 = EAIntroPage()
         page3.title = "家計簿を作り上げる\nのは、そう\nあなた自身です!"
         page3.desc = "理想の家計簿に仕上げていきましょう!"
+        page3.descFont = UIFont.systemFont(ofSize: 15, weight: .light)
         page3.titleFont = UIFont(name: "Helvetica-Bold", size: 32)
         page3.titleColor = UIColor.orange
         page3.descPositionY = self.view.bounds.size.height/2
@@ -55,8 +44,8 @@ final class WalkThroughVC: UIViewController, EAIntroDelegate {
         pages.forEach { (page) in
 //            page.bgColor = .systemBackground
             if page != page3 {
-                page.titleFont = UIFont.systemFont(ofSize: 20, weight: .heavy)
-                page.descFont = UIFont.systemFont(ofSize: 12, weight: .light)
+                page.titleFont = UIFont.systemFont(ofSize: 24, weight: .heavy)
+                page.descFont = UIFont.systemFont(ofSize: 15, weight: .light)
             }
             page.titleColor = .label
             page.descColor = .label
@@ -76,11 +65,23 @@ final class WalkThroughVC: UIViewController, EAIntroDelegate {
     }
     
     func introWillFinish(_ introView: EAIntroView!, wasSkipped: Bool) {
+        
+//        //テスト画面に移動
+//        SceneDelegate.shared.rootVC.transitionToNFCTest()
+        
         UserDefaults.standard.setBool(true, forKey: .isWatchedWalkThrough)
+
+        // 通知許可の取得
+        UNUserNotificationCenter.current().requestAuthorization(
+        options: [.alert, .sound, .badge]){
+            (granted, _) in
+            if granted{
+                UNUserNotificationCenter.current().delegate = AppDelegate.shared
+            }
+        }
+
         // メイン画面へ移動
         SceneDelegate.shared.rootVC.transitionToMain()
-        let tbc = SceneDelegate.shared.rootVC.current as! UITabBarController
-        tbc.selectedIndex = 3
     }
     
 

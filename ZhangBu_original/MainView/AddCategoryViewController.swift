@@ -12,6 +12,7 @@ import RealmSwift
 
 class AddCategoryViewController: UIViewController, UITableViewDataSource {
 
+    //遷移前画面からをくられる変数
     var categoryList: CategoryList!
     var list = [String]()
     var accountList = [String]()
@@ -25,7 +26,7 @@ class AddCategoryViewController: UIViewController, UITableViewDataSource {
     
     var settingTextField: UITextField!
     
-    var selectAccountMode: Bool = false
+//    var selectAccountMode: Bool = false
     
     @IBOutlet weak var tableView: UITableView!
     
@@ -46,25 +47,30 @@ class AddCategoryViewController: UIViewController, UITableViewDataSource {
         list = categoryList.list + []
         
         if categoryList.selectAccount {
-            selectAccountMode = true
-            accountList = Account.readAll().map({ $0.accountName })
+            accountList = Account.readAll().map({ $0.name })
             print(accountList)
             accountList.removeAll { (account) -> Bool in
                 return list.map({$0}).contains(account)
             }
-        } else {
-            selectAccountMode = false
         }
+        
+        self.navigationItem.title = "\(categoryList.categoryName)の内容"
     }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return list.count
+        if list.count == 0 { return 1 } else { return list.count }
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        
         let cell = tableView.dequeueReusableCell(withIdentifier: "Cell")!
         
-        cell.textLabel?.text = list[indexPath.row]
+        if list.count == 0 {
+            cell.textLabel?.text = "右上の'menu'から、\(categoryList.categoryName)を追加しよう!"
+            cell.selectionStyle = .none
+        } else {
+            cell.textLabel?.text = list[indexPath.row]
+        }
         
         return cell
     }
@@ -92,11 +98,14 @@ class AddCategoryViewController: UIViewController, UITableViewDataSource {
             alert.dismiss(animated: true, completion: nil)
         }
         
-        if tableView.isEditing {
+        if list.count <= 1 {
+            alert.addAction(addAction)
+        } else if tableView.isEditing {
             alert.addAction(endEditAction)
         } else {
             alert.addAction(addAction)
             alert.addAction(editAction)
+            
         }
         alert.addAction(cancelAction)
         self.present(alert, animated: true, completion: nil)
@@ -113,7 +122,11 @@ class AddCategoryViewController: UIViewController, UITableViewDataSource {
         let textAlert = UIAlertController(title: "項目を追加します", message: "追加する内容を入力ください", preferredStyle: .alert)
         let okAction = UIAlertAction(title: "OK", style: .default) { (action) in
             let text = textAlert.textFields!.first!.text!
-            if text.count == 0 || text.count > 5 {
+            if text.count == 0 {
+                HUD.flash(.labeledError(title: "入力エラー", subtitle: "空欄があります") , delay: 1.5)
+                return
+            }
+            if text.count > 5 && !self.categoryList.selectAccount {
                 textAlert.dismiss(animated: true, completion: nil)
                 HUD.flash(.labeledError(title: "入力エラー",
                                         subtitle: "1~5字で入力してください。"),
@@ -135,6 +148,16 @@ class AddCategoryViewController: UIViewController, UITableViewDataSource {
             self.list.append(text)
             self.categoryList.upDate(newList: self.list, name: nil)
             self.tableView.reloadData()
+            if [1,2].contains(self.ud.integer(forKey: .startStep)){
+                if self.ud.integer(forKey: .startStep) == 1 && self.categoryList.categoryName == "決済方法" {
+                    self.ud.setInteger(2, forKey: .startStep)
+                } else if self.ud.integer(forKey: .startStep) == 2 && self.categoryList.categoryName == "項目" {
+                    self.ud.setInteger(3, forKey: .startStep)
+                }
+                    // 親VCを取り出し
+                    let tbc = SceneDelegate.shared.rootVC.current as! MainTBC
+                    tbc.setStartStep()
+            }
             textAlert.dismiss(animated: true, completion: nil)
         }
         let cancelAction = UIAlertAction(title: "キャンセル", style: .cancel) { (action) in
@@ -207,21 +230,26 @@ extension AddCategoryViewController: UITableViewDelegate {
             let textAlert = UIAlertController(title: "項目を編集する", message: "編集する内容を入力ください", preferredStyle: .alert)
             let okAction = UIAlertAction(title: "OK", style: .default) { (action) in
                 let text = textAlert.textFields!.first!.text!
-                if text.count == 0 || text.count > 8 {
+                if text.count == 0 {
+                    HUD.flash(.labeledError(title: "入力エラー", subtitle: "空欄があります"), delay: 1.5)
+                    return
+                }
+                if text.count > 5 && !self.categoryList.selectAccount {
                     textAlert.dismiss(animated: true, completion: nil)
                     HUD.flash(.labeledError(title: "入力エラー",
-                                            subtitle: "1~8字で入力してください。"),
-                              delay: 2){_ in
+                                            subtitle: "1~5字で入力してください。"),
+                              delay: 1.5){_ in
                         self.present(textAlert, animated: true, completion: nil)
 //                        completionHandler(false)
                     }
-                } else {
-                    self.list[indexPath.row] = text
-                    self.categoryList.upDate(newList: self.list, name: nil)
-                    self.tableView.reloadData()
-                    textAlert.dismiss(animated: true, completion: nil)
-                    completionHandler(true)
+                    return
                 }
+                
+                self.list[indexPath.row] = text
+                self.categoryList.upDate(newList: self.list, name: nil)
+                self.tableView.reloadData()
+                textAlert.dismiss(animated: true, completion: nil)
+                completionHandler(true)
             }
             let cancelAction = UIAlertAction(title: "キャンセル", style: .cancel) { (action) in
                 textAlert.dismiss(animated: true, completion: nil)
@@ -260,6 +288,10 @@ extension AddCategoryViewController: UITableViewDelegate {
             return true
 //        }
 //        return false
+    }
+    
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        
     }
     
 //    func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {

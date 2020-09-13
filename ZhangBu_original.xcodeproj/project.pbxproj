@@ -8,7 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		2DCAFC51BD627D96A0A062A9 /* Pods_ZhangBu_original.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 29DE3EC631931B83B8407218 /* Pods_ZhangBu_original.framework */; };
-		4A918FFD24EF9F7200B1CA1B /* NFCReader in Frameworks */ = {isa = PBXBuildFile; productRef = 4A918FFC24EF9F7200B1CA1B /* NFCReader */; };
+		4A0BD8312505B104009C1EEE /* MainTBC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4A0BD8302505B104009C1EEE /* MainTBC.swift */; };
 		4A918FFF24EFA0A200B1CA1B /* Charts.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4A918FFE24EFA0A200B1CA1B /* Charts.framework */; };
 		4A91900024EFA0A200B1CA1B /* Charts.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 4A918FFE24EFA0A200B1CA1B /* Charts.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		4A91900324EFA38800B1CA1B /* Realm.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4A91900124EFA38800B1CA1B /* Realm.framework */; };
@@ -16,7 +16,12 @@
 		4A91900524EFA38800B1CA1B /* RealmSwift.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4A91900224EFA38800B1CA1B /* RealmSwift.framework */; };
 		4A91900624EFA38800B1CA1B /* RealmSwift.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 4A91900224EFA38800B1CA1B /* RealmSwift.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		4A91900824F152F800B1CA1B /* UserDefault.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4A91900724F152F800B1CA1B /* UserDefault.swift */; };
-		4AB55A5B24F4E0CD009173B5 /* cordFont5.otf in Resources */ = {isa = PBXBuildFile; fileRef = 4AB55A5A24F4E0CD009173B5 /* cordFont5.otf */; };
+		4AB54D702509B27800E84BD1 /* NFCReaderTest.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 4AB54D6F2509B27800E84BD1 /* NFCReaderTest.storyboard */; };
+		4AB54D722509B55700E84BD1 /* NFCTestVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4AB54D712509B55700E84BD1 /* NFCTestVC.swift */; };
+		4AB54D75250B293200E84BD1 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4AB54D74250B293100E84BD1 /* ContentView.swift */; };
+		4AB54D77250B349600E84BD1 /* Debug+CustomStringConvertible.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4AB54D76250B349600E84BD1 /* Debug+CustomStringConvertible.swift */; };
+		4AB54D7A250B3C1900E84BD1 /* NFCReader in Frameworks */ = {isa = PBXBuildFile; productRef = 4AB54D79250B3C1900E84BD1 /* NFCReader */; };
+		4AB54DBA250C7CB700E84BD1 /* Memo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4AB54DB9250C7CB700E84BD1 /* Memo.swift */; };
 		4AB55A5D24F4FFA4009173B5 /* AddAccountViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4AB55A5C24F4FFA4009173B5 /* AddAccountViewController.swift */; };
 		4AB55A6024F95C55009173B5 /* CheckMoneyViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4AB55A5F24F95C55009173B5 /* CheckMoneyViewController.swift */; };
 		4AB55A6324FA00B6009173B5 /* Passcode.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 4AB55A6224FA00B6009173B5 /* Passcode.storyboard */; };
@@ -40,7 +45,6 @@
 		4AB55A9E24FA18F8009173B5 /* CryptAlgorithm.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4AB55A9D24FA18F8009173B5 /* CryptAlgorithm.swift */; };
 		4AB55AAC24FA4118009173B5 /* Default-568h@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 4AB55AAB24FA4117009173B5 /* Default-568h@2x.png */; };
 		4AB55AB024FA4A59009173B5 /* SettingViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4AB55AAF24FA4A59009173B5 /* SettingViewController.swift */; };
-		4AB55AB424FC9C48009173B5 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 4AB55AB324FC9C47009173B5 /* GoogleService-Info.plist */; };
 		4AB55B7B2500673B009173B5 /* CategoryStatisticsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4AB55B7A2500673A009173B5 /* CategoryStatisticsViewController.swift */; };
 		4AB55BBC25008385009173B5 /* iTunesArtwork@1x.png in Resources */ = {isa = PBXBuildFile; fileRef = 4AB55BA725008384009173B5 /* iTunesArtwork@1x.png */; };
 		4AB55BBD25008385009173B5 /* Icon-App-76x76@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 4AB55BA925008384009173B5 /* Icon-App-76x76@2x.png */; };
@@ -85,6 +89,7 @@
 		4AC890AC24ED1B0E00A4948A /* AddCategoryViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4AC890AB24ED1B0E00A4948A /* AddCategoryViewController.swift */; };
 		4AC890AF24EDF6B300A4948A /* SettingMainViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4AC890AE24EDF6B200A4948A /* SettingMainViewController.swift */; };
 		4AC890B124EDF9E000A4948A /* IndividualSettingViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4AC890B024EDF9E000A4948A /* IndividualSettingViewController.swift */; };
+		4AE495302505F5E0003D739C /* cordFont6.otf in Resources */ = {isa = PBXBuildFile; fileRef = 4AE4952F2505F5E0003D739C /* cordFont6.otf */; };
 		7682EB7524E8F9DB00304D77 /* PLDetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7682EB7424E8F9DB00304D77 /* PLDetailViewController.swift */; };
 /* End PBXBuildFile section */
 
@@ -118,11 +123,16 @@
 		16B91DFF6C1E212AD4D8BB6D /* Pods-ZhangBu_original.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ZhangBu_original.debug.xcconfig"; path = "Target Support Files/Pods-ZhangBu_original/Pods-ZhangBu_original.debug.xcconfig"; sourceTree = "<group>"; };
 		29DE3EC631931B83B8407218 /* Pods_ZhangBu_original.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_ZhangBu_original.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		2CAB79A3E446FADF19957A41 /* Pods-ZhangBu_original.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ZhangBu_original.release.xcconfig"; path = "Target Support Files/Pods-ZhangBu_original/Pods-ZhangBu_original.release.xcconfig"; sourceTree = "<group>"; };
+		4A0BD8302505B104009C1EEE /* MainTBC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainTBC.swift; sourceTree = "<group>"; };
 		4A918FFE24EFA0A200B1CA1B /* Charts.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = Charts.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		4A91900124EFA38800B1CA1B /* Realm.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = Realm.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		4A91900224EFA38800B1CA1B /* RealmSwift.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = RealmSwift.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		4A91900724F152F800B1CA1B /* UserDefault.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserDefault.swift; sourceTree = "<group>"; };
-		4AB55A5A24F4E0CD009173B5 /* cordFont5.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = cordFont5.otf; sourceTree = "<group>"; };
+		4AB54D6F2509B27800E84BD1 /* NFCReaderTest.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = NFCReaderTest.storyboard; sourceTree = "<group>"; };
+		4AB54D712509B55700E84BD1 /* NFCTestVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NFCTestVC.swift; sourceTree = "<group>"; };
+		4AB54D74250B293100E84BD1 /* ContentView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
+		4AB54D76250B349600E84BD1 /* Debug+CustomStringConvertible.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Debug+CustomStringConvertible.swift"; sourceTree = "<group>"; };
+		4AB54DB9250C7CB700E84BD1 /* Memo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Memo.swift; sourceTree = "<group>"; };
 		4AB55A5C24F4FFA4009173B5 /* AddAccountViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddAccountViewController.swift; sourceTree = "<group>"; };
 		4AB55A5F24F95C55009173B5 /* CheckMoneyViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CheckMoneyViewController.swift; sourceTree = "<group>"; };
 		4AB55A6224FA00B6009173B5 /* Passcode.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = Passcode.storyboard; sourceTree = "<group>"; };
@@ -149,7 +159,6 @@
 		4AB55AAA24FA405C009173B5 /* TouchIDExample-Bridging-Header.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "TouchIDExample-Bridging-Header.h"; sourceTree = "<group>"; };
 		4AB55AAB24FA4117009173B5 /* Default-568h@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default-568h@2x.png"; sourceTree = "<group>"; };
 		4AB55AAF24FA4A59009173B5 /* SettingViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SettingViewController.swift; sourceTree = "<group>"; };
-		4AB55AB324FC9C47009173B5 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		4AB55B7A2500673A009173B5 /* CategoryStatisticsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CategoryStatisticsViewController.swift; sourceTree = "<group>"; };
 		4AB55BA725008384009173B5 /* iTunesArtwork@1x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "iTunesArtwork@1x.png"; sourceTree = "<group>"; };
 		4AB55BA925008384009173B5 /* Icon-App-76x76@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Icon-App-76x76@2x.png"; sourceTree = "<group>"; };
@@ -195,6 +204,8 @@
 		4AC890AB24ED1B0E00A4948A /* AddCategoryViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddCategoryViewController.swift; sourceTree = "<group>"; };
 		4AC890AE24EDF6B200A4948A /* SettingMainViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingMainViewController.swift; sourceTree = "<group>"; };
 		4AC890B024EDF9E000A4948A /* IndividualSettingViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IndividualSettingViewController.swift; sourceTree = "<group>"; };
+		4AE4952F2505F5E0003D739C /* cordFont6.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = cordFont6.otf; sourceTree = "<group>"; };
+		4AE495312506FD34003D739C /* ZhangBu_original.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = ZhangBu_original.entitlements; sourceTree = "<group>"; };
 		7682EB7424E8F9DB00304D77 /* PLDetailViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PLDetailViewController.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -203,10 +214,10 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				4AB54D7A250B3C1900E84BD1 /* NFCReader in Frameworks */,
 				4A91900324EFA38800B1CA1B /* Realm.framework in Frameworks */,
 				4A91900524EFA38800B1CA1B /* RealmSwift.framework in Frameworks */,
 				4A918FFF24EFA0A200B1CA1B /* Charts.framework in Frameworks */,
-				4A918FFD24EF9F7200B1CA1B /* NFCReader in Frameworks */,
 				2DCAFC51BD627D96A0A062A9 /* Pods_ZhangBu_original.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -214,6 +225,29 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		4AB54D6E2509AF1900E84BD1 /* NFCTest */ = {
+			isa = PBXGroup;
+			children = (
+				4AB54D6F2509B27800E84BD1 /* NFCReaderTest.storyboard */,
+				4AB54D712509B55700E84BD1 /* NFCTestVC.swift */,
+				4AB54D74250B293100E84BD1 /* ContentView.swift */,
+				4AB54D76250B349600E84BD1 /* Debug+CustomStringConvertible.swift */,
+			);
+			path = NFCTest;
+			sourceTree = "<group>";
+		};
+		4AB54D73250B122500E84BD1 /* Data */ = {
+			isa = PBXGroup;
+			children = (
+				4AB54DB9250C7CB700E84BD1 /* Memo.swift */,
+				4AC890A124E7C4B000A4948A /* Payment.swift */,
+				4AB55BD42503D5A1009173B5 /* Account.swift */,
+				4AB55BD62503D5E6009173B5 /* CategoryList.swift */,
+				4A91900724F152F800B1CA1B /* UserDefault.swift */,
+			);
+			path = Data;
+			sourceTree = "<group>";
+		};
 		4AB55A5E24F95BCC009173B5 /* Money */ = {
 			isa = PBXGroup;
 			children = (
@@ -354,7 +388,6 @@
 				4AB55AAB24FA4117009173B5 /* Default-568h@2x.png */,
 				4AC8905B24DE5D0800A4948A /* ZhangBu_original */,
 				4AB55AA424FA3588009173B5 /* Info.plist */,
-				4AB55AB324FC9C47009173B5 /* GoogleService-Info.plist */,
 				4AB55AB524FE3089009173B5 /* Icons */,
 				4AC8905A24DE5D0800A4948A /* Products */,
 				9F8B6AAACF9422B600235CEA /* Pods */,
@@ -373,18 +406,17 @@
 		4AC8905B24DE5D0800A4948A /* ZhangBu_original */ = {
 			isa = PBXGroup;
 			children = (
+				4AE495312506FD34003D739C /* ZhangBu_original.entitlements */,
 				4AB55A8924FA16EE009173B5 /* Extension */,
 				4AC8905C24DE5D0800A4948A /* AppDelegate.swift */,
 				4AB55AAA24FA405C009173B5 /* TouchIDExample-Bridging-Header.h */,
-				4AB55A5A24F4E0CD009173B5 /* cordFont5.otf */,
+				4AE4952F2505F5E0003D739C /* cordFont6.otf */,
 				4AB55BDE2504B600009173B5 /* えり字.otf */,
 				4AC8905E24DE5D0800A4948A /* SceneDelegate.swift */,
-				4AC890A124E7C4B000A4948A /* Payment.swift */,
-				4AB55BD42503D5A1009173B5 /* Account.swift */,
-				4AB55BD62503D5E6009173B5 /* CategoryList.swift */,
 				4AC8909024E63B8200A4948A /* pickerTextField.swift */,
-				4A91900724F152F800B1CA1B /* UserDefault.swift */,
 				4AB55BD025022976009173B5 /* RootVC.swift */,
+				4AB54D73250B122500E84BD1 /* Data */,
+				4AB54D6E2509AF1900E84BD1 /* NFCTest */,
 				4AC8907524DFFC7100A4948A /* FirstView */,
 				4AC8907624DFFD3100A4948A /* Main.storyboard */,
 				4AC8907824E2285C00A4948A /* MainView */,
@@ -408,6 +440,7 @@
 		4AC8907824E2285C00A4948A /* MainView */ = {
 			isa = PBXGroup;
 			children = (
+				4A0BD8302505B104009C1EEE /* MainTBC.swift */,
 				4AC890AB24ED1B0E00A4948A /* AddCategoryViewController.swift */,
 				4AB55A5E24F95BCC009173B5 /* Money */,
 				4AC890AD24EDF68500A4948A /* Setting */,
@@ -498,7 +531,7 @@
 			);
 			name = ZhangBu_original;
 			packageProductDependencies = (
-				4A918FFC24EF9F7200B1CA1B /* NFCReader */,
+				4AB54D79250B3C1900E84BD1 /* NFCReader */,
 			);
 			productName = ZhangBu_original;
 			productReference = 4AC8905924DE5D0800A4948A /* ZhangBu_original.app */;
@@ -529,7 +562,7 @@
 			);
 			mainGroup = 4AC8905024DE5D0800A4948A;
 			packageReferences = (
-				4A918FFB24EF9F7200B1CA1B /* XCRemoteSwiftPackageReference "NFCReader" */,
+				4AB54D78250B3C1900E84BD1 /* XCRemoteSwiftPackageReference "NFCReader" */,
 			);
 			productRefGroup = 4AC8905A24DE5D0800A4948A /* Products */;
 			projectDirPath = "";
@@ -557,10 +590,8 @@
 				4AC8907724DFFD3100A4948A /* Main.storyboard in Resources */,
 				4AB55A6A24FA015B009173B5 /* InputPasscodeKeyboardView.xib in Resources */,
 				4AB55BCD25008385009173B5 /* README.md in Resources */,
-				4AB55A5B24F4E0CD009173B5 /* cordFont5.otf in Resources */,
 				4AB55BDB2504ACC2009173B5 /* BackGround.jpeg in Resources */,
 				4AB55BC025008385009173B5 /* Icon-App-20x20@1x.png in Resources */,
-				4AB55AB424FC9C48009173B5 /* GoogleService-Info.plist in Resources */,
 				4AB55BBF25008385009173B5 /* Icon-App-40x40@1x.png in Resources */,
 				4AB55BBD25008385009173B5 /* Icon-App-76x76@2x.png in Resources */,
 				4AB55BCF25008385009173B5 /* iTunesArtwork@3x.png in Resources */,
@@ -570,6 +601,8 @@
 				4AB55BCE25008385009173B5 /* iTunesArtwork@2x.png in Resources */,
 				4AB55BC125008385009173B5 /* Icon-App-83.5x83.5@2x.png in Resources */,
 				4AB55BBC25008385009173B5 /* iTunesArtwork@1x.png in Resources */,
+				4AE495302505F5E0003D739C /* cordFont6.otf in Resources */,
+				4AB54D702509B27800E84BD1 /* NFCReaderTest.storyboard in Resources */,
 				4AB55BC925008385009173B5 /* Icon-App-60x60@2x.png in Resources */,
 				4AB55BC225008385009173B5 /* Icon-App-20x20@3x.png in Resources */,
 				4AB55BC325008385009173B5 /* ItunesArtwork@2x.png in Resources */,
@@ -629,6 +662,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				4AB55A7324FA030F009173B5 /* CustomViewBase.swift in Sources */,
+				4A0BD8312505B104009C1EEE /* MainTBC.swift in Sources */,
 				4AB55B7B2500673B009173B5 /* CategoryStatisticsViewController.swift in Sources */,
 				4AB55A9E24FA18F8009173B5 /* CryptAlgorithm.swift in Sources */,
 				4AB55A8724FA0A55009173B5 /* PasscodeModel.swift in Sources */,
@@ -639,6 +673,7 @@
 				4AB55BD52503D5A4009173B5 /* Account.swift in Sources */,
 				4AC8908724E52BD500A4948A /* EditMemoViewController.swift in Sources */,
 				4AC890AF24EDF6B300A4948A /* SettingMainViewController.swift in Sources */,
+				4AB54D722509B55700E84BD1 /* NFCTestVC.swift in Sources */,
 				4AC890A224E7C4B000A4948A /* Payment.swift in Sources */,
 				4AC890B124EDF9E000A4948A /* IndividualSettingViewController.swift in Sources */,
 				4AB55A8124FA08F8009173B5 /* InputPasscodeType.swift in Sources */,
@@ -650,12 +685,15 @@
 				4AB55A6024F95C55009173B5 /* CheckMoneyViewController.swift in Sources */,
 				4AB55A7E24FA08F8009173B5 /* TabBarItemType.swift in Sources */,
 				4AB55A8F24FA16EE009173B5 /* UIColorExtension.swift in Sources */,
+				4AB54DBA250C7CB700E84BD1 /* Memo.swift in Sources */,
 				4AB55A9A24FA1860009173B5 /* LocalAuthenticationManager.swift in Sources */,
 				4AB55BDD2504B073009173B5 /* UIImageExtension.swift in Sources */,
 				4AC8905F24DE5D0800A4948A /* SceneDelegate.swift in Sources */,
+				4AB54D75250B293200E84BD1 /* ContentView.swift in Sources */,
 				4AB55BD92504A5BF009173B5 /* WalkThroughVC.swift in Sources */,
 				4AB55A5D24F4FFA4009173B5 /* AddAccountViewController.swift in Sources */,
 				4AB55A7124FA01CE009173B5 /* InputPasscodeDisplayView.swift in Sources */,
+				4AB54D77250B349600E84BD1 /* Debug+CustomStringConvertible.swift in Sources */,
 				4AB55AB024FA4A59009173B5 /* SettingViewController.swift in Sources */,
 				4AC890AC24ED1B0E00A4948A /* AddCategoryViewController.swift in Sources */,
 				4AB55A9324FA16EE009173B5 /* NSObjectProtocolExtension.swift in Sources */,
@@ -741,6 +779,7 @@
 				ONLY_ACTIVE_ARCH = YES;
 				ON_DEMAND_RESOURCES_PREFETCH_ORDER = "";
 				SDKROOT = iphoneos;
+				SUPPORTED_PLATFORMS = "iphonesimulator iphoneos";
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = "";
@@ -795,6 +834,7 @@
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
 				SDKROOT = iphoneos;
+				SUPPORTED_PLATFORMS = "iphonesimulator iphoneos";
 				SWIFT_COMPILATION_MODE = wholemodule;
 				SWIFT_OPTIMIZATION_LEVEL = "-O";
 				SWIFT_VERSION = "";
@@ -806,7 +846,9 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 16B91DFF6C1E212AD4D8BB6D /* Pods-ZhangBu_original.debug.xcconfig */;
 			buildSettings = {
+				ARCHS = "$(ARCHS_STANDARD)";
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = ZhangBu_original/ZhangBu_original.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = VZV4X3NX98;
@@ -817,6 +859,8 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = "ZhangBu-original.MyFirst20200831";
 				PRODUCT_NAME = ZhangBu_original;
+				PROVISIONING_PROFILE_SPECIFIER = "";
+				SUPPORTED_PLATFORMS = "iphonesimulator iphoneos";
 				SWIFT_OBJC_BRIDGING_HEADER = "$(SRCROOT)/ZhangBu_original/TouchIDExample-Bridging-Header.h";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = 1;
@@ -827,7 +871,9 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 2CAB79A3E446FADF19957A41 /* Pods-ZhangBu_original.release.xcconfig */;
 			buildSettings = {
+				ARCHS = "$(ARCHS_STANDARD)";
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = ZhangBu_original/ZhangBu_original.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = VZV4X3NX98;
@@ -839,6 +885,8 @@
 				"PODS_CONFIGURATION_BUILD_DIR[sdk=iphoneos13.6]" = "${PODS_BUILD_DIR}/$(CONFIGURATION)$(EFFECTIVE_PLATFORM_NAME)";
 				PRODUCT_BUNDLE_IDENTIFIER = "ZhangBu-original.MyFirst20200831";
 				PRODUCT_NAME = ZhangBu_original;
+				PROVISIONING_PROFILE_SPECIFIER = "";
+				SUPPORTED_PLATFORMS = "iphonesimulator iphoneos";
 				SWIFT_OBJC_BRIDGING_HEADER = "$(SRCROOT)/ZhangBu_original/TouchIDExample-Bridging-Header.h";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = 1;
@@ -869,7 +917,7 @@
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
-		4A918FFB24EF9F7200B1CA1B /* XCRemoteSwiftPackageReference "NFCReader" */ = {
+		4AB54D78250B3C1900E84BD1 /* XCRemoteSwiftPackageReference "NFCReader" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/tattn/NFCReader.git";
 			requirement = {
@@ -880,9 +928,9 @@
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
-		4A918FFC24EF9F7200B1CA1B /* NFCReader */ = {
+		4AB54D79250B3C1900E84BD1 /* NFCReader */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = 4A918FFB24EF9F7200B1CA1B /* XCRemoteSwiftPackageReference "NFCReader" */;
+			package = 4AB54D78250B3C1900E84BD1 /* XCRemoteSwiftPackageReference "NFCReader" */;
 			productName = NFCReader;
 		};
 /* End XCSwiftPackageProductDependency section */

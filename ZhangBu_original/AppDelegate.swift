@@ -7,8 +7,9 @@
 //
 
 import UIKit
-import Realm
 import RealmSwift
+import Siren
+import SwiftDate
 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
@@ -17,14 +18,12 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
         // Override point for customization after application launch.
-
-//        // 最初に表示させるViewControllerにRootVCを指定する
-//        let window = UIWindow(frame: UIScreen.main.bounds)
-//        window.rootViewController = RootVC()
-//        self.window = window
-//        self.window!.makeKeyAndVisible()
+        
+        SwiftDate.defaultRegion = Region(calendar: Calendars.gregorian, zone: Zones.asiaTokyo, locale: Locales.japanese)
         
         print("didFinishLaunchingWithOptions: アプリ起動時")
+        forceUpdate()
+        
         let ud = UserDefaults.standard
 //        if ud.stringArray3(forKey: .list) == nil {
 //            ud.setArray3([[["項目"],["決済方法"]],[["項目"],["入金口座"]],[["出金"],["入金"]]], forKey: .list)
@@ -55,13 +54,13 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         if ud.bool(forKey: .isCheckMode) == nil {
             ud.setBool(false, forKey: .isCheckMode)
         }
-        
-        // 通知許可の取得
-        UNUserNotificationCenter.current().requestAuthorization(
-        options: [.alert, .sound, .badge]){
-            (granted, _) in
-            if granted{
-                UNUserNotificationCenter.current().delegate = self
+        if ud.stringArray1(forKey: .notDidCheckAccountTipe) == nil {
+            if #available(iOS 13.0, *) {
+                ud.setArray1(["①　携帯残高確認", "②　本アプリ対応ICカード", "③　その他の口座"],
+                forKey: .notDidCheckAccountTipe)
+            } else {
+                ud.setArray1(["①　携帯残高確認", "③　その他の口座"],
+                forKey: .notDidCheckAccountTipe)
             }
         }
         
@@ -165,15 +164,35 @@ extension AppDelegate: UNUserNotificationCenterDelegate {
     
 }
 
-//extension AppDelegate {
-//
-//    /// AppDelegateのシングルトン
-//    static var shared: AppDelegate {
-//        return UIApplication.shared.delegate as! AppDelegate
-//    }
-//    /// rootViewControllerは常にRootVC
-//    var rootVC: RootVC {
-//        return window!.rootViewController as! RootVC
-//    }
-//}
+private extension AppDelegate {
+    
+    private func forceUpdate() {
+        let siren = Siren.shared
+        // 言語を日本語に設定
+        siren.presentationManager = PresentationManager(forceLanguageLocalization: .japanese)
+
+        // ruleを設定
+        siren.rulesManager = RulesManager(globalRules: .annoying)
+
+        // sirenの実行関数
+        siren.wail { results in
+            switch results {
+            case .success(let updateResults):
+                print("AlertAction ", updateResults.alertAction)
+                print("Localization ", updateResults.localization)
+                print("Model ", updateResults.model)
+                print("UpdateType ", updateResults.updateType)
+            case .failure(let error):
+                print(error.localizedDescription)
+            }
+        }
+    }
+}
+
+extension AppDelegate {
+    /// AppDelegateのシングルトン
+    static var shared: AppDelegate {
+        return UIApplication.shared.delegate as! AppDelegate
+    }
+}
 

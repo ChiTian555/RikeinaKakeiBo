@@ -49,6 +49,11 @@ class PLDetailViewController: UIViewController, UIPickerViewDelegate, UIPickerVi
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        //完成版で外す
+        settingTableView.isUserInteractionEnabled = false
+        changeMainCategoryTab.isUserInteractionEnabled = false
+        
         pickerView.delegate = self
         pickerView.dataSource = self
         settingTableView.dataSource = self
@@ -158,7 +163,7 @@ class PLDetailViewController: UIViewController, UIPickerViewDelegate, UIPickerVi
     
 
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return menu.count + 2
+        return menu.count + 3
     }
     
     var pickerTab = 0 //pickerにタブをつけるため。
@@ -219,19 +224,19 @@ class PLDetailViewController: UIViewController, UIPickerViewDelegate, UIPickerVi
             cell.selectionStyle = UITableViewCell.SelectionStyle.none
             return cell
             
-        } else if indexPath.row <= menu.count {
+        } else if indexPath.row - 1 <= menu.count {
             let cell = tableView.dequeueReusableCell(withIdentifier: "Cell2")!
             cell.tag = indexPath.row
             let row = indexPath.row - 1
             let label = cell.contentView.viewWithTag(1) as! UILabel
-            label.text = menu[row]
             let textField = cell.contentView.viewWithTag(2) as! UITextField
             textField.placeholder = "タップして選択"
-            if menu[row] == "日付" {
+            if row == menu.count {
+                label.text = "日付"
                 dayTextField = textField
-                dayNomber = row
                 addDatePicer(textField: textField)
             } else {
+                label.text = menu[row]
                 textFields.append(textField)
                 addPickerView(textField: textField)
             }
@@ -377,19 +382,15 @@ class PLDetailViewController: UIViewController, UIPickerViewDelegate, UIPickerVi
     
         //テーブルビューがタップされたときの動作
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        if indexPath.row == menu.count + 1  {
+        if indexPath.row == menu.count + 2  {
             self.performSegue(withIdentifier: "toPLDMemoEdit", sender: nil)
         } else if indexPath.row == 0 && changeMainCategoryTab.selectedSegmentIndex == 0 {
-            if labelZero.text == ""{
-                labelZero.text = "-"
-                
-                labelYen.textColor = .red
-                priceTextField.textColor = .red
-            } else {
-                labelZero.text = ""
-                labelYen.textColor = UIColor.label
-                priceTextField.textColor = .label
-            }
+            
+            let becomePuls = labelZero.text == "-"
+            labelZero.text = (becomePuls ? "" : "-")
+            labelYen.textColor = (becomePuls ? .label : .systemRed)
+            labelYen.textColor = (becomePuls ? .label : .systemRed)
+            
         }
         tableView.cellForRow(at: indexPath)?.isSelected = false
     }
@@ -440,7 +441,7 @@ class PLDetailViewController: UIViewController, UIPickerViewDelegate, UIPickerVi
             
             self.detailPayment.delete()
             
-            let alert = UIAlertController(title: "保存成功！", message: "新家計簿の記入を続けますか?\n閲覧ページに戻ります", preferredStyle: .alert)
+            let alert = UIAlertController(title: "削除成功！", message: "新家計簿の記入を続けますか?\n閲覧ページに戻ります", preferredStyle: .alert)
             let moveAction = UIAlertAction(title: "OK", style: .default) { (action) in
                 alert.dismiss(animated: true, completion: nil)
                 self.navigationController?.popViewController(animated: true)

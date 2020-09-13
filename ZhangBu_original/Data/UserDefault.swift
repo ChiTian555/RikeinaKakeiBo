@@ -24,6 +24,7 @@ protocol DefaultSettable : KeyNamespaceable {
     associatedtype Array3Key : RawRepresentable
     associatedtype BoolKey : RawRepresentable
     associatedtype Array2Key : RawRepresentable
+    associatedtype Array1Key : RawRepresentable
 //    associatedtype StringKey : RawRepresentable
 }
 
@@ -62,6 +63,17 @@ extension DefaultSettable {
 //        return UserDefaults.standard.string(forKey: key)
 //    }
     
+    func setArray1(_ value: [String]?, forKey key: Array1Key) {
+        let key = namespaced(key)
+        UserDefaults.standard.set(value, forKey: key)
+    }
+    
+    @discardableResult
+    func stringArray1(forKey key: Array1Key) -> [String]? {
+        let key = namespaced(key)
+        return UserDefaults.standard.object(forKey: key) as? [String]
+    }
+    
     func setArray2(_ value: [[String]]?, forKey key: Array2Key) {
         let key = namespaced(key)
         UserDefaults.standard.set(value, forKey: key)
@@ -90,14 +102,20 @@ extension UserDefaults : DefaultSettable {
     enum Array2Key : String {
         case account
     }
+    enum Array1Key : String {
+        case notDidCheckAccountTipe
+    }
     enum IntKey : String {
         case shake
+        case startStep
     }
     enum BoolKey : String {
         case isCordMode
         case isCheckMode
         case isWatchedWalkThrough
         case isNotFirstOpen
+        case isFirstAddAccount
+        case canUseNotification
     }
     enum Array3Key : String {
         case list

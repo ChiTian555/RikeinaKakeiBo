@@ -7,13 +7,14 @@ target 'ZhangBu_original' do
 
   # Pods for ZhangBu_original
   
+  pod 'EAIntroView'
   pod 'UITextView+Placeholder'
   pod 'PKHUD'
   pod 'RealmSwift'
   pod 'Charts'
   pod 'SwiftDate'
   pod 'FontAwesome.swift'
-  pod 'EAIntroView'
+  pod 'Siren'
   pod 'Instructions'
   
 end

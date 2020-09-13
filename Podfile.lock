@@ -13,6 +13,7 @@ PODS:
   - Realm/Headers (5.3.5)
   - RealmSwift (5.3.5):
     - Realm (= 5.3.5)
+  - Siren (5.4.5)
   - SwiftDate (6.1.0)
   - "UITextView+Placeholder (1.4.0)"
 
@@ -23,6 +24,7 @@ DEPENDENCIES:
   - Instructions
   - PKHUD
   - RealmSwift
+  - Siren
   - SwiftDate
   - "UITextView+Placeholder"
 
@@ -36,6 +38,7 @@ SPEC REPOS:
     - PKHUD
     - Realm
     - RealmSwift
+    - Siren
     - SwiftDate
     - "UITextView+Placeholder"
 
@@ -48,9 +51,10 @@ SPEC CHECKSUMS:
   PKHUD: 98f3e4bc904b9c916f1c5bb6d765365b5357291b
   Realm: 2b52fcc86fc0ed3d75a56ac0eb1e73c4f1a60e16
   RealmSwift: a6ea2ea561039fc3833c08dec81371a9a3bb5ca6
+  Siren: 4c6f4863ea5b7f2d0e58b576663fefd8f6ef417f
   SwiftDate: fa2bb3962056bb44047b4b85a30044e5eae30b03
   "UITextView+Placeholder": d7b0c400921f66523f3a85d74f774512e14f6502
 
-PODFILE CHECKSUM: a246dbdbb1e9a66fdc249dce5524d6689c17243d
+PODFILE CHECKSUM: eee425c63fa3073f7b8a89831bc533ded4cbd8a4
 
 COCOAPODS: 1.9.3

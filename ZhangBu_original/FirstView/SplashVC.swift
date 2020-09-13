@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import Siren
 
 final class SplashVC: UIViewController {
     
@@ -72,8 +73,8 @@ final class SplashVC: UIViewController {
             //座標の指定！
             let x = 0.8 * cos( 6.0 * t )
             let y = 0.8 * sin( 4.0 * t + thita)
-            addCircle.center = CGPoint(x: (screenSize.width / 2) * ( 1.0 + x),
-                                       y: (screenSize.height / 2) * ( 1.0 + y))
+            addCircle.center = CGPoint(x: (screenSize.width / 2) * ( 1.0 + x ),
+                                       y: (screenSize.height / 2) * ( 1.0 + y ))
             //UIViewの貼り付け
             self.view.addSubview(addCircle)
             
@@ -92,64 +93,25 @@ final class SplashVC: UIViewController {
         timer.invalidate()
         
         if SceneDelegate.shared.rootVC.current == self {
-//            if UserDefaults.standard.bool(forKey: .isWatchedWalkThrough) != true {
+            
+            if UserDefaults.standard.bool(forKey: .isWatchedWalkThrough) != true {
                 let walkThroughVC = WalkThroughVC()
                 SceneDelegate.shared.rootVC.transition(to: walkThroughVC)
-//            } else {
-//                // メイン画面へ移動
-//                SceneDelegate.shared.rootVC.transitionToMain()
-//                print("メイン画面へ移動")
-//            }
+            } else {
+                //パスワード画面を表示
+                SceneDelegate.shared.displayPasscodeLockScreenIfNeeded()
+                // メイン画面へ移動
+                SceneDelegate.shared.rootVC.transitionToMain()
+
+                print("メイン画面へ移動")
+            }
+            
         }
             
 //        displayPasscodeLockScreenIfNeeded(keyWindow: keyWindow)
         UIApplication.shared.endBackgroundTask(self.backgroundTaskID)
         
     }
-    
-
-    // MARK: - Private Function
-
-    private func displayPasscodeLockScreenIfNeeded(keyWindow: UIWindow?) {
-        let passcodeModel = PasscodeModel()
-
-        // パスコードロックを設定していない場合は何もしない
-        if !passcodeModel.existsHashedPasscode() {
-            return
-        }
-        
-        if let rootViewController = keyWindow?.rootViewController {
-
-            // 現在のrootViewControllerにおいて一番上に表示されているViewControllerを取得する
-            var topViewController: UIViewController = rootViewController
-            while let presentedViewController = topViewController.presentedViewController {
-                topViewController = presentedViewController
-            }
-
-            // すでにパスコードロック画面がかぶせてあるかを確認する
-            let isDisplayedPasscodeLock: Bool = topViewController.children.map{
-                return $0 is PasscodeViewController
-            }.contains(true)
-
-            // パスコードロック画面がかぶせてなければかぶせる
-            if !isDisplayedPasscodeLock {
-                let nav = UINavigationController(rootViewController: getPasscodeViewController())
-                nav.modalPresentationStyle = .overFullScreen
-                nav.modalTransitionStyle   = .crossDissolve
-                topViewController.present(nav, animated: true, completion: nil)
-            }
-        }
-    }
-
-    private func getPasscodeViewController() -> PasscodeViewController {
-        // 遷移先のViewControllerに関する設定をする
-        let sb = UIStoryboard(name: "Passcode", bundle: nil)
-        let vc = sb.instantiateInitialViewController() as! PasscodeViewController
-        vc.setTargetInputPasscodeType(.displayPasscodeLock)
-        vc.setTargetPresenter(PasscodePresenter(previousPasscode: nil))
-        return vc
-    }
-    
     //CGRectを簡単に作る
     private func CGRectMake(_ x: CGFloat, _ y: CGFloat, _ width: CGFloat, _ height: CGFloat) -> CGRect {
         return CGRect(x: x, y: y, width: width, height: height)

@@ -7,6 +7,8 @@
 //
 
 import UIKit
+import LocalAuthentication
+import PKHUD
 
 class SettingViewController: UIViewController {
     
@@ -51,8 +53,53 @@ class SettingViewController: UIViewController {
     }
 
     @objc private func openSettingButtonAction() {
-        if let url = URL(string: UIApplication.openSettingsURLString) {
-            UIApplication.shared.open(url, options: [:], completionHandler: nil)
+        let context = LAContext()
+        let reason = "This app uses Touch ID / Facd ID to secure your data."
+        var authError: NSError?
+        
+        // MEMO: 利用している端末のFaceIDやTouchIDの状況やどの画面で利用しているか見てボタン状態を判断する
+        var isEnabledLocalAuthenticationButton: Bool = false
+        isEnabledLocalAuthenticationButton
+            = LocalAuthenticationManager.getDeviceOwnerLocalAuthenticationType() != .authWithManual
+        
+        if isEnabledLocalAuthenticationButton {
+            HUD.flash(.label("already can use"), delay: 1)
+            return
+        }
+        
+        if context.canEvaluatePolicy(.deviceOwnerAuthenticationWithBiometrics, error: &authError) {
+          context.evaluatePolicy(.deviceOwnerAuthenticationWithBiometrics, localizedReason: reason) { (success, error) in
+            if success {
+              self.setMessage("Authenticated")
+            } else {
+              let message = error?.localizedDescription ?? "Failed to authenticate"
+              self.setMessage(message)
+            }
+          }
+        } else {
+          let message = authError?.localizedDescription ?? "canEvaluatePolicy returned false"
+            
+            let alert = UIAlertController(title: "生体認証設定", message: "携帯の設定画面に移りますか？", preferredStyle: .alert)
+            let okAction = UIAlertAction(title: "はい", style: .default) { (action) in
+                alert.dismiss(animated: true, completion: nil)
+                if let url = URL(string: UIApplication.openSettingsURLString) {
+                    UIApplication.shared.open(url, options: [:], completionHandler: nil)
+                }
+            }
+            let cancelAction = UIAlertAction(title: "キャンセル", style: .cancel) { (action) in
+                alert.dismiss(animated: true, completion: nil)
+                self.setMessage(message)
+            }
+            alert.addAction(cancelAction)
+            alert.addAction(okAction)
+            self.present(alert, animated: true, completion: nil)
+            
+        }
+    }
+    
+    func setMessage(_ message: String) {
+        DispatchQueue.main.async {
+            HUD.flash(.label(message), delay: 1.5)
         }
     }
 
@@ -65,6 +112,8 @@ class SettingViewController: UIViewController {
         let isPasscodeExist = PasscodeModel().existsHashedPasscode()
         passcodeSwitch.isOn = isPasscodeExist
         editPasscodeButton.superview?.isHidden = !isPasscodeExist
+        openSettingButton.setTitleColor(isPasscodeExist ? .systemBlue : .systemGray3 , for: .normal)
+        openSettingButton.isUserInteractionEnabled = isPasscodeExist
     }
 
     private func getPasscodeViewController(targetInputPasscodeType: InputPasscodeType) -> PasscodeViewController {
