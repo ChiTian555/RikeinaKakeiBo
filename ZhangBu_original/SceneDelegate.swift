@@ -11,6 +11,7 @@ import UIKit
 class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 
     var window: UIWindow?
+    var isCheckMode: Bool = false
     
     func scene(_ scene: UIScene, willConnectTo session: UISceneSession, options connectionOptions: UIScene.ConnectionOptions) {
         
@@ -33,8 +34,8 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 
     func sceneDidBecomeActive(_ scene: UIScene) {
         print("sceneDidBecomeActive: アクティブになった")
-        if UserDefaults.standard.bool(forKey: .isCheckMode)! {
-            UserDefaults.standard.setBool(false, forKey: .isCheckMode)
+        if self.isCheckMode {
+            self.isCheckMode = false
         }
         
         UNUserNotificationCenter.current().getNotificationSettings { (settings) in
@@ -50,9 +51,9 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 
     func sceneWillResignActive(_ scene: UIScene) {
         print("sceneWillResignActive: バックグラウンドへ移行しようとした時")
-        if !UserDefaults.standard.bool(forKey: .isCheckMode)! {
-        // パスコードロック画面を表示する
-        displayPasscodeLockScreenIfNeeded()
+        if !self.isCheckMode {
+            // パスコードロック画面を表示する
+            displayPasscodeLockScreenIfNeeded()
         }
         
     }

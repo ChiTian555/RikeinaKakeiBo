@@ -44,16 +44,14 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                 }
             }
         }
-        
-        if ud.bool(forKey: .isCordMode) == nil {
-            ud.setBool(false, forKey: .isCordMode)
+        if ud.integer(forKey: .alpha) == 0 {
+            ud.setInteger(50, forKey: .alpha)
         }
+        
         if ud.stringArray2(forKey: .account) == nil {
             ud.setArray2([[]], forKey: .account)
         }
-        if ud.bool(forKey: .isCheckMode) == nil {
-            ud.setBool(false, forKey: .isCheckMode)
-        }
+        
         if ud.stringArray1(forKey: .notDidCheckAccountTipe) == nil {
             if #available(iOS 13.0, *) {
                 ud.setArray1(["①　携帯残高確認", "②　本アプリ対応ICカード", "③　その他の口座"],

@@ -9,15 +9,15 @@
 import UIKit
 import Siren
 
-final class SplashVC: UIViewController {
+final class SplashVC: MainBaceVC {
     
-    /// 処理中を示すインジケーター
-    private lazy var activityIndicator: UIActivityIndicatorView = {
-        let indicator = UIActivityIndicatorView(style: .large)
-        indicator.frame = view.bounds
-        indicator.backgroundColor = UIColor(white: 0, alpha: 0.4)
-        return indicator
-    }()
+//    /// 処理中を示すインジケーター
+//    private lazy var activityIndicator: UIActivityIndicatorView = {
+//        let indicator = UIActivityIndicatorView(style: .large)
+//        indicator.frame = view.bounds
+//        indicator.backgroundColor = UIColor(white: 0, alpha: 0.4)
+//        return indicator
+//    }()
     
     var t:CGFloat = 0.0
     
@@ -33,15 +33,19 @@ final class SplashVC: UIViewController {
         let titleLabel = UILabel()
         titleLabel.text = "理系の家継簿"
         titleLabel.font = UIFont(name: "ERIJI", size: 40)
-        let frame = CGRectMake(0, 0, screenSize.width, 50)
-        titleLabel.frame = frame
+//        let frame = CGRectMake(0, 0, screenSize.width, 50)
+//        titleLabel.frame = frame
+        titleLabel.sizeToFit()
         titleLabel.textColor = .label
         titleLabel.textAlignment = .center
+        titleLabel.backgroundColor = UIColor.systemBackground.withAlphaComponent(0.7)
+        titleLabel.layer.cornerRadius = titleLabel.bounds.height / 4
+        titleLabel.clipsToBounds = true
         return titleLabel
    }()
     
     override func viewDidLoad() {
-        
+        super.viewDidLoad()
         
         view.addSubview(titleLabel)
 //        view.addSubview(activityIndicator)
@@ -51,7 +55,7 @@ final class SplashVC: UIViewController {
     }
     
     override func viewDidAppear(_ animated: Bool) {
-        
+        super.viewWillAppear(animated)
         self.backgroundTaskID = UIApplication.shared.beginBackgroundTask(expirationHandler: nil)
         //timerをスタートさせる、timeIntervalおきに関数を呼び出せる。
         timer = Timer.scheduledTimer(timeInterval: Double(0.01), target: self, selector: #selector(self.update), userInfo: nil, repeats: true)
@@ -91,17 +95,20 @@ final class SplashVC: UIViewController {
         if t <= 4 { return }
         
         timer.invalidate()
+        let scene = SceneDelegate.shared
         
-        if SceneDelegate.shared.rootVC.current == self {
+        if scene.rootVC.current == self {
+//            //背景画像追加
+//            scene.rootVC.addPicture()
             
             if UserDefaults.standard.bool(forKey: .isWatchedWalkThrough) != true {
                 let walkThroughVC = WalkThroughVC()
-                SceneDelegate.shared.rootVC.transition(to: walkThroughVC)
+                scene.rootVC.transition(to: walkThroughVC)
             } else {
                 //パスワード画面を表示
-                SceneDelegate.shared.displayPasscodeLockScreenIfNeeded()
+                scene.displayPasscodeLockScreenIfNeeded()
                 // メイン画面へ移動
-                SceneDelegate.shared.rootVC.transitionToMain()
+                scene.rootVC.transitionToMain()
 
                 print("メイン画面へ移動")
             }

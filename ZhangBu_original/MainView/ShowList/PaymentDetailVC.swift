@@ -11,7 +11,7 @@ import RealmSwift
 import PKHUD
 import SwiftDate
 
-class PLDetailViewController: UIViewController, UIPickerViewDelegate, UIPickerViewDataSource, UITableViewDataSource, UITableViewDelegate {
+class PaymentDetailVC: MainBaceVC, UIPickerViewDelegate, UIPickerViewDataSource, UITableViewDataSource, UITableViewDelegate {
 
     var detailPayment: Payment!
     
@@ -64,6 +64,7 @@ class PLDetailViewController: UIViewController, UIPickerViewDelegate, UIPickerVi
         settingTableView.rowHeight = UITableView.automaticDimension
         memo = detailPayment.memo
         settingTableView.tableFooterView = UIView()
+        settingTableView.set()
         UIView.animate(
             withDuration: 0.0,
             animations:{
@@ -77,6 +78,7 @@ class PLDetailViewController: UIViewController, UIPickerViewDelegate, UIPickerVi
     }
     
     override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
         ChangeMenu(menu: detailPayment.mainCategoryNumber)
         settingTableView.reloadData()
 //        navigationController?.navigationItem.backBarButtonItem = nil
@@ -170,10 +172,11 @@ class PLDetailViewController: UIViewController, UIPickerViewDelegate, UIPickerVi
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let mode = changeMainCategoryTab.selectedSegmentIndex
+        var cell = UITableViewCell.create()
         if indexPath.row == 0 {
             pickerTab = 0
             textFields = []
-            let cell = tableView.dequeueReusableCell(withIdentifier: "Cell1")!
+            cell = tableView.dequeueReusableCell(withIdentifier: "Cell1")!
             cell.tag = 1
             priceTextField = cell.contentView.viewWithTag(3) as! UITextField
             allTextFields.append(priceTextField)
@@ -222,10 +225,9 @@ class PLDetailViewController: UIViewController, UIPickerViewDelegate, UIPickerVi
             }
             priceTextField.attributedPlaceholder = NSAttributedString(string: "ここに金額を入力", attributes: [NSAttributedString.Key.font: UIFont.systemFont(ofSize: 35, weight: .thin)])
             cell.selectionStyle = UITableViewCell.SelectionStyle.none
-            return cell
             
         } else if indexPath.row - 1 <= menu.count {
-            let cell = tableView.dequeueReusableCell(withIdentifier: "Cell2")!
+            cell = tableView.dequeueReusableCell(withIdentifier: "Cell2")!
             cell.tag = indexPath.row
             let row = indexPath.row - 1
             let label = cell.contentView.viewWithTag(1) as! UILabel
@@ -243,19 +245,18 @@ class PLDetailViewController: UIViewController, UIPickerViewDelegate, UIPickerVi
             allTextFields.append(textField)
             textField.tintColor = .clear
             cell.selectionStyle = UITableViewCell.SelectionStyle.none
-            
-            return cell
-            
+
         } else {
-            let cell = tableView.dequeueReusableCell(withIdentifier: "Cell3")!
+            cell = tableView.dequeueReusableCell(withIdentifier: "Cell3")!
             commentTextFile = cell.contentView.viewWithTag(2) as! UITextView
             commentTextFile.text = memo
             let selectionView = UIView()
             //タップするとオレンジ色になる
             selectionView.backgroundColor = UIColor.orange
             cell.selectedBackgroundView = selectionView
-            return cell
         }
+        
+        return cell.set()
         
     }
     

@@ -12,9 +12,11 @@ import PKHUD
 import SwiftDate
 import Instructions
 
-class AddPaymentViewController: UIViewController, UITableViewDataSource, UITableViewDelegate, UITextFieldDelegate{
+class AddPaymentViewController: MainBaceVC, UITableViewDataSource, UITableViewDelegate, UITextFieldDelegate{
     
     var memo = String()
+    var memoIndexPath = IndexPath()
+    var memoTextView = UITextView()
     
     var datePicker = UIDatePicker()
     
@@ -29,8 +31,6 @@ class AddPaymentViewController: UIViewController, UITableViewDataSource, UITable
     var dayTextField = UITextField()
     
     var priceTextField = UITextField()
-    
-    var memoTextView = UITextView()
     
     var labelZero = UILabel()
     
@@ -51,19 +51,19 @@ class AddPaymentViewController: UIViewController, UITableViewDataSource, UITable
         textFields = [UITextField]()
         ChangeMenu(menu: sender.selectedSegmentIndex)
         useSavedMoneyCheckLabel.isHidden = (sender.selectedSegmentIndex != 0)
-        memo = memoTextView.text
-        UIView.animate(
-            withDuration: 0.0,
-            animations:{
-                // リロード
-                self.settingTableView.reloadData()
-            }, completion:{ finished in
-                if (finished) { // 一応finished確認はしておく
-                    for textField in self.textFields {
-                        textField.text = ""
-                    }
-                }
-        });
+        self.reloadData(allReset: false)
+//        UIView.animate(
+//            withDuration: 0.0,
+//            animations:{
+//                // リロード
+//                self.reloadData(allReset: false)
+//            }, completion:{ finished in
+//                if (finished) { // 一応finished確認はしておく
+//                    for textField in self.textFields {
+//                        textField.text = ""
+//                    }
+//                }
+//        });
     }
     
     @IBOutlet var label: UILabel!
@@ -71,6 +71,8 @@ class AddPaymentViewController: UIViewController, UITableViewDataSource, UITable
     let ud = UserDefaults.standard
     
     override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        print("ViewWillApare")
         let menuNomber = changeMainCategoryTab.selectedSegmentIndex
         useSavedMoneyCheckLabel.isHidden = (menuNomber != 0)
         ChangeMenu(menu: menuNomber)
@@ -78,7 +80,14 @@ class AddPaymentViewController: UIViewController, UITableViewDataSource, UITable
             withDuration: 0.0,
             animations:{
                 // リロード
-                self.settingTableView.reloadData()
+                if self.isNavigationMove {
+                    if self.memo != "" {
+                        self.memoTextView.text = self.memo
+                        self.settingTableView.reloadRows(at: [self.memoIndexPath], with: .none)
+                    }
+                } else {
+                    self.reloadData(allReset: true)
+                }
             }, completion:{ finished in
                 if (finished) && !self.isNavigationMove { // 一応finished確認はしておく
                     for textField in self.allTextFields {
@@ -87,6 +96,7 @@ class AddPaymentViewController: UIViewController, UITableViewDataSource, UITable
                     self.memoTextView.text = ""
                     self.useSavedMoneyCheckLabel.text = "貯金利用 ×"
                 }
+                self.memo = ""
                 self.isNavigationMove = false
         });
     }
@@ -97,9 +107,16 @@ class AddPaymentViewController: UIViewController, UITableViewDataSource, UITable
     
     var menu = [String]()
     
+    func ChangeMenu(menu mode: Int) {
+        settingTableView.delegate = self
+        let categoryList = CategoryList.readAllCategory(mode)
+        menu = categoryList.map({ $0.categoryName })
+        list = categoryList.map({ $0.list + [] })
+    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
-        
+
         isNavigationMove = false
         settingTableView.dataSource = self
         ChangeMenu(menu: changeMainCategoryTab.selectedSegmentIndex)
@@ -107,6 +124,8 @@ class AddPaymentViewController: UIViewController, UITableViewDataSource, UITable
         settingTableView.estimatedRowHeight = 40
         settingTableView.rowHeight = UITableView.automaticDimension
         settingTableView.tableFooterView = UIView()
+        settingTableView.set()
+
         textFields = [UITextField]()
         
         let taped = UITapGestureRecognizer(target: self, action: #selector(changeUseSaveMoney(_:)))
@@ -114,7 +133,7 @@ class AddPaymentViewController: UIViewController, UITableViewDataSource, UITable
         useSavedMoneyCheckLabel.addGestureRecognizer(taped)
         useSavedMoneyCheckLabel.isUserInteractionEnabled = true
         useSavedMoneyCheckLabel.textAlignment = .center
-        useSavedMoneyCheckLabel.backgroundColor = .secondarySystemBackground
+//        useSavedMoneyCheckLabel.backgroundColor = .secondarySystemBackground
         useSavedMoneyCheckLabel.layer.borderWidth = 0.5
         useSavedMoneyCheckLabel.layer.borderColor = UIColor.systemGray.cgColor
         useSavedMoneyCheckLabel.layer.cornerRadius = useSavedMoneyCheckLabel.layer.bounds.height / 5
@@ -129,119 +148,127 @@ class AddPaymentViewController: UIViewController, UITableViewDataSource, UITable
         }
     }
     
-    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return menu.count + 3
+    //tableViewの設定
+    var cells = [UITableViewCell]()
+    
+    func reloadData(allReset: Bool) {
+        loadCells(allReset)
+        // リロード
+        self.settingTableView.reloadData()
     }
     
-    var pickerTab = 0 //pickerにタブをつけるため。
+    var cellCount: Int = 0
+    var pickerTab: Int = 0 //pickerにタブをつけるため。
+    func loadCells(_ allReset:Bool) {
+        cellCount = menu.count + 3
+        //全部のセルを配列に格納
+        cells = []
+        for row in 0 ..< cellCount {
+            
+            var cell = UITableViewCell.create()
+                
+            let mode = changeMainCategoryTab.selectedSegmentIndex
+            if row == 0 {
+                pickerTab = 0
+                textFields = []
+                cell = settingTableView.dequeueReusableCell(withIdentifier: "Cell1")!
+                let newPriceTextField = cell.contentView.viewWithTag(3) as! UITextField
+                newPriceTextField.text = (allReset ? "" : priceTextField.text)
+                priceTextField = newPriceTextField
+                allTextFields.append(priceTextField)
+                priceTextField.keyboardType = UIKeyboardType.numberPad
+                priceTextField.keyboardAppearance = UIKeyboardAppearance.default
+                let toolbar = UIToolbar(frame: CGRectMake(0, 0, 0, 35))
+                let doneItem = UIBarButtonItem(title: "Next", style: .done, target: self, action: #selector(done2))
+                doneItem.tintColor = UIColor.orange
+                let cancelItem = UIBarButtonItem(title: "Done", style: .plain, target: self, action: #selector(cancel2))
+                cancelItem.tintColor = UIColor.orange
+                let spaceButton = UIBarButtonItem(barButtonSystemItem: UIBarButtonItem.SystemItem.flexibleSpace, target: nil, action: nil)
+                toolbar.setItems([cancelItem, spaceButton, doneItem], animated: true)
+                priceTextField.inputAccessoryView = toolbar
+                labelZero = cell.contentView.viewWithTag(1) as! UILabel
+                labelYen = cell.contentView.viewWithTag(2) as! UILabel
+                
+                let colors: [UIColor] = [.systemRed,.systemGreen,.systemBlue]
+                labelZero.textColor = colors[mode]
+                labelYen.textColor = colors[mode]
+                labelZero.text = (mode == 0 ? "-" : "")
+                priceTextField.textColor = colors[mode]
+                
+                if ud.bool(forKey: .isCordMode)! {
+                    let cordFont = UIFont(name: "cordFont", size: 35)
+                    priceTextField.font = cordFont
+                    labelYen.font = cordFont
+                    labelZero.font = cordFont
+                } else {
+                    let systemFont = UIFont.systemFont(ofSize: 35, weight: .thin)
+                    priceTextField.font = systemFont
+                    labelYen.font = systemFont
+                    labelZero.font = systemFont
+                }
+                priceTextField.attributedPlaceholder = NSAttributedString(string: "ここに金額を入力", attributes: [NSAttributedString.Key.font: UIFont.systemFont(ofSize: 35, weight: .thin)])
+                cell.selectionStyle = UITableViewCell.SelectionStyle.none
+                
+            } else if row - 1 <= menu.count {
+                cell = settingTableView.dequeueReusableCell(withIdentifier: "Cell2")!
+                let newRow = row - 1
+                let label = cell.contentView.viewWithTag(1) as! UILabel
+                let textField = cell.contentView.viewWithTag(2) as! UITextField
+                textField.text = ""
+                textField.placeholder = "タップして選択"
+                if newRow == menu.count {
+                    label.text = "日付"
+                    if !allReset { textField.text = dayTextField.text }
+                    dayTextField = textField
+                    addDatePicer(textField: textField)
+                } else {
+                    label.text = menu[newRow]
+                    //最初のチュートリアル用
+                    if menu[newRow] == "決済方法" && UserDefaults.standard.integer(forKey: .startStep) == 1 {
+                        startStepLabel = label
+                    } else if menu[newRow] == "項目" && UserDefaults.standard.integer(forKey: .startStep) == 2 {
+                        startStepLabel = label
+                    }
+                    let tapGesture = UITapGestureRecognizer(target: self, action: #selector(tapped(_:)))
+                    tapGesture.numberOfTouchesRequired = 1
+                    label.addGestureRecognizer(tapGesture)
+                    textFields.append(textField)
+                    addPickerView(textField: textField)
+                }
+                allTextFields.append(textField)
+                textField.tintColor = .clear
+                cell.selectionStyle = UITableViewCell.SelectionStyle.none
+                
+            } else {
+                cell = settingTableView.dequeueReusableCell(withIdentifier: "Cell3")!
+                memoIndexPath = IndexPath(row: row, section: 0)
+                let newTextView = cell.contentView.viewWithTag(2) as! UITextView
+                newTextView.text = (allReset ? "" : memoTextView.text)
+                memoTextView = newTextView
+                let selectionView = UIView()
+                //タップするとオレンジ色になる
+                selectionView.backgroundColor = .systemOrange
+                cell.selectedBackgroundView = selectionView
+            }
+            
+            cells.append(cell.set())
+        }
+    }
+    
+    
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        return cellCount
+    }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let mode = changeMainCategoryTab.selectedSegmentIndex
-        if indexPath.row == 0 {
-            pickerTab = 0
-            textFields = []
-            let cell = tableView.dequeueReusableCell(withIdentifier: "Cell1")!
-            priceTextField = cell.contentView.viewWithTag(3) as! UITextField
-            allTextFields.append(priceTextField)
-            priceTextField.keyboardType = UIKeyboardType.numberPad
-            let toolbar = UIToolbar(frame: CGRectMake(0, 0, 0, 35))
-            let doneItem = UIBarButtonItem(title: "Next", style: .done, target: self, action: #selector(done2))
-            doneItem.tintColor = UIColor.orange
-            let cancelItem = UIBarButtonItem(title: "Done", style: .plain, target: self, action: #selector(cancel2))
-            cancelItem.tintColor = UIColor.orange
-            let spaceButton = UIBarButtonItem(barButtonSystemItem: UIBarButtonItem.SystemItem.flexibleSpace, target: nil, action: nil)
-            toolbar.setItems([cancelItem, spaceButton, doneItem], animated: true)
-            priceTextField.inputAccessoryView = toolbar
-            labelZero = cell.contentView.viewWithTag(1) as! UILabel
-            labelYen = cell.contentView.viewWithTag(2) as! UILabel
-            switch mode {
-            case 0:
-                labelZero.textColor = UIColor.red
-                labelYen.textColor = UIColor.red
-                labelZero.text = "-"
-                priceTextField.textColor = UIColor.red
-            case 1:
-                labelZero.textColor = UIColor.green
-                labelYen.textColor = UIColor.green
-                labelZero.text = ""
-                priceTextField.textColor = UIColor.green
-            case 2:
-                labelZero.textColor = UIColor.systemBlue
-                labelYen.textColor = UIColor.systemBlue
-                labelZero.text = ""
-                priceTextField.textColor = UIColor.systemBlue
-            default:
-                print("error")
-            }
-            if ud.bool(forKey: .isCordMode)! {
-                let cordFont = UIFont(name: "cordFont", size: 35)
-                priceTextField.font = cordFont
-                labelYen.font = cordFont
-                labelZero.font = cordFont
-            } else {
-                let systemFont = UIFont.systemFont(ofSize: 35, weight: .thin)
-                priceTextField.font = systemFont
-                labelYen.font = systemFont
-                labelZero.font = systemFont
-            }
-            priceTextField.attributedPlaceholder = NSAttributedString(string: "ここに金額を入力", attributes: [NSAttributedString.Key.font: UIFont.systemFont(ofSize: 35, weight: .thin)])
-            cell.selectionStyle = UITableViewCell.SelectionStyle.none
-            return cell
-            
-        } else if indexPath.row - 1 <= menu.count {
-            let cell = tableView.dequeueReusableCell(withIdentifier: "Cell2")!
-            let row = indexPath.row - 1
-            let label = cell.contentView.viewWithTag(1) as! UILabel
-            let textField = cell.contentView.viewWithTag(2) as! UITextField
-            textField.placeholder = "タップして選択"
-            if row == menu.count {
-                label.text = "日付"
-                dayTextField = textField
-                addDatePicer(textField: textField)
-            } else {
-                label.text = menu[row]
-                //最初のチュートリアル用
-                if menu[row] == "決済方法" && UserDefaults.standard.integer(forKey: .startStep) == 1 {
-                    startStepLabel = label
-                } else if menu[row] == "項目" && UserDefaults.standard.integer(forKey: .startStep) == 2 {
-                    startStepLabel = label
-                }
-                let tapGesture = UITapGestureRecognizer(target: self, action: #selector(tapped(_:)))
-                tapGesture.numberOfTouchesRequired = 1
-                label.addGestureRecognizer(tapGesture)
-                textFields.append(textField)
-                addPickerView(textField: textField)
-            }
-            allTextFields.append(textField)
-            textField.tintColor = .clear
-            cell.selectionStyle = UITableViewCell.SelectionStyle.none
-            
-            return cell
-            
-        } else {
-            let cell = tableView.dequeueReusableCell(withIdentifier: "Cell3")!
-            memoTextView = cell.contentView.viewWithTag(2) as! UITextView
-            memoTextView.text = memo
-            let selectionView = UIView()
-            //タップするとオレンジ色になる
-            selectionView.backgroundColor = .systemOrange
-            cell.selectedBackgroundView = selectionView
-            return cell
-        }
         
+        return cells[indexPath.row]
     }
     
     @objc func tapped(_ sender: UITapGestureRecognizer) {
         if let irLabel = sender.view as? UILabel {
             self.performSegue(withIdentifier: "toAdd", sender: irLabel.text)
         }
-    }
-    
-    func ChangeMenu(menu mode: Int) {
-        settingTableView.delegate = self
-        let categoryList = CategoryList.readAllCategory(mode)
-        menu = categoryList.map({ $0.categoryName })
-        list = categoryList.map({ $0.list + [] })
     }
     
     //CGRectを簡単に作る
@@ -260,6 +287,7 @@ class AddPaymentViewController: UIViewController, UITableViewDataSource, UITable
         if dayTextField.text == "" {
             datePicker.date = Date()
         } else {
+            print(dayTextField.text!)
             datePicker.date = DateInRegion(dayTextField.text!, format: "yyyy-MM-dd")!.date
         }
         datePicker.maximumDate = Date()
@@ -342,6 +370,7 @@ class AddPaymentViewController: UIViewController, UITableViewDataSource, UITable
         // 価格、メニュー、日付、メモ
         if indexPath.row == menu.count + 2  {
             self.performSegue(withIdentifier: "toEdit", sender: nil)
+            self.isNavigationMove = true
         } else if indexPath.row == 0 && changeMainCategoryTab.selectedSegmentIndex == 0 {
             if labelZero.text == ""{
                 labelZero.text = "-"
@@ -525,6 +554,3 @@ extension AddPaymentViewController: CoachMarksControllerDataSource {
     }
     
 }
-
-
-

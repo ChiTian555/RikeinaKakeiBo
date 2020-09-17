@@ -2,6 +2,7 @@ PODS:
   - Charts (3.5.0):
     - Charts/Core (= 3.5.0)
   - Charts/Core (3.5.0)
+  - CropViewController (2.5.4)
   - EAIntroView (2.12.0):
     - EARestrictedScrollView (~> 1.1.0)
   - EARestrictedScrollView (1.1.0)
@@ -19,6 +20,7 @@ PODS:
 
 DEPENDENCIES:
   - Charts
+  - CropViewController
   - EAIntroView
   - FontAwesome.swift
   - Instructions
@@ -31,6 +33,7 @@ DEPENDENCIES:
 SPEC REPOS:
   trunk:
     - Charts
+    - CropViewController
     - EAIntroView
     - EARestrictedScrollView
     - FontAwesome.swift
@@ -44,6 +47,7 @@ SPEC REPOS:
 
 SPEC CHECKSUMS:
   Charts: 40a08591df1f8ad5c223ddedfb1a06da92f24f7c
+  CropViewController: 980df34ffc499db89755b2f307f20eca00cd40c6
   EAIntroView: 249559079ddfdbe80e5bcb755c04c3b964b2ac27
   EARestrictedScrollView: b0c2a3f92fb2610bb44d71c5e4893777c89e45ef
   FontAwesome.swift: a403b88cec950511745ba8f2decd1b6a07346d13
@@ -55,6 +59,6 @@ SPEC CHECKSUMS:
   SwiftDate: fa2bb3962056bb44047b4b85a30044e5eae30b03
   "UITextView+Placeholder": d7b0c400921f66523f3a85d74f774512e14f6502
 
-PODFILE CHECKSUM: eee425c63fa3073f7b8a89831bc533ded4cbd8a4
+PODFILE CHECKSUM: 92f367d3670b9ba2e394c2ec7ebfd28801e3120c
 
 COCOAPODS: 1.9.3

@@ -8,7 +8,7 @@
 
 import UIKit
 
-class EditMemoOfPLDViewController: UIViewController, UITextViewDelegate {
+class EditMemoOfPLDViewController: MainBaceVC, UITextViewDelegate {
 
     @IBOutlet var editTextView: UITextView!
 
@@ -33,6 +33,7 @@ class EditMemoOfPLDViewController: UIViewController, UITextViewDelegate {
     }
     
     override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
         widthConstraint.constant = width
     }
 
@@ -42,7 +43,7 @@ class EditMemoOfPLDViewController: UIViewController, UITextViewDelegate {
         print(editTextView.frame.width)
         editTextView.resignFirstResponder()
         let count = (self.navigationController?.viewControllers.count)! - 2
-        let vc = self.navigationController?.viewControllers[count] as! PLDetailViewController
+        let vc = self.navigationController?.viewControllers[count] as! PaymentDetailVC
         vc.memo = editTextView.text
         self.navigationController?.popViewController(animated: true)
     }

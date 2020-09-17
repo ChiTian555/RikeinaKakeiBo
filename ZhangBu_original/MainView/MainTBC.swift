@@ -16,6 +16,9 @@ class MainTBC: UITabBarController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        let colorImage = UIImage.colorImage(color: UIColor.systemOrange.withAlphaComponent(0.7))
+        self.tabBar.backgroundImage = colorImage
+        
         let Images: [(image: UIImage,title: String)] =
             [(UIImage.fontAwesomeIcon(name: .yenSign, style: .solid, textColor: .white, size: size),"残高"),
              (UIImage.fontAwesomeIcon(name: .chartPie, style: .solid, textColor: .white, size: size),"一覧"),

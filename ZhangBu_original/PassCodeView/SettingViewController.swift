@@ -10,7 +10,7 @@ import UIKit
 import LocalAuthentication
 import PKHUD
 
-class SettingViewController: UIViewController {
+class SettingViewController: MainBaceVC {
     
     private let passcodeModel = PasscodeModel()
 

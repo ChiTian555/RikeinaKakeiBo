@@ -14,11 +14,9 @@ import Instructions
 import NFCReader
 import SwiftDate
 
-class CheckMoneyViewController: UIViewController {
+class CheckMoneyViewController: MainBaceVC {
     
     let ud = UserDefaults.standard
-
-    var accountLists: [Account] = []
     
     var budgetsLavel = [UILabel]()
     
@@ -45,6 +43,16 @@ class CheckMoneyViewController: UIViewController {
     var condition3 = false
     var condition4 = false
     
+    //NFCReaderの定義
+    private let configuration: ReaderConfiguration = {
+        var configuration = ReaderConfiguration()
+        configuration.message.alert = "携帯の読み取り部を、\nICカードにかざしてください。"
+        return configuration
+    }()
+    
+    private let reader = Reader<FeliCa>()
+    
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -59,10 +67,28 @@ class CheckMoneyViewController: UIViewController {
         checkMoneyTableView.dataSource = self
         checkMoneyTableView.delegate = self
         checkMoneyTableView.tableFooterView = UIView()
+        checkMoneyTableView.set()
     }
     
     override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        reloadData()
+        print("ViewWillApareが呼ばれた")
+    }
+    
+    //Cellデータ格納変数
+    var accountLists: [Account] = []
+    var budgetsValue:[Int] = []
+    
+    //tableView更新
+    func reloadData() {
         accountLists = Account.readAll()
+        let predicate: String
+            = "(mainCategoryNumber = %@ AND isUsePoketMoney = %@) OR (mainCategoryNumber = %@ AND isUsePoketMoney = %@ )"
+        let sum :Int = realm.objects(Payment.self)
+                            .filter(predicate,0 , true, 2, true)
+                            .sum(ofProperty: "price")
+        budgetsValue = [sum, accountLists.reduce(0){$0 + $1.balance} - sum]
         checkMoneyTableView.reloadData()
     }
     
@@ -74,40 +100,38 @@ extension CheckMoneyViewController: UITableViewDataSource {
         if accountLists.count < 1 {
             return userBudget.count + 1
         }
+        
+        //balance配列のリセット
+        balances = []
+        //UserButget計算に関するリセット
+        budgetsLavel = []
+        sumMoney = 0
+        //スタートステップに関するリセット
+        startStepCells = []
+        
         return accountLists.count + userBudget.count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         
-        if indexPath.row == 0 {
-            //balance配列のリセット
-            balances = []
-            //UserButget計算に関するリセット
-            budgetsLavel = []
-            sumMoney = 0
-            //スタートステップに関するリセット
-            startStepCells = []
-        }
         var font = UIFont()
         if UserDefaults.standard.bool(forKey: .isCordMode)! {
             font = UIFont(name: "cordFont", size: 25)!
         } else {
             font = UIFont.systemFont(ofSize: 20, weight: .semibold)
         }
-        var cell = UITableViewCell()
+        var cell = UITableViewCell.create()
         if indexPath.row < userBudget.count {
+            
             cell = tableView.dequeueReusableCell(withIdentifier: "Cell1")!
             let labelName = cell.viewWithTag(1) as! UILabel
             let labelBudget = cell.viewWithTag(2) as! UILabel
             labelName.text = userBudget[indexPath.row]
             labelBudget.font = font
-            budgetsLavel.append(labelBudget)
+            labelBudget.text = "¥\(budgetsValue[indexPath.row])"
+            labelBudget.textColor = budgetsValue[indexPath.row] < 0 ? .systemRed : .label
             
             if indexPath.row == 0 {
-                let selectionView = UIView()
-                //タップするとオレンジ色になる
-                selectionView.backgroundColor = .systemOrange
-                cell.selectedBackgroundView = selectionView
                 //初期ステップ3
                 if ud.integer(forKey: .startStep) == 3 {
                     startStepCells.append((cell,"condition3"))
@@ -139,39 +163,16 @@ extension CheckMoneyViewController: UITableViewDataSource {
             if nowAccount.isMustCheck() {
                 startStepCells.append((cell, nowAccount.type))
             }
-            let selectionView = UIView()
-            //タップするとオレンジ色になる
-            selectionView.backgroundColor = .systemOrange
-            cell.selectedBackgroundView = selectionView
             
         } else {
-            //まだアカウント登録されてない時
+            //まだ口座登録されてない時
             cell = tableView.dequeueReusableCell(withIdentifier: "Cell3")!
             let label = cell.viewWithTag(1) as! UILabel
             label.textAlignment = .center
             label.text = "まだ、口座が登録されていません！\n設定->口座管理から、まず、\n現金を登録してみてください。"
         }
         
-        //userButgetを更新
-        if indexPath.row == accountLists.count + userBudget.count - 1 {
-            
-            let predicate: String
-                = "(mainCategoryNumber = %@ AND isUsePoketMoney = %@) OR (mainCategoryNumber = %@ AND isUsePoketMoney = %@ )"
-            
-            let sum :Int = realm.objects(Payment.self)
-                                .filter(predicate,0 , true, 2, true)
-                                .sum(ofProperty: "price")
-            let budgetsValue: [Int] = [sum, balances.reduce(0){$0 + $1} - sum]
-            for i in 0 ... 1 {
-                budgetsLavel[i].text = "¥" + String(budgetsValue[i])
-                if budgetsValue[i] < 0 {
-                    budgetsLavel[i].textColor = .systemRed
-                } else {
-                    budgetsLavel[i].textColor = .label
-                }
-            }
-        }
-        return cell
+        return cell.set()
     }
 }
 
@@ -242,7 +243,7 @@ extension CheckMoneyViewController: UITableViewDelegate {
                             payment.isUsePoketMoney = true
                             payment.price = price
                             payment.save()
-                            tableView.reloadData()
+                            self.reloadData()
                             HUD.flash(.labeledSuccess(title: "設定完了", subtitle: "\(month)月分のお小遣いを\n入力完了しました"), delay: 1.5)
                         }
                         let cancelAction = UIAlertAction(title: "訂正", style: .cancel) { (action) in
@@ -297,7 +298,7 @@ extension CheckMoneyViewController: UITableViewDelegate {
                                           message: "画面を閉じてください",
                                           preferredStyle: .alert)
             let cancelAction = UIAlertAction(title: "cancel", style: .cancel) { (action) in
-                UserDefaults.standard.setBool(false, forKey: .isCheckMode)
+                SceneDelegate.shared.isCheckMode = true
     //            self.notificationCenter.removeObserver(self)
                 alert.dismiss(animated: true, completion: nil)
                 tableView.deselectRow(at: indexPath, animated: true)
@@ -322,7 +323,7 @@ extension CheckMoneyViewController: UITableViewDelegate {
                 let newCheck = Check()
                 newCheck.balance = self.balances[indexPath.row - self.userBudget.count]
                 nowAccount.setValue(newCheckValue: newCheck)
-                self.checkMoneyTableView.reloadData()
+                self.reloadData()
                 
                 if self.accountLists[row].isMustCheck(checked: true) {
                     let tbc = SceneDelegate.shared.rootVC.current as! MainTBC
@@ -342,9 +343,11 @@ extension CheckMoneyViewController: UITableViewDelegate {
         }
     }
     
+    
     func checkSearchIcCard(index: IndexPath) {
         let alert = UIAlertController(title: "確認", message: "携帯でICカードを\nスキャンしますか？", preferredStyle: .alert)
         let okAction = UIAlertAction(title: "はい", style: .default) { (action) in
+            SceneDelegate.shared.isCheckMode = true
             self.searchIcCard()
             self.checkMoneyTableView.deselectRow(at: index, animated: true)
             alert.dismiss(animated: true, completion: nil)
@@ -363,12 +366,7 @@ extension CheckMoneyViewController: UITableViewDelegate {
         //選択されてた口座の場所を取得
         guard let index = self.checkMoneyTableView.indexPathForSelectedRow else { return }
         
-        var configuration = ReaderConfiguration()
-        
-        configuration.message.alert = "ICカードに近づけてください。\n反応が悪い時は再度スキャンしてください"
-        configuration.message.foundMultipleTags = "複数のカードが感知されました."
-        let reader = Reader<FeliCa>(configuration: configuration)
-        
+        reader.configuration = self.configuration
         reader.read(didBecomeActive: { _ in
             print("reader: セット完了")
         }, didDetect: { reader, result in
@@ -394,25 +392,27 @@ extension CheckMoneyViewController: UITableViewDelegate {
                 }
                 reader.setMessage("\(cardName): 残高は¥\(balance)でした")
                 
-                if self.balances[index.row - self.userBudget.count] == balance {
-                    HUD.flash(.labeledSuccess(title: "成功", subtitle: "残高を更新します"), delay: 1.5)
-                    guard let index = self.checkMoneyTableView.indexPathForSelectedRow else { return }
-                    let nowAccount = self.accountLists[index.row - self.userBudget.count]
-                    //最終確認日を更新
-                    let newCheck = Check()
-                    newCheck.balance = self.balances[index.row - self.userBudget.count]
-                    nowAccount.setValue(newCheckValue: newCheck)
-                    self.checkMoneyTableView.reloadData()
-                } else {
-                    HUD.flash(.labeledError(title: "Error", subtitle: "残高が一致しません。"), delay: 1.5)
+                DispatchQueue.main.asyncAfter(deadline: .now() + 3) {
+                    
+                    if self.balances[index.row - self.userBudget.count] == Int(balance) {
+                        HUD.flash(.labeledSuccess(title: "成功", subtitle: "残高を更新します"), delay: 1.5)
+                        guard let index = self.checkMoneyTableView.indexPathForSelectedRow else { return }
+                        let nowAccount = self.accountLists[index.row - self.userBudget.count]
+                        //最終確認日を更新
+                        let newCheck = Check()
+                        newCheck.balance = self.balances[index.row - self.userBudget.count]
+                        nowAccount.setValue(newCheckValue: newCheck)
+                        self.reloadData()
+                    } else {
+                        HUD.flash(.labeledError(title: "Error", subtitle: "残高が一致しません。"), delay: 1.5)
+                    }
+                    //初期ステップ確認
+                    if self.accountLists[index.row - self.userBudget.count].isMustCheck(checked: true) {
+                        let tbc = SceneDelegate.shared.rootVC.current as! MainTBC
+                        tbc.setStartStep()
+                    }
+                    
                 }
-                //初期ステップ確認
-                if self.accountLists[index.row - self.userBudget.count].isMustCheck(checked: true) {
-                    let tbc = SceneDelegate.shared.rootVC.current as! MainTBC
-                    tbc.setStartStep()
-                }
-                //以下に最終確認日を更新
-                
                 
             case .failure(let error):
                 print(error)
@@ -433,7 +433,7 @@ extension CheckMoneyViewController: UITableViewDelegate {
                                 let tbc = SceneDelegate.shared.rootVC.current as! MainTBC
                                 tbc.setStartStep()
                             }
-                            self.checkMoneyTableView.reloadData()
+                            self.reloadData()
                         }
                         let cancelAction = UIAlertAction(title: "いいえ", style: .cancel) { (action) in
                             alert.dismiss(animated: true , completion: nil)
@@ -444,15 +444,15 @@ extension CheckMoneyViewController: UITableViewDelegate {
                     }
                     break
                 case .readTagFailure(let error2):
-                    errorMessage = "エラー: readTagFailure"
+                    errorMessage = "readTagFailure"
                     print("\(error2)")
                     break
                 case .scanFailure(let nfcError):
-                    errorMessage = "エラー: scanFailure"
+                    errorMessage = "scanFailure"
                     print(nfcError)
                     break
                 case .tagConnectionFailure(let nfcError):
-                    errorMessage = "エラー: tagConnectionFailure"
+                    errorMessage = "tagConnectionFailure"
                     print(nfcError)
                 }
                 reader.setMessage("読み込みエラー: \(errorMessage)")
@@ -511,7 +511,9 @@ extension CheckMoneyViewController: UITableViewDelegate {
                 let newCheck = Check()
                 newCheck.balance = self.balances[index.row - self.userBudget.count]
                 nowAccount.setValue(newCheckValue: newCheck)
-                self.checkMoneyTableView.reloadData()
+                
+                print("Activeになった、が呼ばれた")
+                self.reloadData()
                 
                 //初期ステップ確認
                 if self.accountLists[index.row - self.userBudget.count].isMustCheck(checked: true) {

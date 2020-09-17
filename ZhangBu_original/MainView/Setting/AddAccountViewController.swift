@@ -31,6 +31,15 @@ class AddAccountViewController: UIViewController {
     
     let pickerView = UIPickerView()
     
+    //NFCReaderの定義
+    private let configuration: ReaderConfiguration = {
+        var configuration = ReaderConfiguration()
+        configuration.message.alert = "携帯の読み取り部を、\nICカードにかざしてください。"
+        return configuration
+    }()
+    
+    private let reader = Reader<FeliCa>()
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -90,7 +99,7 @@ class AddAccountViewController: UIViewController {
         let edittingTextField = textFields.first{($0.isFirstResponder)}!
         if edittingTextField == accountTipeTextField {
             if accountTipeTextField.text == "②　本アプリ対応ICカード" {
-                checkSearchIcCard()
+                checkSearchIcCard(actionAfterFinished: 0)
                 return
             }
             if accountTipeTextField.text == "" {
@@ -105,7 +114,7 @@ class AddAccountViewController: UIViewController {
         
         if textFields[firstResponderIndex] == accountTipeTextField {
             if accountTipeTextField.text == "②　本アプリ対応ICカード" {
-                checkSearchIcCard()
+                checkSearchIcCard(actionAfterFinished: 1)
                 return
             }
             if accountTipeTextField.text == "" {
@@ -116,15 +125,21 @@ class AddAccountViewController: UIViewController {
 //        pickerView.reloadAllComponents()
     }
     
-    func checkSearchIcCard() {
+    //actionAfterFinished 0 -> Done , 1 -> Next
+    func checkSearchIcCard(actionAfterFinished: Int) {
         let alert = UIAlertController(title: "確認", message: "携帯でICカードを\nスキャンしますか？", preferredStyle: .alert)
         let okAction = UIAlertAction(title: "はい", style: .default) { (action) in
-            self.searchIcCard()
             alert.dismiss(animated: true, completion: nil)
+            self.accountMoneyTextField.resignFirstResponder()
+            self.searchIcCard()
         }
         let noAction = UIAlertAction(title: "いいえ", style: .cancel) { (action) in
             alert.dismiss(animated: true, completion: nil)
-            self.accountMoneyTextField.becomeFirstResponder()
+            if actionAfterFinished == 0 {
+                self.accountTipeTextField.resignFirstResponder()
+            } else {
+                self.accountMoneyTextField.becomeFirstResponder()
+            }
         }
         alert.addAction(noAction)
         alert.addAction(okAction)
@@ -133,11 +148,7 @@ class AddAccountViewController: UIViewController {
     
     func searchIcCard() {
         
-        var configuration = ReaderConfiguration()
-        configuration.message.alert = "ICカードに近づけてください。."
-        configuration.message.foundMultipleTags = "複数のカードが感知されました."
-        let reader = Reader<FeliCa>(configuration: configuration)
-
+        reader.configuration = self.configuration
         reader.read(didBecomeActive: { _ in
             print("reader: セット完了")
         }, didDetect: { reader, result in
@@ -163,6 +174,7 @@ class AddAccountViewController: UIViewController {
                 reader.setMessage("\(cardName): 残高は¥\(balance)でした")
                 self.accountMoneyTextField.text = "\(balance)"
                 
+                
             case .failure(let error):
                 print(error)
                 switch error {
@@ -179,6 +191,10 @@ class AddAccountViewController: UIViewController {
                     print("\(nsError)")
                 }
                 reader.setMessage("読み込みに失敗しました")
+                //readerが閉じる3秒後に処理を開始
+                DispatchQueue.main.asyncAfter(deadline: .now() + 3) {
+                    self.accountNameTextField.becomeFirstResponder()
+                }
             }
         })
     }
@@ -221,7 +237,7 @@ class AddAccountViewController: UIViewController {
         parentTBC.setStartStep()
         
         let parentNC = parentTBC.selectedViewController as! UINavigationController
-        let parentVC = parentNC.topViewController as! IndividualSettingViewController
+        let parentVC = parentNC.topViewController as! AccountSettingVC
         // ユーザデフォルトでラベル更新
         parentVC.load()
         // 画面を閉じる

@@ -8,7 +8,7 @@
 
 import UIKit
 
-class EditMemoViewController: UIViewController, UITextViewDelegate {
+class EditMemoViewController: MainBaceVC, UITextViewDelegate {
     
     @IBOutlet var editTextView: UITextView!
 
@@ -19,25 +19,10 @@ class EditMemoViewController: UIViewController, UITextViewDelegate {
     var width = CGFloat()
     
     
-    
-//    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-//        return 1
-//    }
-//
-//    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-//        let cell = tableView.dequeueReusableCell(withIdentifier: "Cell")!
-//        editTextView = cell.viewWithTag(1) as! UITextView
-//        editTextView.becomeFirstResponder()
-//        editTextView.text = memo
-//        return cell
-//    }
-
-//    @IBOutlet var TableView: UITableView!
-    
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        navigationController?.delegate = self
+        view.setBackGroundPicture()
         
         editTextView.delegate = self
 //        TableView.delegate = self
@@ -51,6 +36,7 @@ class EditMemoViewController: UIViewController, UITextViewDelegate {
     }
     
     override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
         widthConstraint.constant = width
     }
     
@@ -61,24 +47,8 @@ class EditMemoViewController: UIViewController, UITextViewDelegate {
         let count = (self.navigationController?.viewControllers.count)! - 2
         let vc = self.navigationController?.viewControllers[count] as! AddPaymentViewController
         vc.memo = editTextView.text
-        vc.isNavigationMove = true
         self.navigationController?.popViewController(animated: true)
     }
-    
-    
 
-}
-
-extension EditMemoViewController: UINavigationControllerDelegate {
-    
-    func navigationController(_ navigationController: UINavigationController, willShow viewController: UIViewController, animated: Bool) {
-        
-        if let nv = viewController as? AddPaymentViewController {
-            
-            nv.isNavigationMove = true
-            
-        }
-        
-    }
     
 }

@@ -12,7 +12,7 @@ import RealmSwift
 import FontAwesome_swift
 
 
-class IndividualSettingViewController: UIViewController {
+class AccountSettingVC: MainBaceVC {
 
     var settingNomber: Int!
     
@@ -23,6 +23,9 @@ class IndividualSettingViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        
+        tableView.set()
+        
         tableView.tableFooterView = UIView()
         tableView.dataSource = self
         tableView.delegate = self
@@ -30,6 +33,7 @@ class IndividualSettingViewController: UIViewController {
     }
     
     override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
         load()
         print(accounts)
     }
@@ -69,7 +73,7 @@ class IndividualSettingViewController: UIViewController {
 
 }
 
-extension IndividualSettingViewController: UITableViewDataSource {
+extension AccountSettingVC: UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return accounts.count == 0 ? 1 : accounts.count
@@ -77,7 +81,8 @@ extension IndividualSettingViewController: UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         
-        let cell = tableView.dequeueReusableCell(withIdentifier: "Cell")!
+        var cell = UITableViewCell.create()
+        cell = tableView.dequeueReusableCell(withIdentifier: "Cell")!
         let label = cell.viewWithTag(2) as! UILabel
         
         if accounts.count == 0 {
@@ -88,13 +93,12 @@ extension IndividualSettingViewController: UITableViewDataSource {
             label.text = accounts[indexPath.row].name
             label.textAlignment = .left
         }
-        
-        return cell
+        return cell.set()
     }
     
 }
 
-extension IndividualSettingViewController: UITableViewDelegate {
+extension AccountSettingVC: UITableViewDelegate {
     
     //編集モード切り替え
     @IBAction func tappedEditButton() {

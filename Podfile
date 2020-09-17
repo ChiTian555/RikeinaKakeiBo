@@ -8,6 +8,7 @@ target 'ZhangBu_original' do
   # Pods for ZhangBu_original
   
   pod 'EAIntroView'
+  pod 'CropViewController'
   pod 'UITextView+Placeholder'
   pod 'PKHUD'
   pod 'RealmSwift'

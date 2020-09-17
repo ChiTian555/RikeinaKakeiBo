@@ -9,7 +9,7 @@
 import UIKit
 import Charts
 
-class CategoryStatisticsViewController: UIViewController {
+class CategoryStatisticsVC: MainBaceVC {
 
     @IBOutlet var sumInCategoryTableView: UITableView!
     

@@ -18,4 +18,19 @@ extension UIImage {
         UIGraphicsEndImageContext()
         return newImage!
     }
+    
+    class func colorImage(color: UIColor, size: CGSize = CGSize(width: 10, height: 10)) -> UIImage {
+        
+        UIGraphicsBeginImageContext(size)
+        let rect = CGRect(origin: CGPoint.zero, size: size)
+        let context = UIGraphicsGetCurrentContext()!
+        context.setFillColor(color.cgColor)
+        context.fill(rect)
+        let image = UIGraphicsGetImageFromCurrentImageContext()!
+    
+        UIGraphicsEndImageContext()
+    
+        return image
+    }
+    
 }

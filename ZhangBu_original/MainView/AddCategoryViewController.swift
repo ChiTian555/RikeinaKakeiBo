@@ -10,7 +10,7 @@ import UIKit
 import PKHUD
 import RealmSwift
 
-class AddCategoryViewController: UIViewController, UITableViewDataSource {
+class AddCategoryViewController: MainBaceVC, UITableViewDataSource {
 
     //遷移前画面からをくられる変数
     var categoryList: CategoryList!
@@ -35,13 +35,14 @@ class AddCategoryViewController: UIViewController, UITableViewDataSource {
         tableView.dataSource = self
         tableView.delegate = self
         tableView.allowsSelection = false
+        tableView.set()
         
         navigationController?.delegate = self
         
     }
     
     override func viewWillAppear(_ animated: Bool) {
-        
+        super.viewWillAppear(animated)
         categoryList = CategoryList.readCategory(mainCategoryNumber, tappedCategoriesName)
         
         list = categoryList.list + []
@@ -72,7 +73,7 @@ class AddCategoryViewController: UIViewController, UITableViewDataSource {
             cell.textLabel?.text = list[indexPath.row]
         }
         
-        return cell
+        return cell.set()
     }
     
     @IBAction func tappedAdd() {

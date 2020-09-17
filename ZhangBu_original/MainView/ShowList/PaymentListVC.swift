@@ -10,11 +10,11 @@ import UIKit
 import RealmSwift
 import Charts
 import SwiftDate
+import PKHUD
 
-class PLViewController: UIViewController, UIPickerViewDelegate, UIPickerViewDataSource, UITextFieldDelegate {
+class PaymentListVC: MainBaceVC, UITextFieldDelegate, CustomKeyboardDelegate, UIPickerViewDataSource, UIPickerViewDelegate {
     
-    
-    
+
     private let realm = try! Realm()
     private var payments = [Payment]()
     
@@ -33,27 +33,22 @@ class PLViewController: UIViewController, UIPickerViewDelegate, UIPickerViewData
     
     var titleLabel = UILabel(frame: CGRect(x: 0, y: 13, width: 200, height: 18))
     
-    var year: Int = 0
-    var month: Int = 0
-    
-    var selectYear = 0
-    var selectMonth = 0
-    
-    let years = (2018...2021).map { $0 }
-    let months = (1...12).map { $0 }
-    
+    //表示する年月を格納、0項：年、1項：月
+    var editMonth: [Int] = [0,0]
+    var month: [Int] = [0,0]
+    let dates: [[String]] = [(2018...2021).map{ (String($0)) }, (1...12).map{ (String($0)) }]
+
     let pickerView = UIPickerView()
     
     var showedPicker = false
     
-    var vi: UIView! //pikerViewを格納するView
+    var keyboard: UIView! //pikerViewを格納するView
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        if year == 0 || month == 0 {
-            year = Date().year
-            month = Date().month
+        if month.contains(0) {
+            month = [DateInRegion().year, DateInRegion().month]
         }
         
         //右へ
@@ -63,15 +58,10 @@ class PLViewController: UIViewController, UIPickerViewDelegate, UIPickerViewData
         let leftSwipeGesture = UISwipeGestureRecognizer(target: self, action: #selector(swiped(_:)))
         leftSwipeGesture.direction = .left
         
-        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(tapped(_:)))
-        tapGesture.numberOfTouchesRequired = 1
-        
-        pickerView.backgroundColor = UIColor.secondarySystemBackground
-        pickerView.delegate = self
-        
         paymentListTableView.delegate = self
         paymentListTableView.dataSource = self
         paymentListTableView.tableFooterView = UIView()
+        paymentListTableView.set()
         categoryTableView.delegate = self
         categoryTableView.dataSource = self
         categoryTableView.tableFooterView = UIView()
@@ -79,10 +69,18 @@ class PLViewController: UIViewController, UIPickerViewDelegate, UIPickerViewData
         categoryTableView.rowHeight = categoryTableView.layer.frame.height / 10
 //        categoryTableView.rowHeight = UITableView.automaticDimension
         categoryTableView.allowsSelection = false
+        categoryTableView.set()
         pieChartView.delegate = self
         
-        let titleView =  UIView(frame: CGRect(x: 0, y: 0, width: 200, height: 44))
+        setKeyboard()
+        let titleView = CustomKeyboard(frame: CGRectMake(0, 0, 200, 44))
+        pickerView.delegate = self
+        pickerView.dataSource = self
+        pickerView.backgroundColor = .clear
+        titleView.inputView = pickerView
+        titleView.delegate = self
         titleView.backgroundColor = .clear
+        
         titleLabel.textAlignment = .center
         titleLabel.font = UIFont.boldSystemFont(ofSize: 17)
         titleLabel.textColor = UIColor.label
@@ -92,24 +90,31 @@ class PLViewController: UIViewController, UIPickerViewDelegate, UIPickerViewData
         paymentListTableView.addGestureRecognizer(rightSwipeGesture)
         paymentListTableView.addGestureRecognizer(leftSwipeGesture)
         
-        titleBar.titleView?.addGestureRecognizer(tapGesture)
-        
-        
+    }
+    
+    //カスタムキーボード(PickerView)の中身を生成
+    func setKeyboard() {
+        pickerView.frame = CGRect(x: 0, y: 0, width: UIScreen.main.bounds.size.width, height: pickerView.bounds.size.height)
+        //viは、pickerViewを格納
+        keyboard = UIView(frame: pickerView.bounds)
+        // Connect data:
+        keyboard.backgroundColor = UIColor.secondarySystemBackground
+        keyboard.addSubview(pickerView)
     }
     
     override func viewWillAppear(_ animated: Bool) {
-        if year == 0 || month == 0 {
-            year = Date().year
-            month = Date().month
+        super.viewWillAppear(animated)
+        if month.contains(0) {
+            month = [DateInRegion().year, DateInRegion().month]
         }
-        titleLabel.text = "\(year)年 \(month)月の\( changeMainCategoryTab.titleForSegment(at: changeMainCategoryTab.selectedSegmentIndex) ?? "")"
+        titleLabel.text = "\(month[0])年 \(month[1])月の\(changeMainCategoryTab.selectedTitle)"
         reLoadDataAndChart()
         self.tabBarController?.tabBar.isHidden = false
     }
     
     
     @IBAction func selectMainMenu(_ sender: UISegmentedControl) {
-        titleLabel.text = "\(year)年 \(month)月の\( changeMainCategoryTab.titleForSegment(at: changeMainCategoryTab.selectedSegmentIndex) ?? "")"
+        titleLabel.text = "\(month[0])年 \(month[1])月の\(changeMainCategoryTab.selectedTitle)"
         reLoadDataAndChart()
     }
     
@@ -117,36 +122,29 @@ class PLViewController: UIViewController, UIPickerViewDelegate, UIPickerViewData
 
         switch sender.direction {
         case .left:
-            if month == 12 {
-                month = 1
-                year += 1
+            if month[1] == 12 {
+                month[1] = 1
+                month[0] += 1
             } else {
-                month += 1
+                month[1] += 1
             }
         case .right:
-            if month == 1 {
-                month = 12
-                year -= 1
+            if month[1] == 1 {
+                month[1] = 12
+                month[0] -= 1
             } else {
-                month -= 1
+                month[1] -= 1
             }
         default:
             break
         }
-        titleLabel.text = "\(year)年 \(month)月の\( changeMainCategoryTab.titleForSegment(at: changeMainCategoryTab.selectedSegmentIndex) ?? "")"
+        titleLabel.text = "\(month[0])年 \(month[1])月の\(changeMainCategoryTab.selectedTitle)"
         reLoadDataAndChart()
     }
     
-    @objc func tapped(_ sender: UITapGestureRecognizer) {
-        
-        if !showedPicker {
-            pickerPush()
-        }
-    }
-    
     func reLoadDataAndChart() {
-        let firstDate = DateInRegion(year: year, month: month, day: 1).date
-        let endDate = DateInRegion(year: year, month: month + 1, day: 1).date
+        let firstDate = DateInRegion(year: month[0], month: month[1], day: 1).date
+        let endDate = DateInRegion(year: month[0], month: month[1] + 1, day: 1).date
         var data : [(category: String, value: Int)] = []
         let monthRealmPayments = realm.objects(Payment.self)
             .filter("mainCategoryNumber == \(changeMainCategoryTab.selectedSegmentIndex)")
@@ -201,106 +199,70 @@ class PLViewController: UIViewController, UIPickerViewDelegate, UIPickerViewData
         categoryTableView.reloadData()
     }
     
-    //tabBarから、pickerViewを呼び出す
+
+    // MARK: - delegate, DataSource
+    
+    func startEdit(sender: CustomKeyboard) {
+        for i in 0 ..< self.dates.count {
+        self.pickerView.selectRow(self.dates[i].firstIndex(of: String(self.month[i]))!,
+                                  inComponent: i,
+                                  animated: false)
+        }
+        showedPicker = true
+        editMonth = month
+    }
+    
+    func didCancel(sender: CustomKeyboard) {
+        sender.resignFirstResponder()
+        showedPicker = false
+        editMonth = [0,0]
+        titleLabel.text = "\(month[0])年 \(month[1])月の\(changeMainCategoryTab.selectedTitle)"
+    }
+    
+    func didDone(sender: CustomKeyboard) {
+        sender.resignFirstResponder()
+        showedPicker = false
+        month = editMonth
+        editMonth = [0,0]
+        reLoadDataAndChart()
+    }
+    
     func numberOfComponents(in pickerView: UIPickerView) -> Int {
         return 2
     }
     
     func pickerView(_ pickerView: UIPickerView, numberOfRowsInComponent component: Int) -> Int {
-        if component == 0 {
-            return years.count
-        } else if component == 1 {
-            return months.count
-        } else {
-            return 0
-        }
+        return dates[component].count
     }
-
-    // MARK: - UIPickerView delegate
-
+    
     func pickerView(_ pickerView: UIPickerView, titleForRow row: Int, forComponent component: Int) -> String? {
-        if component == 0 {
-            return "\(years[row])年"
-        } else if component == 1 {
-            return "\(months[row])月"
-        } else {
-            return nil
-        }
+        return dates[component][row] + (component == 0 ? "年":"月")
     }
-
+    
     func pickerView(_ pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int) {
-        selectYear = years[pickerView.selectedRow(inComponent: 0)]
-        selectMonth = months[pickerView.selectedRow(inComponent: 1)]
-        titleLabel.text = "\(year)年 \(month)月の\(changeMainCategoryTab.titleForSegment(at: changeMainCategoryTab.selectedSegmentIndex) ?? "")"
+        editMonth[component] = Int(dates[component][row])!
+        titleLabel.text = "\(editMonth[0])年 \(editMonth[1])月の\(changeMainCategoryTab.selectedTitle)"
     }
-    
-    
-    func pickerPush(){
-        pickerView.frame = CGRect(x: 0, y: 0, width: UIScreen.main.bounds.size.width, height: pickerView.bounds.size.height)
-        //viは、pickerViewを格納
-        vi = UIView(frame: pickerView.bounds)
-        // Connect data:
-        vi.backgroundColor = UIColor.secondarySystemBackground
-        vi.addSubview(pickerView)
-        let toolbar = UIToolbar(frame: CGRectMake(0, 0, view.frame.size.width, 35))
-        toolbar.barStyle = UIBarStyle.default
-        toolbar.isTranslucent = true
-        toolbar.tintColor = UIColor.systemOrange
-        let doneItem = UIBarButtonItem(barButtonSystemItem: .done, target: self, action: #selector(done))
-        doneItem.tintColor = UIColor.orange
-        let cancelItem = UIBarButtonItem(barButtonSystemItem: .cancel, target: self, action: #selector(cancel))
-        cancelItem.tintColor = UIColor.orange
-        let spaceButton = UIBarButtonItem(barButtonSystemItem: UIBarButtonItem.SystemItem.flexibleSpace, target: nil, action: nil)
-        toolbar.setItems([cancelItem, spaceButton, doneItem], animated: true)
-        toolbar.isUserInteractionEnabled = true
-        vi.addSubview(toolbar)
-        // viをviewに追加し、下からアニメーション表示
-        self.tabBarController?.tabBar.isHidden = true
-        view.addSubview(vi)
-        view.bringSubviewToFront(vi)
-        let screenSize = UIScreen.main.bounds.size
-        vi.frame.origin.y = screenSize.height
-        UIView.animate(withDuration: 0.3) {
-            self.vi.frame.origin.y = screenSize.height - self.vi.bounds.size.height
-        }
-        showedPicker = true
-        
-        pickerView.selectRow(year - 2018 , inComponent: 0, animated: false)
-        pickerView.selectRow(month - 1, inComponent: 1, animated: false)
-    }
-    
-    @objc func done() {
-        if selectYear != 0 || selectMonth != 0 {
-            year = selectYear
-            month = selectMonth
-        }
-        selectMonth = 0
-        selectYear = 0
-        UIView.animate(withDuration: 0.3, animations:  {
-        self.vi.frame.origin.y = UIScreen.main.bounds.size.height
-        }) { _ in
-            self.showedPicker = false
-            self.pickerView.reloadAllComponents()
-            self.vi.removeFromSuperview()
-            self.tabBarController?.tabBar.isHidden = false
-        }
-        titleLabel.text = "\(year)年 \(month)月の\( changeMainCategoryTab.titleForSegment(at: changeMainCategoryTab.selectedSegmentIndex) ?? "")"
-        reLoadDataAndChart()
-    }
-    
-    @objc func cancel() {
-        selectMonth = 0
-        selectYear = 0
-        UIView.animate(withDuration: 0.3, animations:  {
-        self.vi.frame.origin.y = UIScreen.main.bounds.size.height
-        }) { _ in
-            self.showedPicker = false
-            self.pickerView.reloadAllComponents()
-            self.vi.removeFromSuperview()
-            self.tabBarController?.tabBar.isHidden = false
-        }
-        titleLabel.text = "\(year)年 \(month)月の\( changeMainCategoryTab.titleForSegment(at: changeMainCategoryTab.selectedSegmentIndex) ?? "")"
-    }
+//    func pickerPush(){
+//        pickerView.frame = CGRect(x: 0, y: 0, width: UIScreen.main.bounds.size.width, height: pickerView.bounds.size.height)
+//        //viは、pickerViewを格納
+//        keyboard = UIView(frame: pickerView.bounds)
+//        // Connect data:
+//        keyboard.backgroundColor = UIColor.secondarySystemBackground
+//        keyboard.addSubview(pickerView)
+//        // viをviewに追加し、下からアニメーション表示
+//        self.tabBarController?.tabBar.isHidden = true
+//        view.addSubview(keyboard)
+//        view.bringSubviewToFront(keyboard)
+//        let screenSize = UIScreen.main.bounds.size
+//        keyboard.frame.origin.y = screenSize.height
+//        UIView.animate(withDuration: 0.3) {
+//            self.keyboard.frame.origin.y = screenSize.height - self.keyboard.bounds.size.height
+//        }
+//        showedPicker = true
+//        pickerView.selectRow(month.year - 2018 , inComponent: 0, animated: false)
+//        pickerView.selectRow(month.month - 1, inComponent: 1, animated: false)
+//    }
     
     /**
      円グラフをセットアップする
@@ -418,7 +380,7 @@ class PLViewController: UIViewController, UIPickerViewDelegate, UIPickerViewData
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         if segue.identifier == "toDitail" {
-            let cv = segue.destination as! PLDetailViewController
+            let cv = segue.destination as! PaymentDetailVC
             let indexPath = paymentListTableView.indexPathForSelectedRow!
             cv.detailPayment = payments[indexPath.row]
         }
@@ -431,7 +393,7 @@ class PLViewController: UIViewController, UIPickerViewDelegate, UIPickerViewData
     
 }
 
-extension PLViewController: UITableViewDelegate, UITableViewDataSource {
+extension PaymentListVC: UITableViewDelegate, UITableViewDataSource {
     
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
@@ -446,7 +408,7 @@ extension PLViewController: UITableViewDelegate, UITableViewDataSource {
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        var cell = UITableViewCell()
+        var cell = UITableViewCell.create()
         switch tableView.tag {
         case 1:
             cell = tableView.dequeueReusableCell(withIdentifier: "Cell")!
@@ -484,7 +446,6 @@ extension PLViewController: UITableViewDelegate, UITableViewDataSource {
             } else {
                 colorView?.backgroundColor = .systemGray
             }
-            return cell
         case 2:
             cell = tableView.dequeueReusableCell(withIdentifier: "Cell")!
             let colorView = cell.contentView.viewWithTag(1)!
@@ -495,10 +456,11 @@ extension PLViewController: UITableViewDelegate, UITableViewDataSource {
                 colorView.backgroundColor = .systemGray
             }
             categoryLabel.text = allCategories[indexPath.row]
-            return cell
-        default:
-            return cell
+        default: break
         }
+        
+        return cell.set()
+        
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
@@ -521,10 +483,48 @@ extension PLViewController: UITableViewDelegate, UITableViewDataSource {
     
 }
 
-extension PLViewController : ChartViewDelegate {
+extension PaymentListVC: ChartViewDelegate {
     func chartValueSelected(_ chartView: ChartViewBase, entry: ChartDataEntry, highlight: Highlight) {
         performSegue(withIdentifier: "toMonth", sender: nil)
         let i = Int(highlight.x)
         print(i)
     }
 }
+
+//extension PLViewController: CustomKeyboardDelegate {
+//
+//    func initSelectedRowValues(sender: CustomKeyboard) -> Array<String>? {
+//        editMonth = month
+//        return [String(month.year), String(month.month)]
+//    }
+//
+//    func titlesOfPickerViewKeyboard(sender: CustomKeyboard) -> Array<Array<String>> {
+//        return dates
+//    }
+//
+//    func didChangeValue(sender: CustomKeyboard, component: Int, rowValue: String) {
+//        switch component {
+//        case 0:
+//            editMonth.year = Int(rowValue)!
+//        case 1:
+//            editMonth.month = Int(rowValue)!
+//        default:
+//            HUD.flash(.labeledError(title: "Error", subtitle: "予期せぬエラー"), delay: 1.5)
+//        }
+//        titleLabel.text = "\(editMonth.year)年 \(editMonth.month)月の\( changeMainCategoryTab.titleForSegment(at: changeMainCategoryTab.selectedSegmentIndex) ?? "")"
+//    }
+//
+//    func didCancel(sender: CustomKeyboard) {
+//        sender.resignFirstResponder()
+//        editMonth = nil
+//        titleLabel.text = "\(month.year)年 \(month.month)月の\( changeMainCategoryTab.titleForSegment(at: changeMainCategoryTab.selectedSegmentIndex) ?? "")"
+//    }
+//
+//    func didDone(sender: CustomKeyboard, selectedData: Array<String>) {
+//        sender.resignFirstResponder()
+//        month = editMonth
+//        editMonth = nil
+//        reLoadDataAndChart()
+//    }
+//
+//}

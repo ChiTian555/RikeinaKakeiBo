@@ -7,6 +7,7 @@
 //
 
 import Foundation
+import UIKit
 
 protocol KeyNamespaceable {
         func namespaced<T: RawRepresentable>(_ key: T) -> String
@@ -50,6 +51,18 @@ extension DefaultSettable {
     func bool(forKey key: BoolKey) -> Bool? {
         let key = namespaced(key)
         return UserDefaults.standard.bool(forKey: key)
+    }
+    
+    func  setFloat(_ value: Float, forKey key: BoolKey) {
+        let key = namespaced(key)
+        UserDefaults.standard.set(value, forKey: key)
+    }
+    
+    @discardableResult
+    func float(forKey key: String = "alpha") -> Float {
+//        let key = namespaced(key)
+        let float: Float = UserDefaults.standard.float(forKey: key)
+        return float
     }
     
 //    func  setString(_ value: String?, forKey key: StringKey) {
@@ -96,6 +109,19 @@ extension DefaultSettable {
         return UserDefaults.standard.object(forKey: key) as? [[[String]]]
     }
     
+    func setImage(_ image: UIImage?, forKey key: String = "backGraundPicture") {
+        //NSData型にキャスト
+        let data = image?.pngData() as NSData?
+        UserDefaults.standard.set(data, forKey: key)
+
+    }
+    
+    @discardableResult
+    func image(forKey key: String = "backGraundPicture") -> UIImage? {
+        guard let imageData = UserDefaults.standard.object(forKey: key) as? Data else { return nil }
+        return UIImage(data: imageData)
+    }
+    
 }
 
 extension UserDefaults : DefaultSettable {
@@ -108,6 +134,7 @@ extension UserDefaults : DefaultSettable {
     enum IntKey : String {
         case shake
         case startStep
+        case alpha
     }
     enum BoolKey : String {
         case isCordMode

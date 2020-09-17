@@ -11,12 +11,20 @@ import UIKit
 final class RootVC: UIViewController {
     // 現在表示しているViewControllerを示します
     var current: UIViewController
+    var currentBackGround: UIImageView!
 
     init() {
         // 起動時最初の画面はSplashViewControllerを設定します
         current = SplashVC()
+        
         super.init(nibName: nil, bundle: nil)
+        //背景画像を入れる器
+        currentBackGround = UIImageView(frame: view.bounds)
+        self.view.addSubview(currentBackGround)
+        self.view.sendSubviewToBack(currentBackGround)
+
         self.view.backgroundColor = .systemBackground
+        self.picture = UserDefaults.standard.image()
     }
     // init()を実装したことによる必須実装
     required init?(coder aDecoder: NSCoder) {
@@ -33,6 +41,16 @@ final class RootVC: UIViewController {
         current.didMove(toParent: self)
     }
 
+    var picture: UIImage? {
+        
+        set(setImage) {
+            currentBackGround.image = setImage
+        }
+        get {
+            return currentBackGround.image
+        }
+    }
+    
     /// RootVCの子VCを入れ替える＝ルートの画面を切り替える
     func transition(to vc: UIViewController) {
         // 新しい子VCを追加
