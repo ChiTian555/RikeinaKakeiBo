@@ -16,13 +16,15 @@ class AccountSettingVC: MainBaceVC {
 
     var settingNomber: Int!
     
-    var settingArray: [(name: String, cellTipe: Int)]!
+    var settingArray: [(name: String, cellType: Int)]!
     
     var accounts = [Account]()
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        //スワイプで画面を戻る
+        self.setSwipe()
         
         tableView.set()
         
@@ -46,7 +48,8 @@ class AccountSettingVC: MainBaceVC {
             tableView.rowHeight = 50
             tableView.estimatedRowHeight = 50
         }
-        moveButton.tintColor = accounts.count > 1 ? .systemBlue : .systemGray3
+        moveButton.tintColor =
+            accounts.count > 1 ? UserDefaults.standard.color(forKey: .buttonColor) : .systemGray3
         moveButton.isEnabled = accounts.count > 1
         
         tableView.reloadData()
@@ -81,8 +84,8 @@ extension AccountSettingVC: UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         
-        var cell = UITableViewCell.create()
-        cell = tableView.dequeueReusableCell(withIdentifier: "Cell")!
+        var cell: UITableViewCell!
+        cell = tableView.dequeueReusableCell(withIdentifier: "Cell")!.create()
         let label = cell.viewWithTag(2) as! UILabel
         
         if accounts.count == 0 {
@@ -104,8 +107,9 @@ extension AccountSettingVC: UITableViewDelegate {
     @IBAction func tappedEditButton() {
         tableView.isEditing = !tableView.isEditing
     }
-    //テーブルビューの並び替えモード
+    //テーブルビューの編集可否を指定
     func tableView(_ tableView: UITableView, canEditRowAt indexPath: IndexPath) -> Bool {
+        if accounts.count == 0 { return false }
         return true
     }
 

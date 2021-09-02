@@ -7,6 +7,7 @@
 //
 import RealmSwift
 import SwiftDate
+import Realm
 
 class Check: Object {
     @objc dynamic var checkDate = Date()
@@ -15,14 +16,29 @@ class Check: Object {
 
 class Account: Object {
     
-    @objc dynamic private var id: Int = 0
+    @objc dynamic var id: Int = 0
     @objc dynamic var name: String = ""
     @objc dynamic var type: String = ""
+    //もし、ICのとき
+    @objc dynamic var icType: Int = 0
     @objc dynamic var balance: Int = 0
     @objc dynamic private var isMustCheckAccont: Bool = false
+    @objc dynamic var chargeAccount: String = ""
     private let check = List<Check>()
-    @objc dynamic var newCheck = Check()
-//    @objc dynamic var accountUIColor: UIColor = UIColor()
+    
+    //newCheckのset,get
+    @objc dynamic var newCheck: Check? {
+        get {
+            return check.last
+        }
+        set(check) {
+            guard let check = check else { return }
+            let realm = try! Realm()
+            try! realm.write() {
+                self.check.append(check)
+            }
+        }
+    }
     
     // 初期設定
     override static func primaryKey() -> String? {
@@ -34,26 +50,11 @@ class Account: Object {
         return ["newCheck"]
     }
     
-    static func lastId() -> Int {
-        let realm = try! Realm()
-        if let object = realm.objects(Account.self).sorted(byKeyPath: "id").last {
-            return object.id + 1
-        } else {
-            return 0
-        }
-    }
-    
-    // 作成(Create)のためのコード
-    static func create(name: String) -> Account? {
-        
-        let isDuplicated = readAll().contains(where: {$0.name == name })
-        if name == "" || isDuplicated {
-            return nil
-        }
-        let account = Account()
-        account.id = lastId()
-        account.name = name
-        return account
+    init?( name: String ) {
+        let isDuplicated = Self.readAll().contains(where: {$0.name == name })
+        if name == "" || isDuplicated { return nil }
+        super.init()
+        self.name = name
     }
     
     static func moveAccount(_ source: Account,_ destination: Account) -> Bool {
@@ -84,6 +85,14 @@ class Account: Object {
         return true
     }
     
+    public func firstAdjustBalance(add addPrice: Int) {
+        
+        let realm = try! Realm()
+        try! realm.write() {
+            self.balance += addPrice
+        }
+    }
+    
     static func updateBalance(newPayment: Payment?, deletePayment: Payment? = nil) {
         
         let realm = try! Realm()
@@ -112,10 +121,6 @@ class Account: Object {
         return
     }
     
-    func getNewCheck() -> Check? {
-        return (self.check.last)
-    }
-    
     func getFirstCheck() -> Check? {
         return (self.check.first)
     }
@@ -127,10 +132,20 @@ class Account: Object {
             return object
     }
     
-    static func readAll() -> [Account] {
+    static func readAll(isCredit: Bool? = nil) -> [Account] {
         let realm = try! Realm()
-        let objects = realm.objects(Account.self).sorted(byKeyPath: "id", ascending: false) + []
-        return objects
+        var returnObjects: [Account]!
+        let objects = realm.objects(Account.self).sorted(byKeyPath: "id", ascending: false)
+        switch isCredit {
+        case nil:
+            returnObjects = objects + []
+        case true:
+            returnObjects = objects.filter("chargeAccount != ''") + []
+        case false:
+            returnObjects = objects.filter("chargeAccount == ''") + []
+        case .some(_): break
+        }
+        return returnObjects
     }
     
     func isCanEdit() -> Bool {
@@ -159,22 +174,11 @@ class Account: Object {
     }
     
     // データを更新(Update)するためのコード
-    func setValue(newCheckValue: Check? , newAccout: Account? = nil) {
-        let realm = try! Realm()
-        let objects = realm.object(ofType: Account.self, forPrimaryKey: self.name)!
-        try! realm.write() {
-            if newAccout != nil {
-                if newAccout?.name != "" {
-                    objects.name = newAccout!.name
-                }
-                if newAccout?.type != "" {
-                    objects.type = newAccout!.type
-                }
-            }
-            if newCheckValue != nil {
-                objects.check.append(newCheckValue!)
-            }
-        }
+    func write(setValue: (Account) -> Void) -> Bool {
+        guard let realm = Self.getRealm() else { return false }
+        do { try realm.write() { setValue(self) } }
+        catch { Self.realmError(error); return false }
+        return true
     }
     
     func resetValue(newCheckValue: Check) {
@@ -188,9 +192,8 @@ class Account: Object {
     }
 
     // データを保存するためのコード
-    func save() {
-        let realm = try! Realm()
-        
+    override func save() {
+        super.save()
         //チェックしたことのない口座タイプを登録した時
         var notChecked = UserDefaults.standard.stringArray1(forKey: .notDidCheckAccountTipe)!
         if notChecked.contains(self.type) {
@@ -201,18 +204,14 @@ class Account: Object {
             let tbc = SceneDelegate.shared.rootVC.current as! MainTBC
             tbc.setStartStep()
         }
-        
+    }
+
+    
+    static func restore(newPayment: [Account]) {
+        let realm = try! Realm()
         try! realm.write() {
-            realm.add(self)
+            realm.add(newPayment, update: .all)
         }
     }
     
-    // データを削除(Delete)するためのコード
-    func delete() {
-        let realm = try! Realm()
-        let objects = realm.object(ofType: Account.self, forPrimaryKey: self.name)!
-        try! realm.write() {
-            realm.delete(objects)
-        }
-    }
 }

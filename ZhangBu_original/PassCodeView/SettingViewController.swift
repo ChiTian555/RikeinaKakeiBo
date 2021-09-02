@@ -63,7 +63,7 @@ class SettingViewController: MainBaceVC {
             = LocalAuthenticationManager.getDeviceOwnerLocalAuthenticationType() != .authWithManual
         
         if isEnabledLocalAuthenticationButton {
-            HUD.flash(.label("already can use"), delay: 1)
+            HUD.flash(.label("既に使える状態です！"), delay: 1)
             return
         }
         

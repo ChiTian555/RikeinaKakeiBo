@@ -24,7 +24,7 @@ final class RootVC: UIViewController {
         self.view.sendSubviewToBack(currentBackGround)
 
         self.view.backgroundColor = .systemBackground
-        self.picture = UserDefaults.standard.image()
+        self.picture = UserDefaults.standard.image(forKey: .backGraundPicture)
     }
     // init()を実装したことによる必須実装
     required init?(coder aDecoder: NSCoder) {

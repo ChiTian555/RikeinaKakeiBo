@@ -1,6 +1,9 @@
 # Uncomment the next line to define a global platform for your project
 platform :ios, '11.0'
 
+install! 'cocoapods',
+:deterministic_uuids => false
+
 target 'ZhangBu_original' do
   # Comment the next line if you don't want to use dynamic frameworks
   use_frameworks!
@@ -11,11 +14,15 @@ target 'ZhangBu_original' do
   pod 'CropViewController'
   pod 'UITextView+Placeholder'
   pod 'PKHUD'
-  pod 'RealmSwift'
   pod 'Charts'
   pod 'SwiftDate'
   pod 'FontAwesome.swift'
   pod 'Siren'
   pod 'Instructions'
+  pod 'RealmSwift'
+  
+  pod 'Google-Mobile-Ads-SDK'
+  pod 'Firebase/Auth'
+  pod 'FirebaseFirestore'
   
 end

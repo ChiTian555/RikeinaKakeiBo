@@ -8,7 +8,6 @@
 
 import UIKit
 import PKHUD
-import NFCReader
 import Instructions
 
 class AddAccountViewController: UIViewController {
@@ -17,9 +16,18 @@ class AddAccountViewController: UIViewController {
     @IBOutlet var accountMoneyTextField: UITextField!
     @IBOutlet var accountTipeTextField: UITextField!
     
+    @IBOutlet var chargeAccountNameTextField: UITextField!
+    
+    
     var coachController = CoachMarksController()
     
-    var pickerTitle = [String]()
+    var pickerTitle: [String] {
+        if #available(iOS 13.0, *) {
+            return ["①　携帯残高確認", "②　本アプリ対応ICカード", "③　その他の口座", "④　クレカ型(負債型)口座"]
+        } else {
+            return ["①　携帯残高確認", "③　その他の口座", "④　クレカ型(負債型)口座"]
+        }
+    }
     
     var selectedAccount: Account!
     var selectedNumber: Int!
@@ -31,28 +39,29 @@ class AddAccountViewController: UIViewController {
     
     let pickerView = UIPickerView()
     
-    //NFCReaderの定義
-    private let configuration: ReaderConfiguration = {
-        var configuration = ReaderConfiguration()
-        configuration.message.alert = "携帯の読み取り部を、\nICカードにかざしてください。"
-        return configuration
-    }()
-    
-    private let reader = Reader<FeliCa>()
+    @IBOutlet weak var scrollView: UIScrollView!
+    @IBOutlet var creditSetting: UIView!
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        if #available(iOS 13.0, *) {
-            pickerTitle = ["①　携帯残高確認", "②　本アプリ対応ICカード", "③　その他の口座"]
-        } else {
-            pickerTitle = ["①　携帯残高確認", "③　その他の口座"]
-        }
+        self.configureObserver()
+        creditSetting.isHidden = true
+        accountMoneyTextField.isEnabled = true
+        scrollView.isScrollEnabled = true
+        scrollView.isUserInteractionEnabled = true
+        scrollView.contentInsetAdjustmentBehavior = .never
+        scrollView.contentSize = CGSize(width: UIScreen.main.bounds.width,
+                                        height: scrollView.viewWithTag(1)!.frame.height)
+        scrollView.flashScrollIndicators()
         
         textFields = [accountNameTextField, accountTipeTextField, accountMoneyTextField]
         
+        setHideKeyboardTapped()
         accountMoneyTextField.delegate = self
         accountNameTextField.delegate = self
+        accountTipeTextField.delegate = self
+        chargeAccountNameTextField.delegate = self
         pickerView.dataSource = self
         pickerView.delegate = self
         
@@ -73,9 +82,15 @@ class AddAccountViewController: UIViewController {
         
         accountMoneyTextField.keyboardType = .numberPad
         accountTipeTextField.inputView = pickerView
+        let accountPicker = UIPickerView()
+        accountPicker.dataSource  = self
+        accountPicker.delegate = self
+        accountPicker.tag = 1
+        chargeAccountNameTextField.inputView = accountPicker
         
-        let toolbar = UIToolbar(frame: CGRectMake(0, 0, 0, 35))
-        let toolbarLast = UIToolbar(frame: CGRectMake(0, 0, 0, 35))
+        //機種によって、自動で、toolBarの高さ変更
+        let toolbar = CustomToolBar()
+        let toolbarLast = CustomToolBar()
         let goNextItem = UIBarButtonItem(title: "Next", style: .done, target: self, action: #selector(goNext))
         goNextItem.tintColor = UIColor.orange
         let doneItem = UIBarButtonItem(title: "Done", style: .plain, target: self, action: #selector(done))
@@ -92,18 +107,59 @@ class AddAccountViewController: UIViewController {
                 textField.inputAccessoryView = toolbarLast
             }
         }
-        
+        chargeAccountNameTextField.inputAccessoryView = toolbarLast
     }
     
+    //キーボードの出現でスクロールビューを変更するのを監視用オブザーバー
+    @objc override func configureObserver() {
+        NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillShow(_:)), name: UIResponder.keyboardWillShowNotification, object: nil)
+        //ここでUIKeyboardWillShowという名前の通知のイベントをオブザーバー登録をしている
+        NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillHide(_:)), name: UIResponder.keyboardDidHideNotification, object: nil)
+        //ここでUIKeyboardWillHideという名前の通知のイベントをオブザーバー登録をしている
+    }
+    
+     //UIKeyboardWillShow通知を受けて、実行される関数
+    @objc override func keyboardWillShow(_ notification: NSNotification){
+        
+        print("キーボードが立ち上がった")
+        guard let userInfo = notification.userInfo else { return }
+        print("userInfo GET")
+        let keyboardSize = (userInfo[UIResponder.keyboardFrameEndUserInfoKey] as! NSValue).cgRectValue.height
+        print(keyboardSize)
+            
+        scrollView.contentInset.bottom = keyboardSize
+        scrollView.scrollIndicatorInsets = UIEdgeInsets(top: 0, left: 0, bottom: keyboardSize, right: 0)
+    }
+       
+       
+       //UIKeyboardWillShow通知を受けて、実行される関数
+    override func keyboardWillHide(_ notification: NSNotification){
+        scrollView.contentInset = .zero
+        scrollView.scrollIndicatorInsets = .zero
+       }
+    
     @objc func done() {
-        let edittingTextField = textFields.first{($0.isFirstResponder)}!
+        guard let edittingTextField = textFields.first(where: {($0.isFirstResponder)}) else { return }
         if edittingTextField == accountTipeTextField {
-            if accountTipeTextField.text == "②　本アプリ対応ICカード" {
-                checkSearchIcCard(actionAfterFinished: 0)
+            //②...ICカード
+            if accountTipeTextField.text!.first == "④" {
+                accountMoneyTextField.text = "0"
+                accountMoneyTextField.isEnabled = false
+                creditSetting.isHidden = false
+            } else {
+                accountMoneyTextField.isEnabled = true
+                creditSetting.isHidden = true
+            }
+            if accountTipeTextField.text!.first == "②" {
+                checkSearchIcCard(isNextAfterFinished: false)
                 return
             }
             if accountTipeTextField.text == "" {
-            accountTipeTextField.text = pickerTitle.first
+                accountTipeTextField.text = pickerTitle.first
+            }
+        } else if edittingTextField == chargeAccountNameTextField {
+            if chargeAccountNameTextField.text == "" {
+                chargeAccountNameTextField.text = allAccount.first?.name
             }
         }
         edittingTextField.resignFirstResponder()
@@ -112,92 +168,63 @@ class AddAccountViewController: UIViewController {
     @objc func goNext() {
         let firstResponderIndex = textFields.firstIndex{($0.isFirstResponder)}!
         
-        if textFields[firstResponderIndex] == accountTipeTextField {
-            if accountTipeTextField.text == "②　本アプリ対応ICカード" {
-                checkSearchIcCard(actionAfterFinished: 1)
-                return
+        if accountTipeTextField.text!.first == "④" {
+            textFields.append(chargeAccountNameTextField)
+            creditSetting.isHidden = false
+            accountMoneyTextField.text = "0"
+            accountMoneyTextField.isEnabled = false
+            chargeAccountNameTextField.becomeFirstResponder()
+            
+        } else {
+            creditSetting.isHidden = true
+            accountMoneyTextField.isEnabled = true
+            textFields.removeAll(where: {$0 == chargeAccountNameTextField})
+
+            if textFields[firstResponderIndex] == accountTipeTextField {
+                if accountTipeTextField.text!.first == "②" {
+                    checkSearchIcCard(isNextAfterFinished: true)
+                    return
+                }
+                if accountTipeTextField.text == "" {
+                    accountTipeTextField.text = pickerTitle.first
+                }
             }
-            if accountTipeTextField.text == "" {
-                accountTipeTextField.text = pickerTitle.first
-            }
+            textFields[firstResponderIndex + 1].becomeFirstResponder()
+    //        pickerView.reloadAllComponents()
         }
-        textFields[firstResponderIndex + 1].becomeFirstResponder()
-//        pickerView.reloadAllComponents()
     }
     
     //actionAfterFinished 0 -> Done , 1 -> Next
-    func checkSearchIcCard(actionAfterFinished: Int) {
-        let alert = UIAlertController(title: "確認", message: "携帯でICカードを\nスキャンしますか？", preferredStyle: .alert)
-        let okAction = UIAlertAction(title: "はい", style: .default) { (action) in
-            alert.dismiss(animated: true, completion: nil)
+    func checkSearchIcCard(isNextAfterFinished: Bool) {
+        self.accountTipeTextField.resignFirstResponder()
+        let alert = MyAlert("確認", "携帯でICカードを\nスキャンしますか？")
+        alert.addActions("いいえ", type: .cancel) { _ in
+            if isNextAfterFinished { self.accountMoneyTextField.becomeFirstResponder() }
+        }
+        alert.addActions("はい") { _ in
             self.accountMoneyTextField.resignFirstResponder()
+            //パスワード画面の表示をさせない。
+            SceneDelegate.shared.isCheckMode = true
             self.searchIcCard()
         }
-        let noAction = UIAlertAction(title: "いいえ", style: .cancel) { (action) in
-            alert.dismiss(animated: true, completion: nil)
-            if actionAfterFinished == 0 {
-                self.accountTipeTextField.resignFirstResponder()
-            } else {
-                self.accountMoneyTextField.becomeFirstResponder()
-            }
-        }
-        alert.addAction(noAction)
-        alert.addAction(okAction)
-        self .present(alert, animated: true, completion: nil)
+        self .present(alert.contontroller, animated: true, completion: nil)
     }
     
     func searchIcCard() {
         
-        reader.configuration = self.configuration
-        reader.read(didBecomeActive: { _ in
-            print("reader: セット完了")
-        }, didDetect: { reader, result in
-            print("検出側から反応が返ってきた.")
-            switch result {
-            case .success(let tag):
-                var balance = UInt32()
-                var cardName = ""
-                switch tag {
-                case .edy(let edy):
-                    cardName = "edy"
-                    balance = edy.histories.first?.balance ?? 0
-                case .nanaco(let nanaco):
-                    cardName = "nanaco"
-                    balance = nanaco.histories.first?.balance ?? 0
-                case .waon(let waon):
-                    cardName = "waon"
-                    balance = waon.histories.first?.balance ?? 0
-                case .suica(let suica):
-                    cardName = "交通系"
-                    balance = UInt32(suica.boardingHistories.first?.balance ?? 0)
-                }
-                reader.setMessage("\(cardName): 残高は¥\(balance)でした")
-                self.accountMoneyTextField.text = "\(balance)"
-                
-                
-            case .failure(let error):
-                print(error)
-                switch error {
-                case .notSupported:
-                    HUD.flash(.labeledError(title: "Error", subtitle: "\(error)"), delay: 1.5)
-                    break
-                case .readTagFailure(let error2):
-                    print("\(error2)")
-                    break
-                case .scanFailure(let nsError):
-                    print("\(nsError)")
-                    break
-                case .tagConnectionFailure(let nsError):
-                    print("\(nsError)")
-                }
-                reader.setMessage("読み込みに失敗しました")
-                //readerが閉じる3秒後に処理を開始
+        NFCReader(type: FeliCaCardType(rawValue: 1) ?? .unknown) { (balance, error) in
+            if let error = error {
+                print(error.localizedDescription)
                 DispatchQueue.main.asyncAfter(deadline: .now() + 3) {
                     self.accountNameTextField.becomeFirstResponder()
-                }
+                }; return
             }
-        })
+            print("検出側から反応が返ってきた.")
+            self.accountMoneyTextField.text = "\(balance)"
+        }.start()
+        
     }
+
     
     @IBAction func save() {
         let text = accountNameTextField.text
@@ -210,6 +237,11 @@ class AddAccountViewController: UIViewController {
             return
         }
         
+        guard let price = Int(accountMoneyTextField.text!) else {
+            HUD.flash(.labeledError(title: "入力エラー", subtitle: "残高の欄には数値を\n入力してください。"), delay: 1.2)
+            return
+        }
+        
         if isEditMode {
 //            let newCheck = Check()
 //            let newAccount = Account()
@@ -219,27 +251,32 @@ class AddAccountViewController: UIViewController {
 //            selectedAccount.setValue(newCheckValue: newCheck, newAccout: newAccount)
         } else {
             guard let accountName = accountNameTextField.text else { return }
-            guard let newAccount = Account.create(name: accountName) else {
+            guard let newAccount = Account(name: accountName) else {
                 HUD.flash(.labeledError(title: "Error", subtitle: "口座名が重複します"))
                 return
             }
             newAccount.type = accountTipeTextField.text!
-            newAccount.balance = Int(accountMoneyTextField.text!)!
+            newAccount.balance = price
+            if newAccount.type.first == "④" {
+                newAccount.chargeAccount = chargeAccountNameTextField.text!
+            }
             newAccount.save()
         }
         // 親VCを取り出し
         let parentTBC = SceneDelegate.shared.rootVC.current as! MainTBC
         
-        let step = UserDefaults.standard.integer(forKey: .startStep)!
-        if step == 0 {
+        if UserDefaults.standard.integer(forKey: .startStep)! == 0 {
             UserDefaults.standard.setInteger(1, forKey: .startStep)
+            parentTBC.setStartStep()
         }
-        parentTBC.setStartStep()
         
         let parentNC = parentTBC.selectedViewController as! UINavigationController
-        let parentVC = parentNC.topViewController as! AccountSettingVC
-        // ユーザデフォルトでラベル更新
-        parentVC.load()
+        if let parentVC = parentNC.topViewController as? AccountSettingVC {
+            // ユーザデフォルトでラベル更新
+            parentVC.load()
+        } else if let parentVC = parentNC.topViewController as? AddCategoryViewController {
+            parentVC.addNewAccount(text!)
+        }
         // 画面を閉じる
         self.dismiss(animated: true, completion: nil)
     }
@@ -253,28 +290,87 @@ class AddAccountViewController: UIViewController {
 
 extension AddAccountViewController: UITextFieldDelegate {
     
-    func textFieldDidEndEditing(_ textField: UITextField) {
-        accountNameTextField.resignFirstResponder()
+//    func textFieldShouldEndEditing(_ textField: UITextField) -> Bool {
+//        
+//        if textField == accountTipeTextField {
+//            if textField.text?.first == "④" && creditSetting.isHidden {
+//                creditSetting.isHidden = false
+//                accountMoneyTextField.isEnabled = false
+//                accountMoneyTextField.text = "0"
+//            } else if textField.text?.first != "④" && !creditSetting.isHidden {
+//                creditSetting.isHidden = true
+//                accountMoneyTextField.isEnabled = true
+//            }
+//        }
+//        return true
+//    }
+
+//    func textFieldShouldBeginEditing(_ textField: UITextField) -> Bool {
+//        return textField.isEnabled
+//    }
+//
+//    func textFieldDidBeginEditing(_ textField: UITextField) {
+//        if !textField.isEnabled {
+//            textField.resignFirstResponder()
+//        }
+//    }
+    
+    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+        if textField == chargeAccountNameTextField {
+            textField.resignFirstResponder()
+        }
+        return true
     }
     
 }
 
 extension AddAccountViewController: UIPickerViewDelegate, UIPickerViewDataSource {
     
+    var allAccount: [Account] {
+        return Account.readAll(isCredit: false)
+    }
+    
     func numberOfComponents(in pickerView: UIPickerView) -> Int {
         return 1
     }
     
     func pickerView(_ pickerView: UIPickerView, numberOfRowsInComponent component: Int) -> Int {
-        return 3
+        if pickerView.tag == 1 {
+            if allAccount.count == 0 {
+                return 1
+            }
+            return allAccount.count
+        }
+        return pickerTitle.count
     }
     
     func pickerView(_ pickerView: UIPickerView, titleForRow row: Int, forComponent component: Int) -> String? {
+        if pickerView.tag == 1 {
+            if allAccount.count == 0 {
+                return "追加できるアカウントがありません"
+            }
+            return allAccount[row].name
+        }
         return pickerTitle[row]
     }
     
     func pickerView(_ pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int) {
+        if pickerView.tag == 1 {
+            if allAccount.count == 0 { return }
+            chargeAccountNameTextField.text = allAccount[row].name
+            return
+        }
         accountTipeTextField.text = pickerTitle[row]
+        
+        if accountTipeTextField.text?.first == "④" && creditSetting.isHidden {
+            creditSetting.isHidden = false
+            accountMoneyTextField.isEnabled = false
+            accountMoneyTextField.text = "0"
+        } else if accountTipeTextField.text?.first != "④" && !creditSetting.isHidden {
+            creditSetting.isHidden = true
+            accountMoneyTextField.isEnabled = true
+        }
+        
     }
     
 }

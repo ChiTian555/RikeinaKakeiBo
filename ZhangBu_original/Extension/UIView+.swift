@@ -21,7 +21,7 @@ extension UIView {
         } else {
             finalAlpha = alpha!
         }
-        currentBackGround.image = UserDefaults.standard.image()?.alpha(finalAlpha)
+        currentBackGround.image = UserDefaults.standard.image(forKey: .backGraundPicture)?.alpha(finalAlpha)
         self.addSubview(currentBackGround)
         self.sendSubviewToBack(currentBackGround)
     }

@@ -8,6 +8,9 @@
 
 import UIKit
 import Siren
+import CropViewController
+import PKHUD
+import RealmSwift
 
 final class SplashVC: MainBaceVC {
     
@@ -119,10 +122,126 @@ final class SplashVC: MainBaceVC {
         UIApplication.shared.endBackgroundTask(self.backgroundTaskID)
         
     }
+    
+    override func motionBegan(_ motion: UIEvent.EventSubtype, with event: UIEvent?) {
+        
+        guard motion == .motionShake else { return }
+        
+        if let timer = timer {
+            timer.invalidate()
+        }
+        
+        let alert = UIAlertController(title: "メニュー", message: "画面を\n→スワイプ：出費手入力画面へ\n←スワイプ：レシートの撮影", preferredStyle: .alert)
+        let swipeGuestureRight = UISwipeGestureRecognizer(target: self, action: #selector(swiped(_:)))
+        swipeGuestureRight.direction = .right
+        let swipeGuestureLeft = UISwipeGestureRecognizer(target: self, action: #selector(swiped(_:)))
+        swipeGuestureLeft.direction = .left
+        present(alert, animated: true, completion: {
+            
+            alert.view.superview?.addGestureRecognizer(swipeGuestureRight)
+            alert.view.superview?.addGestureRecognizer(swipeGuestureLeft)
+            alert.view.superview?.isUserInteractionEnabled = true
+        })
+    }
+    
+    @objc private func swiped(_ sender: UISwipeGestureRecognizer) {
+        
+        guard let alert = self.presentedViewController as? UIAlertController else { return }
+        alert.dismiss(animated: true, completion: nil)
+        print(sender.direction)
+        switch sender.direction {
+        case .left:
+            takePhoto()
+        case .right:
+            goToAddPayment()
+        default: break
+        }
+    }
+    
+    //右スワイプ
+    private func goToAddPayment() {
+    
+        let scene = SceneDelegate.shared
+        
+        if scene.rootVC.current == self {
+    //            //背景画像追加
+    //            scene.rootVC.addPicture()
+            
+            if UserDefaults.standard.bool(forKey: .isWatchedWalkThrough) != true {
+                let walkThroughVC = WalkThroughVC()
+                scene.rootVC.transition(to: walkThroughVC)
+            } else {
+                //パスワード画面を表示
+                scene.displayPasscodeLockScreenIfNeeded()
+                // メイン画面へ移動
+                scene.rootVC.transitionToMain()
+                if let tbc = scene.rootVC.current as? MainTBC {
+                    tbc.selectedIndex = 2
+                    guard let nc = tbc.selectedViewController as? UINavigationController else { return }
+                    guard let vc = nc.topViewController as? AddPaymentVC else { return }
+                }
+                print("メイン画面へ移動")
+            }
+            
+        }
+    }
+    
+    private func takePhoto() {
+        let picker = UIImagePickerController()
+        if UIImagePickerController.isSourceTypeAvailable(.camera) {
+            picker.sourceType = .camera
+        } else if UIImagePickerController.isSourceTypeAvailable(.photoLibrary) {
+            picker.sourceType = .photoLibrary
+        } else {
+            HUD.flash(.labeledError(title: "エラー", subtitle: "カメラ,アルバム機能が使えません"), delay: 2)
+            return
+        }
+        
+        picker.delegate = self
+        // UIImagePickerController カメラを起動する
+        present(picker, animated: true, completion: nil)
+    }
     //CGRectを簡単に作る
     private func CGRectMake(_ x: CGFloat, _ y: CGFloat, _ width: CGFloat, _ height: CGFloat) -> CGRect {
         return CGRect(x: x, y: y, width: width, height: height)
     }
 
+}
+
+extension SplashVC: UIImagePickerControllerDelegate, UINavigationControllerDelegate, CropViewControllerDelegate {
+    func cropViewController(_ cropViewController: CropViewController, didCropToImage image: UIImage, withRect cropRect: CGRect, angle: Int) {
+        updateImageViewWithImage(image, fromCropViewController: cropViewController)
+    }
+        
+    func updateImageViewWithImage(_ image: UIImage, fromCropViewController cropViewController: CropViewController) {
+        let receipt = Receipt()
+        receipt.photo = image
+        receipt.save()
+        cropViewController.dismiss(animated: true, completion: nil)
+    }
+
+    func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
+//        var image = info[.originalImage] as! UIImage
+        guard let pickerImage = (info[UIImagePickerController.InfoKey.originalImage] as? UIImage) else { return }
+        
+        let cropController = CropViewController(croppingStyle: .default, image: pickerImage)
+        cropController.delegate = self
+        //サイズ指定！
+        cropController.customAspectRatio = view.bounds.size
+        
+        //今回は使わないボタン等を非表示にする。
+        cropController.aspectRatioPickerButtonHidden = true
+        cropController.resetAspectRatioEnabled = false
+        cropController.rotateButtonsHidden = true
+        
+        cropController.cropView.cropViewPadding = 25
+        
+        //cropBoxのサイズを固定する。
+        cropController.cropView.cropBoxResizeEnabled = false
+        //pickerを閉じたら、cropControllerを表示する。
+        picker.dismiss(animated: true) {
+            self.present(cropController, animated: true, completion: nil)
+        }
+    }
 }
 

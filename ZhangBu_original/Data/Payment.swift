@@ -7,13 +7,19 @@
 //
 import RealmSwift
 import SwiftDate
+import Realm
 
 class Payment: Object {
     
-    @objc dynamic private var id: Int = 0
+    @objc dynamic var id: Int = 0
     @objc dynamic var isUsePoketMoney: Bool = true
     @objc dynamic var date: Date = Date()
+    @objc dynamic var addDate: Date = Date()
     @objc dynamic var category = String()
+    
+    //(2.0)に実装
+    @objc dynamic var userCategory = String()
+    
     @objc dynamic var memo = String()
     //出金、入金の支払い方法
     @objc dynamic var paymentMethod = String()
@@ -28,22 +34,6 @@ class Payment: Object {
         return "id"
     }
     
-    static func lastId() -> Int {
-        let realm = try! Realm()
-        if let object = realm.objects(Payment.self).last {
-            return object.id + 1
-        } else {
-            return 1
-        }
-    }
-    
-    // 作成(Create)のためのコード
-    static func create() -> Payment {
-        let payment = Payment()
-        payment.id = lastId()
-        return payment
-    }
-    
     // データを更新(Update)するためのコード
      func setValue(newValue newPayment: Payment) {
         let realm = try! Realm()
@@ -51,6 +41,7 @@ class Payment: Object {
         Account.updateBalance(newPayment: newPayment, deletePayment: self)
         try! realm.write() {
             self.date = newPayment.date
+            self.userCategory = newPayment.userCategory
             self.category = newPayment.category
             self.memo = newPayment.memo
             self.paymentMethod = newPayment.paymentMethod
@@ -61,24 +52,67 @@ class Payment: Object {
     }
 
     // データを保存するためのコード
-    func save() {
-        let realm = try! Realm()
+    override func save() {
+        super.save()
         if self.mainCategoryNumber == 1 {
             self.isUsePoketMoney = false
-        }
-        Account.updateBalance(newPayment: self)
+        }; Account.updateBalance(newPayment: self)
+    }
+    
+    static func readAllPayment() -> [Payment] {
+        let realm = try! Realm()
+        return realm.objects(Payment.self) + []
+    }
+    
+    //追加日時から割り勘を設定
+    static func readSortedByAddDate(_ mainCategory: Int?) -> [Payment] {
+        let realm = try! Realm()
+        var payments = realm.objects(Payment.self).sorted(byKeyPath: "addDate")
+        if let main = mainCategory {
+            payments = payments.filter("category == %@", main)
+        }; return payments.prefix(5) + []
+    }
+    
+    static func getMonthPayment(_ mainCategory: Int, year: Int, month: Int, category: String? = nil) -> Results<Payment> {
         
-        try! realm.write() {
-            realm.add(self)
+        let realm = try! Realm()
+        let firstDate = DateInRegion(year: year, month: month, day: 1).date
+        let endDate = DateInRegion(year: year, month: month + 1, day: 1).date
+        var monthRealmPayments = realm.objects(Payment.self)
+            .filter("mainCategoryNumber == \(mainCategory)")
+            .filter("date >= %@ AND date < %@", firstDate, endDate)
+        if let category = category {
+            monthRealmPayments = monthRealmPayments.filter("category == %@", category)
         }
+        return monthRealmPayments
+    }
+    
+    //日にちの前後
+    static func getCreditPaymentSum(_ account: Account, endDate: Date) -> Int {
+        let realm = try! Realm()
+        let creditPayments = realm.objects(Payment.self)
+            .filter("mainCategoryNumber != %@ AND paymentMethod == %@", 2, account.name)
+        var sum: Int!
+        if let startDate = account.newCheck?.checkDate {
+            sum = creditPayments.filter("date >= %@ AND date < %@", startDate, endDate)
+                .sum(ofProperty: "price")
+        } else {
+            sum = creditPayments.filter("date < %@", endDate)
+                .sum(ofProperty: "price")
+        }
+        return sum
     }
     
     // データを削除(Delete)するためのコード
-    func delete() {
-        let realm = try! Realm()
+    override func delete() {
         Account.updateBalance(newPayment: nil, deletePayment: self)
+        delete()
+    }
+    
+    static func restore(newPayment: [Payment]) {
+        let realm = try! Realm()
         try! realm.write() {
-            realm.delete(self)
+            realm.add(newPayment, update: .all)
         }
     }
 }

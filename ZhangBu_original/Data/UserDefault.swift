@@ -10,121 +10,18 @@ import Foundation
 import UIKit
 
 protocol KeyNamespaceable {
-        func namespaced<T: RawRepresentable>(_ key: T) -> String
+    func namespaced<T: RawRepresentable>(_ key: T) -> String
 }
 
 extension KeyNamespaceable {
-
     func namespaced<T: RawRepresentable>(_ key: T) -> String {
         return "\(Self.self).\(key.rawValue)"
     }
 }
 
-protocol DefaultSettable : KeyNamespaceable {
-    associatedtype IntKey : RawRepresentable
-    associatedtype Array3Key : RawRepresentable
-    associatedtype BoolKey : RawRepresentable
-    associatedtype Array2Key : RawRepresentable
-    associatedtype Array1Key : RawRepresentable
-//    associatedtype StringKey : RawRepresentable
-}
-
-extension DefaultSettable {
+//enumのセット
+extension UserDefaults {
     
-    func setInteger(_ value: Int?, forKey key: IntKey) {
-        let key = namespaced(key)
-        UserDefaults.standard.set(value, forKey: key)
-    }
-    
-    @discardableResult
-    func integer(forKey key: IntKey) -> Int? {
-        let key = namespaced(key)
-        return UserDefaults.standard.integer(forKey: key)
-    }
-    
-    func  setBool(_ value: Bool?, forKey key: BoolKey) {
-        let key = namespaced(key)
-        UserDefaults.standard.set(value, forKey: key)
-    }
-    
-    @discardableResult
-    func bool(forKey key: BoolKey) -> Bool? {
-        let key = namespaced(key)
-        return UserDefaults.standard.bool(forKey: key)
-    }
-    
-    func  setFloat(_ value: Float, forKey key: BoolKey) {
-        let key = namespaced(key)
-        UserDefaults.standard.set(value, forKey: key)
-    }
-    
-    @discardableResult
-    func float(forKey key: String = "alpha") -> Float {
-//        let key = namespaced(key)
-        let float: Float = UserDefaults.standard.float(forKey: key)
-        return float
-    }
-    
-//    func  setString(_ value: String?, forKey key: StringKey) {
-//        let key = namespaced(key)
-//        UserDefaults.standard.set(value, forKey: key)
-//    }
-//
-//    @discardableResult
-//    func String(forKey key: StringKey) -> String? {
-//        let key = namespaced(key)
-//        return UserDefaults.standard.string(forKey: key)
-//    }
-    
-    func setArray1(_ value: [String]?, forKey key: Array1Key) {
-        let key = namespaced(key)
-        UserDefaults.standard.set(value, forKey: key)
-    }
-    
-    @discardableResult
-    func stringArray1(forKey key: Array1Key) -> [String]? {
-        let key = namespaced(key)
-        return UserDefaults.standard.object(forKey: key) as? [String]
-    }
-    
-    func setArray2(_ value: [[String]]?, forKey key: Array2Key) {
-        let key = namespaced(key)
-        UserDefaults.standard.set(value, forKey: key)
-    }
-    
-    @discardableResult
-    func stringArray2(forKey key: Array2Key) -> [[String]]? {
-        let key = namespaced(key)
-        return UserDefaults.standard.object(forKey: key) as? [[String]]
-    }
-    
-    func setArray3(_ value: [[[String]]]?, forKey key: Array3Key) {
-        let key = namespaced(key)
-        UserDefaults.standard.set(value, forKey: key)
-    }
-    
-    @discardableResult
-    func stringArray3(forKey key: Array3Key) -> [[[String]]]? {
-        let key = namespaced(key)
-        return UserDefaults.standard.object(forKey: key) as? [[[String]]]
-    }
-    
-    func setImage(_ image: UIImage?, forKey key: String = "backGraundPicture") {
-        //NSData型にキャスト
-        let data = image?.pngData() as NSData?
-        UserDefaults.standard.set(data, forKey: key)
-
-    }
-    
-    @discardableResult
-    func image(forKey key: String = "backGraundPicture") -> UIImage? {
-        guard let imageData = UserDefaults.standard.object(forKey: key) as? Data else { return nil }
-        return UIImage(data: imageData)
-    }
-    
-}
-
-extension UserDefaults : DefaultSettable {
     enum Array2Key : String {
         case account
     }
@@ -143,11 +40,103 @@ extension UserDefaults : DefaultSettable {
         case isNotFirstOpen
         case isFirstAddAccount
         case canUseNotification
+        case watchStartView
     }
-    enum Array3Key : String {
-        case list
+    enum ImageKey : String {
+        case backGraundPicture
     }
-//    enum StringKey : String {
-//        case
-//    }
+    enum ColorKey : String {
+        case userColor
+        case buttonColor
+    }
+}
+
+//実際に保存するための関数をセット
+extension UserDefaults : KeyNamespaceable {
+    //UserDefaultsに保存する関数
+    func setInteger(_ value: Int?, forKey key: UserDefaults.IntKey) {
+        let key = namespaced(key)
+        UserDefaults.standard.set(value, forKey: key)
+    }
+        
+    @discardableResult
+    func integer(forKey key: UserDefaults.IntKey) -> Int? {
+        let key = namespaced(key)
+        return UserDefaults.standard.integer(forKey: key)
+    }
+    
+    func setBool(_ value: Bool?, forKey key: UserDefaults.BoolKey) {
+        let key = namespaced(key)
+        UserDefaults.standard.set(value, forKey: key)
+    }
+        
+    @discardableResult
+    func bool(forKey key: UserDefaults.BoolKey) -> Bool? {
+        let key = namespaced(key)
+        return UserDefaults.standard.bool(forKey: key)
+    }
+
+    func setArray1(_ value: [String]?, forKey key: UserDefaults.Array1Key) {
+        let key = namespaced(key)
+        UserDefaults.standard.set(value, forKey: key)
+    }
+        
+    @discardableResult
+    func stringArray1(forKey key: UserDefaults.Array1Key) -> [String]? {
+        let key = namespaced(key)
+        return UserDefaults.standard.object(forKey: key) as? [String]
+    }
+        
+    func setArray2(_ value: [[String]]?, forKey key: UserDefaults.Array2Key) {
+        let key = namespaced(key)
+        UserDefaults.standard.set(value, forKey: key)
+    }
+        
+    @discardableResult
+    func stringArray2(forKey key: UserDefaults.Array2Key) -> [[String]]? {
+        let key = namespaced(key)
+        return UserDefaults.standard.object(forKey: key) as? [[String]]
+    }
+        
+    func setImage(_ image: UIImage?, forKey key: UserDefaults.ImageKey) {
+        let key = namespaced(key)
+        //NSData型にキャスト
+        let data = image?.pngData() as NSData?
+        UserDefaults.standard.set(data, forKey: key)
+
+    }
+    
+    @discardableResult
+    func image(forKey key: UserDefaults.ImageKey) -> UIImage? {
+        let key = namespaced(key)
+        guard let imageData = UserDefaults.standard.object(forKey: key) as? Data else { return nil }
+        return UIImage(data: imageData)
+    }
+    
+    func setColor(_ color: UIColor?, forKey key: UserDefaults.ColorKey) {
+        let key = namespaced(key)
+        var colorData: NSData?
+        if let color = color {
+            colorData = try? NSKeyedArchiver.archivedData(withRootObject: color, requiringSecureCoding: false) as NSData
+        }
+        UserDefaults.standard.set(colorData, forKey: key)
+    }
+        
+    @discardableResult
+    func color(forKey key: UserDefaults.ColorKey) -> UIColor {
+        var color: UIColor!
+        switch key {
+        case .userColor:
+            color = UIColor.orange.withAlphaComponent(0.7)
+        case .buttonColor:
+            color = UIColor.blue
+        }
+        let key = namespaced(key)
+        guard let colorData = UserDefaults.standard.data(forKey: key) else { return color }
+        if let udColor = try? (NSKeyedUnarchiver.unarchiveTopLevelObjectWithData(colorData) as? UIColor) {
+            color = udColor
+        }
+        return color
+    }
+    
 }

@@ -13,8 +13,9 @@ extension UITableView {
     
     public func set() {
         self.backgroundColor = .clear
+        self.tableFooterView = UIView()
     }
-    
+
 }
 
 extension UITableViewCell {
@@ -25,16 +26,15 @@ extension UITableViewCell {
         }
         if self.selectedBackgroundView != nil || self.selectionStyle != .none {
             let colorView = UIView()
-            colorView.backgroundColor = UIColor.systemOrange.withAlphaComponent(0.5)
+            colorView.backgroundColor =  UserDefaults.standard.color(forKey: .buttonColor).withAlphaComponent(0.4)
             self.selectedBackgroundView = colorView
         }
         return self
     }
     
-    static func create() -> UITableViewCell {
-        let cell = UITableViewCell()
-        cell.backgroundColor = .clear
-        return cell
+    public func create() -> UITableViewCell {
+        self.backgroundColor = .clear
+        return self
     }
     
 }

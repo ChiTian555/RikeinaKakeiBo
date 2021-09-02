@@ -10,11 +10,14 @@ import UIKit
 import PKHUD
 import MessageUI
 import CropViewController
+import Instructions
 
 class MainSettingVC: MainBaceVC, UIViewControllerTransitioningDelegate {
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
+        
+        tableView.set()
         tableView.reloadData()
         if let tabBarVC = self.tabBarController {
             tabBarVC.tabBar.isHidden = false
@@ -31,15 +34,16 @@ class MainSettingVC: MainBaceVC, UIViewControllerTransitioningDelegate {
     let slider = UISlider()
     let sliderLabel = UILabel()
     
-    let titleArray: [(name:String ,cellTipe: Int)] = [
+    //type: 0 -> 未対応, 1 -> Action, 2 -> Button, 3 -> toAdvance
+    let titleArray: [(name:String ,cellType: Int)] = [
         
         ("口座管理", 1),
         ("暗号モード", 2),
         ("パスワードの設定", 1),
-        ("背景画像とテーマ色", 1),
+        ("背景画像とテーマ色", 3),
+        ("ログイン", 1),
         ("作成者に意見を送信", 1),
-        ("定期的な出費の登録(β版未対応)", 0),
-        ("ユーザー分類の追加(β版未対応)", 0)
+        ("定期的な出費の登録(β版未対応)", 0)
     
     ]
 
@@ -47,19 +51,24 @@ class MainSettingVC: MainBaceVC, UIViewControllerTransitioningDelegate {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        
-        setViewAlpha()
-        tableView.set()
+
         tableView.dataSource = self
         tableView.delegate = self
     }
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        if segue.identifier == "toIndividual" {
+        
+        guard let selectedRow = sender as? Int else { return }
+        switch segue.identifier {
+        case "toIndividual":
             let vc = segue.destination as! AccountSettingVC
-            let selectedRow = sender as? Int
             vc.settingArray = titleArray
             vc.settingNomber = selectedRow
+        case "toAdvance":
+            let vc = segue.destination as! AdvancedSettingVC
+            vc.titleText = titleArray[selectedRow].name
+            print(titleArray[selectedRow].name)
+        default: break
         }
     }
     
@@ -70,7 +79,7 @@ class MainSettingVC: MainBaceVC, UIViewControllerTransitioningDelegate {
             
             let cordFont = UIFont(name: "cordFont", size: 27)!
             let systemFont = UIFont.systemFont(ofSize: 13, weight: .light)
-
+            
             let numbers: [Int] = Array(0...9).shuffled()[0..<5] + []
             var checkNumber = ""
             
@@ -102,7 +111,16 @@ class MainSettingVC: MainBaceVC, UIViewControllerTransitioningDelegate {
             }
             
             alert.addAction(okAction)
-            self.present(alert, animated: true, completion: nil)
+
+            self.present(alert, animated: true, completion: {
+                
+//                UIView.animate(withDuration: 0.3, delay: 0, options: .curveLinear, animations: {
+//                    alert.view.transform = CGAffineTransform(rotationAngle: CGFloat.pi)
+//                }) { (finished) -> Void in
+//                  // do something if you need
+//                }
+                
+            })
             
         } else {
             
@@ -110,139 +128,6 @@ class MainSettingVC: MainBaceVC, UIViewControllerTransitioningDelegate {
         }
         
     }
-    
-}
-
-extension MainSettingVC: UITableViewDelegate {
-    
-    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        
-        tableView.deselectRow(at: indexPath, animated: true)
-        
-        if titleArray[indexPath.row].cellTipe != 1 { return }
-        
-        switch titleArray[indexPath.row].name {
-        case "口座管理":
-            self.performSegue(withIdentifier: "toIndividual", sender: indexPath.row)
-        case "パスワードの設定":
-            self.performSegue(withIdentifier: "toEditPasscode", sender: indexPath.row)
-        case "作成者に意見を送信":
-            sendEmail()
-        case "背景画像とテーマ色":
-            let alert = UIAlertController(title: "メニュー", message: "メニューからお選びください", preferredStyle: .actionSheet)
-            let pickPicture = UIAlertAction(title: "背景を選ぶ", style: .default) { (action) in
-                alert.dismiss(animated: true, completion: nil)
-                self.pickUpPicture()
-            }
-            let deletePicture = UIAlertAction(title: "背景を削除", style: .destructive) { (action) in
-                alert.dismiss(animated: true, completion: nil)
-                SceneDelegate.shared.rootVC.picture = nil
-                UserDefaults.standard.setImage(nil)
-            }
-            let setAlpha = UIAlertAction(title: "背景の透明度の調整", style: .default) { (action) in
-                alert.dismiss(animated: true, completion: nil)
-                self.push()
-            }
-            let cancel = UIAlertAction(title: "キャンセル", style: .cancel) { (action) in
-                alert.dismiss(animated: true, completion: nil)
-            }
-            
-            alert.addAction(pickPicture)
-            if UserDefaults.standard.image() != nil {
-                alert.addAction(setAlpha)
-                alert.addAction(deletePicture)
-            }
-            
-            alert.addAction(cancel)
-            self.present(alert, animated: true, completion: nil)
-            
-        default:
-            HUD.flash(.labeledError(title: "Error", subtitle: "不明なエラー"), delay: 1.5)
-        }
-    }
-    
-    func push(){
-        
-        tableView.isUserInteractionEnabled = false
-        self.tabBarController?.tabBar.isHidden = true
-        //sliderVは、sliderを格納
-        sliderV = UIView(frame: CGRectMake(0, 0, UIScreen.main.bounds.size.width,  160))
-        slider.frame = CGRectMake(80, 40, UIScreen.main.bounds.size.width - 100,  20)
-        sliderLabel.frame = CGRectMake(20, 0, 60,  20)
-        slider.center.y = 65
-        sliderLabel.center.y = 65
-        let alpha = Float(ud.integer(forKey: .alpha)!) / 100
-        sliderLabel.text = String(format: "%.2f", alpha)
-        slider.setValue(alpha, animated: true)
-        slider.maximumValue = 1
-        slider.minimumValue = 0
-        slider.addTarget(self, action: #selector(touchUp(_:)), for: UIControl.Event.touchUpInside)
-        slider.addTarget(self, action: #selector(changeValue(_:)), for: UIControl.Event.valueChanged)
-        // Connect data:
-        sliderV.backgroundColor = UIColor.secondarySystemBackground
-        sliderV.addSubview(slider)
-        sliderV.addSubview(sliderLabel)
-        let toolbar = UIToolbar(frame: CGRectMake(0, 0, view.frame.size.width, 35))
-        toolbar.barStyle = UIBarStyle.default
-        toolbar.isTranslucent = true
-        toolbar.tintColor = UIColor.systemOrange
-        let doneItem = UIBarButtonItem(barButtonSystemItem: .done, target: self, action: #selector(done))
-        doneItem.tintColor = UIColor.orange
-        let cancelItem = UIBarButtonItem(barButtonSystemItem: .cancel, target: self, action: #selector(cancel))
-        cancelItem.tintColor = UIColor.orange
-        let spaceButton = UIBarButtonItem(barButtonSystemItem: UIBarButtonItem.SystemItem.flexibleSpace, target: nil, action: nil)
-        toolbar.setItems([cancelItem, spaceButton, doneItem], animated: true)
-        toolbar.isUserInteractionEnabled = true
-        sliderV.addSubview(toolbar)
-        // viをviewに追加し、下からアニメーション表示
-        self.tabBarController?.tabBar.isHidden = true
-        view.addSubview(sliderV)
-        view.bringSubviewToFront(sliderV)
-        let screenSize = UIScreen.main.bounds.size
-        sliderV.frame.origin.y = screenSize.height
-        UIView.animate(withDuration: 0.3) {
-            self.sliderV.frame.origin.y = screenSize.height - self.sliderV.bounds.size.height
-        }
-    }
-    
-    @objc func done() {
-        UIView.animate(withDuration: 0.3, animations:  {
-        self.sliderV.frame.origin.y = UIScreen.main.bounds.size.height
-        }) { _ in
-            self.ud.setInteger(Int(self.slider.value * 100), forKey: .alpha)
-            print(self.ud.integer(forKey: .alpha)!)
-            self.sliderV.removeFromSuperview()
-            self.tabBarController?.tabBar.isHidden = false
-            self.tableView.isUserInteractionEnabled = true
-        }
-    }
-    
-    @objc func cancel() {
-        UIView.animate(withDuration: 0.3, animations:  {
-        self.sliderV.frame.origin.y = UIScreen.main.bounds.size.height
-        }) { _ in
-            self.setViewAlpha()
-            self.sliderV.removeFromSuperview()
-            self.tabBarController?.tabBar.isHidden = false
-            self.tableView.isUserInteractionEnabled = true
-        }
-    }
-    
-    @objc func changeValue(_ sender: UISlider) {
-        sliderLabel.text = String(format: "%.2f", sender.value)
-    }
-    
-    @objc func touchUp(_ sender: UISlider) {
-        view.backgroundColor = UIColor.systemBackground.withAlphaComponent(1 - CGFloat(slider.value))
-    }
-    
-    private func setViewAlpha() {
-        
-        let alpha = CGFloat(ud.integer(forKey: .alpha)!) / 100
-        view.backgroundColor = UIColor.systemBackground.withAlphaComponent(1 - alpha)
-        
-    }
-    
     
     private func sendEmail() {
         //メールを送信できるかチェック
@@ -260,7 +145,6 @@ extension MainSettingVC: UITableViewDelegate {
         mailViewController.setMessageBody("↓↓意見を下に入力ください↓↓\n", isHTML: false)
         self.present(mailViewController, animated: true, completion: nil)
     }
-    
 }
 
 extension MainSettingVC: MFMailComposeViewControllerDelegate {
@@ -302,7 +186,7 @@ extension MainSettingVC: UIImagePickerControllerDelegate, UINavigationController
         
     func updateImageViewWithImage(_ image: UIImage, fromCropViewController cropViewController: CropViewController) {
         SceneDelegate.shared.rootVC.picture = image
-        UserDefaults.standard.setImage(image)
+        UserDefaults.standard.setImage(image, forKey: .backGraundPicture)
         cropViewController.dismiss(animated: true, completion: nil)
     }
 
@@ -338,16 +222,16 @@ extension MainSettingVC: UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let titleTaple = titleArray[indexPath.row]
-        var cell = UITableViewCell.create()
-        switch titleTaple.cellTipe {
+        var cell: UITableViewCell!
+        switch titleTaple.cellType {
         case 0:
-            cell = tableView.dequeueReusableCell(withIdentifier: "Cell1")!
+            cell = tableView.dequeueReusableCell(withIdentifier: "Cell1")!.create()
             cell.backgroundColor = .systemGray
             cell.selectionStyle = .none
         case 1:
-            cell = tableView.dequeueReusableCell(withIdentifier: "Cell1")!
+            cell = tableView.dequeueReusableCell(withIdentifier: "Cell1")!.create()
         case 2:
-            cell = tableView.dequeueReusableCell(withIdentifier: "Cell2")!
+            cell = tableView.dequeueReusableCell(withIdentifier: "Cell2")!.create()
             cell.selectionStyle = .none
             let cellSwitch = cell.viewWithTag(1) as! UISwitch
             if ud.bool(forKey: .isCordMode)! {
@@ -357,7 +241,10 @@ extension MainSettingVC: UITableViewDataSource {
             }
             cellSwitch.addTarget(self, action: #selector(self.switchTapped(_:)), for: UIControl.Event.valueChanged)
             cellSwitchs.append(cellSwitch)
-        default: break
+
+            
+        default:
+            cell = UITableViewCell().create()
         }
         cell.textLabel?.text = titleTaple.name
         //初回起動時にラベルを表示
@@ -376,7 +263,6 @@ extension MainSettingVC: UITableViewDataSource {
                 startStepLabel.backgroundColor = .clear
             }
         }
-
         return cell.set()
     }
     
@@ -385,4 +271,38 @@ extension MainSettingVC: UITableViewDataSource {
         return CGRect(x: x, y: y, width: width, height: height)
     }
     
+}
+
+extension MainSettingVC: UITableViewDelegate {
+    
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        
+        tableView.deselectRow(at: indexPath, animated: true)
+        
+        let title = titleArray[indexPath.row]
+        if title.cellType == 1 {
+            
+            switch title.name {
+            case "口座管理":
+                self.performSegue(withIdentifier: "toIndividual", sender: indexPath.row)
+            case "パスワードの設定":
+                self.performSegue(withIdentifier: "toEditPasscode", sender: indexPath.row)
+            case "作成者に意見を送信":
+                sendEmail()
+            case "ログイン":
+                self.performSegue(withIdentifier: "toBackUp", sender: indexPath.row)
+            default:
+                HUD.flash(.labeledError(title: "Error", subtitle: "不明なエラー"), delay: 1.5)
+            }
+        } else if title.cellType == 3 {
+            switch title.name {
+            case "背景画像とテーマ色":
+                
+                self.performSegue(withIdentifier: "toAdvance", sender: indexPath.row)
+                
+            default:
+                HUD.flash(.labeledError(title: "Error", subtitle: "不明なエラー"), delay: 1.5)
+            }
+        }
+    }
 }

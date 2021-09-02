@@ -8,42 +8,76 @@
 
 import UIKit
 import RealmSwift
+import Realm
 import Siren
 import SwiftDate
+import Firebase
+import PKHUD
 
-@UIApplicationMain
+@main
 class AppDelegate: UIResponder, UIApplicationDelegate {
     
     var window: UIWindow?
+    var realm: Realm!
     
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
-        // Override point for customization after application launch.
         
+        print("①")
+        
+        // Override point for customization after application launch.
         SwiftDate.defaultRegion = Region(calendar: Calendars.gregorian, zone: Zones.asiaTokyo, locale: Locales.japanese)
         
+//        FirebaseApp.configure()
+        
+        // Initialize the Google Mobile Ads SDK.
+//        GADMobileAds.sharedInstance().start(completionHandler: nil)
+        
         print("didFinishLaunchingWithOptions: アプリ起動時")
-        forceUpdate()
+//        forceUpdate()
         
         let ud = UserDefaults.standard
-//        if ud.stringArray3(forKey: .list) == nil {
-//            ud.setArray3([[["項目"],["決済方法"]],[["項目"],["入金口座"]],[["出金"],["入金"]]], forKey: .list)
+  
+        // マイグレーションが必要な時
+        // レコードフォーマットを変更する場合、このバージョンも上げていく。
+        let migSchemaVersion: UInt64 = 3
+
+        // マイグレーション設定
+        var config = Realm.Configuration(
+            schemaVersion: migSchemaVersion,
+            migrationBlock: { migration, oldSchemaVersion in
+                if (oldSchemaVersion < migSchemaVersion) {
+        }})
+        
+//        // DBファイルのfileURLを取得
+//        if let fileURL = Realm.Configuration.defaultConfiguration.fileURL {
+//            try? FileManager.default.removeItem(at: fileURL)
 //        }
-        //レルム初期データほぞん
-        let realm = try! Realm()
+        
+        config.deleteRealmIfMigrationNeeded = true
+        Realm.Configuration.defaultConfiguration = config
+        print(Realm.Configuration.defaultConfiguration)
+        
+        print("②")
+        realm = try? Realm()
+        
+        print("③")
+        
         if realm.objects(CategoryList.self).count == 0 {
             let categoryArray = [[("項目", false),("決済方法", true)],
                                  [("項目", false),("入金口座", true)],
                                  [("出金", true),("入金", true)]]
             for i in 0 ..< 3 {
                 categoryArray[i].forEach { (menuName) in
-                    let menu = CategoryList.create()
+                    let menu = CategoryList()
                     menu.mainCategory = i
-                    menu.categoryName = menuName.0
+                    menu.name = menuName.0
                     menu.selectAccount = menuName.1
                     menu.save()
                 }
             }
         }
+        
+        
         if ud.integer(forKey: .alpha) == 0 {
             ud.setInteger(50, forKey: .alpha)
         }
@@ -62,8 +96,14 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             }
         }
         
+        UNUserNotificationCenter.current().requestAuthorization(options: [.alert, .sound, .badge])
+            { (granted, _) in
+            if granted { UNUserNotificationCenter.current().delegate = AppDelegate.shared }
+        }
+        
         return true
     }
+
     
     func applicationWillResignActive(_ application: UIApplication) {
         print("applicationWillResignActive: フォアグラウンドからバックグラウンドへ移行しようとした時")

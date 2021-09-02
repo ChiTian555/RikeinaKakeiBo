@@ -34,4 +34,49 @@ extension UIViewController {
 //        self.navigationController!.navigationBar.tintColor = UIColor.label
         self.navigationItem.backBarButtonItem = backButtonItem
     }
+    
+    //キーボード外部タップによるキーボードを閉じる動作
+    func setHideKeyboardTapped() {
+        let tap: UITapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(UIViewController.hideKeyboard))
+        tap.cancelsTouchesInView = false
+        view.addGestureRecognizer(tap)
+    }
+
+    @objc func hideKeyboard() {
+        view.endEditing(true)
+    }
+    
+    //キーボードの出現でスクロールビューを変更するのを監視用オブザーバー
+    @objc func configureObserver() {
+        NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillShow(_:)), name: UIResponder.keyboardWillShowNotification, object: nil)
+        //ここでUIKeyboardWillShowという名前の通知のイベントをオブザーバー登録をしている
+        NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillHide(_:)), name: UIResponder.keyboardDidHideNotification, object: nil)
+        //ここでUIKeyboardWillHideという名前の通知のイベントをオブザーバー登録をしている
+    }
+    
+     //UIKeyboardWillShow通知を受けて、実行される関数
+    @objc func keyboardWillShow(_ notification: NSNotification){
+    }
+       
+       //UIKeyboardWillShow通知を受けて、実行される関数
+    @objc func keyboardWillHide(_ notification: NSNotification){
+    }
+    
+    func setSwipe() {
+        let swipe: UISwipeGestureRecognizer = UISwipeGestureRecognizer(target: self, action: #selector(UIViewController.turnBuck))
+        swipe.direction = .right
+        view.addGestureRecognizer(swipe)
+    }
+    
+    @objc func turnBuck() {
+        navigationController?.popViewController(animated: true)
+    }
+    
+    func showAlert(title: String, message: String, actions: [UIAlertAction]) {
+        let alert = UIAlertController(title: title, message: message, preferredStyle: .alert)
+        actions.forEach { alert.addAction($0) }
+        present(alert, animated: true)
+    }
+    
+    
 }

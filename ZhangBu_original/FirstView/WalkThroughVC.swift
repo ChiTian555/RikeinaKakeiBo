@@ -72,10 +72,9 @@ final class WalkThroughVC: UIViewController, EAIntroDelegate, UNUserNotification
         UserDefaults.standard.setBool(true, forKey: .isWatchedWalkThrough)
 
         // 通知許可の取得
-        UNUserNotificationCenter.current().requestAuthorization(
-        options: [.alert, .sound, .badge]){
+        UNUserNotificationCenter.current().requestAuthorization(options: [.alert, .sound, .badge]) {
             (granted, _) in
-            if granted{
+            if granted {
                 UNUserNotificationCenter.current().delegate = AppDelegate.shared
             }
         }
