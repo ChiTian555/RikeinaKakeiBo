@@ -9,11 +9,14 @@ import RealmSwift
 import SwiftDate
 import Realm
 
-class Payment: Object {
+final class Payment: MyRealm {
     
-    @objc dynamic var id: Int = 0
     @objc dynamic var isUsePoketMoney: Bool = true
+    
+    @objc dynamic var mainCategoryNumber: Int = 0
+    @objc dynamic var price: Int = 0
     @objc dynamic var date: Date = Date()
+   
     @objc dynamic var addDate: Date = Date()
     @objc dynamic var category = String()
     
@@ -21,34 +24,23 @@ class Payment: Object {
     @objc dynamic var userCategory = String()
     
     @objc dynamic var memo = String()
-    //出金、入金の支払い方法
+    // 出金、入金の支払い方法
     @objc dynamic var paymentMethod = String()
-    //金銭移動の出金
+    // 金銭移動の出金講座
     @objc dynamic var withdrawal = String()
-    @objc dynamic var price: Int = 0
-    @objc dynamic var mainCategoryNumber: Int = 0
-//    @objc dynamic var userCategory = [String]()
-    
+
     // 初期設定
     override static func primaryKey() -> String? {
         return "id"
     }
     
-    // データを更新(Update)するためのコード
-     func setValue(newValue newPayment: Payment) {
-        let realm = try! Realm()
-
-        Account.updateBalance(newPayment: newPayment, deletePayment: self)
-        try! realm.write() {
-            self.date = newPayment.date
-            self.userCategory = newPayment.userCategory
-            self.category = newPayment.category
-            self.memo = newPayment.memo
-            self.paymentMethod = newPayment.paymentMethod
-            self.withdrawal = newPayment.withdrawal
-            self.price = newPayment.price
-            self.mainCategoryNumber = newPayment.mainCategoryNumber
-        }
+    func write(_ set: (Payment) -> Void) -> Bool {
+        let oldPayment = self.copy() as! Payment
+        guard let realm = Self.getRealm() else { return false }
+        do { try realm.write() { set(self) } }
+        catch { Self.realmError(error); return false }
+        Account.updateBalance(newPayment: self, deletePayment: oldPayment)
+        return true
     }
 
     // データを保存するためのコード
@@ -106,7 +98,7 @@ class Payment: Object {
     // データを削除(Delete)するためのコード
     override func delete() {
         Account.updateBalance(newPayment: nil, deletePayment: self)
-        delete()
+        super.delete()
     }
     
     static func restore(newPayment: [Payment]) {
@@ -114,5 +106,23 @@ class Payment: Object {
         try! realm.write() {
             realm.add(newPayment, update: .all)
         }
+    }
+    
+    func set(title: String, value: String?) -> Bool {
+        guard let value = value else { return false }
+        if mainCategoryNumber == 0 {
+            if title == "項目" { self.category = title }
+            else if title == "決済方法" { self.paymentMethod = value }
+            else { self.userCategory = value }
+        } else if mainCategoryNumber == 1 {
+            if title == "項目" { self.category = title }
+            else if title == "入金講座" { self.paymentMethod = value }
+            else { self.userCategory = value }
+        } else if mainCategoryNumber == 2 {
+            if title == "出金講座" { self.withdrawal = title }
+            else if title == "入金講座" { self.paymentMethod = value }
+            else { self.userCategory = value }
+        }
+        return true
     }
 }

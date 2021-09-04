@@ -41,8 +41,8 @@ class MainSettingVC: MainBaceVC, UIViewControllerTransitioningDelegate {
         ("暗号モード", 2),
         ("パスワードの設定", 1),
         ("背景画像とテーマ色", 3),
-        ("ログイン", 1),
         ("作成者に意見を送信", 1),
+        ("ログイン", 0),
         ("定期的な出費の登録(β版未対応)", 0)
     
     ]
@@ -234,7 +234,7 @@ extension MainSettingVC: UITableViewDataSource {
             cell = tableView.dequeueReusableCell(withIdentifier: "Cell2")!.create()
             cell.selectionStyle = .none
             let cellSwitch = cell.viewWithTag(1) as! UISwitch
-            if ud.bool(forKey: .isCordMode)! {
+            if ud.bool(forKey: .isCordMode) {
                 cellSwitch.setOn(true, animated: false)
             } else {
                 cellSwitch.setOn(false, animated: false)

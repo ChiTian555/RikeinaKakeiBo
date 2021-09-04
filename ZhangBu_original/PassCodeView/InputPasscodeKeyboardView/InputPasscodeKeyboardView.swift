@@ -104,7 +104,7 @@ class InputPasscodeKeyboardView: CustomViewBase {
             let button = $0
             let number = numbers.remove(at: Int.random(in: 0 ..< numbers.count))
             var numberString = NSAttributedString()
-            if UserDefaults.standard.bool(forKey: .isCordMode)! {
+            if UserDefaults.standard.bool(forKey: .isCordMode) {
                 numberString = NSAttributedString(string: "\(number)", attributes:
                 [ NSAttributedString.Key.font : cordFont])
             } else {

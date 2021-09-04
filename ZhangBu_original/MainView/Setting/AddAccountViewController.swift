@@ -136,7 +136,7 @@ class AddAccountViewController: UIViewController {
     override func keyboardWillHide(_ notification: NSNotification){
         scrollView.contentInset = .zero
         scrollView.scrollIndicatorInsets = .zero
-       }
+    }
     
     @objc func done() {
         guard let edittingTextField = textFields.first(where: {($0.isFirstResponder)}) else { return }
@@ -207,7 +207,7 @@ class AddAccountViewController: UIViewController {
             SceneDelegate.shared.isCheckMode = true
             self.searchIcCard()
         }
-        self .present(alert.contontroller, animated: true, completion: nil)
+        self.present(alert.controller, animated: true, completion: nil)
     }
     
     func searchIcCard() {
@@ -251,7 +251,7 @@ class AddAccountViewController: UIViewController {
 //            selectedAccount.setValue(newCheckValue: newCheck, newAccout: newAccount)
         } else {
             guard let accountName = accountNameTextField.text else { return }
-            guard let newAccount = Account(name: accountName) else {
+            guard let newAccount = Account.make(name: accountName) else {
                 HUD.flash(.labeledError(title: "Error", subtitle: "口座名が重複します"))
                 return
             }
@@ -265,6 +265,7 @@ class AddAccountViewController: UIViewController {
         // 親VCを取り出し
         let parentTBC = SceneDelegate.shared.rootVC.current as! MainTBC
         
+        // 初期ステップの表示
         if UserDefaults.standard.integer(forKey: .startStep)! == 0 {
             UserDefaults.standard.setInteger(1, forKey: .startStep)
             parentTBC.setStartStep()
@@ -275,6 +276,7 @@ class AddAccountViewController: UIViewController {
             // ユーザデフォルトでラベル更新
             parentVC.load()
         } else if let parentVC = parentNC.topViewController as? AddCategoryViewController {
+            //　銀行口座追加の画面から来た場合
             parentVC.addNewAccount(text!)
         }
         // 画面を閉じる

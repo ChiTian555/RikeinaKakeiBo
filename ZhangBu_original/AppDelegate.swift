@@ -22,8 +22,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
         
-        print("①")
-        
         // Override point for customization after application launch.
         SwiftDate.defaultRegion = Region(calendar: Calendars.gregorian, zone: Zones.asiaTokyo, locale: Locales.japanese)
         
@@ -65,10 +63,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         if realm.objects(CategoryList.self).count == 0 {
             let categoryArray = [[("項目", false),("決済方法", true)],
                                  [("項目", false),("入金口座", true)],
-                                 [("出金", true),("入金", true)]]
+                                 [("出金講座", true),("入金講座", true)]]
             for i in 0 ..< 3 {
                 categoryArray[i].forEach { (menuName) in
-                    let menu = CategoryList()
+                    let menu = CategoryList.make()
                     menu.mainCategory = i
                     menu.name = menuName.0
                     menu.selectAccount = menuName.1
@@ -78,7 +76,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         }
         
         
-        if ud.integer(forKey: .alpha) == 0 {
+        if ud.integer(forKey: .alpha) == nil {
             ud.setInteger(50, forKey: .alpha)
         }
         

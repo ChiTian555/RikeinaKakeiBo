@@ -9,7 +9,7 @@
 import UIKit
 
 class CustomToolBar: UIToolbar {
-    
+    private let ud = UserDefaults.standard
     init() {
         let width = UIScreen.main.bounds.size.width
         let height = UIScreen.main.bounds.size.height
@@ -22,7 +22,7 @@ class CustomToolBar: UIToolbar {
         }
         super.init(frame: barFrame)
         self.isTranslucent = true
-        self.tintColor = .systemOrange
+        self.tintColor = ud.color(forKey: .userColor, alpha: 70)
     }
     
     required init?(coder: NSCoder) {

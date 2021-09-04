@@ -23,7 +23,7 @@ final class WalkThroughVC: UIViewController, EAIntroDelegate, UNUserNotification
         pages.append(page1)
         
         let page2 = EAIntroPage()
-        page2.title = "iPhoneアプリ「理系の家継簿」\nのβ版です!"
+        page2.title = "iPhoneアプリ「理系な家継簿」です!"
         page2.desc = "これからも、アプリ開発を続けますので\nご支援よろしくお願いします！"
         pages.append(page2)
 

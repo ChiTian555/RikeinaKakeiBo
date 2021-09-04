@@ -26,4 +26,10 @@ extension UIView {
         self.sendSubviewToBack(currentBackGround)
     }
     
+    static func getOneColorView(color:UIColor) -> UIView {
+        let view = UIView()
+        view.backgroundColor = color
+        return view
+    }
+    
 }

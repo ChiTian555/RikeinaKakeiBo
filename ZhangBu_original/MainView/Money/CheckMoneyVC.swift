@@ -72,7 +72,6 @@ class CheckMoneyVC: MainBaceVC {
         super.viewWillAppear(animated)
         reloadData()
         print("ViewWillApareが呼ばれた")
-
     }
     
     //Cellデータ格納変数
@@ -115,7 +114,7 @@ extension CheckMoneyVC: UITableViewDataSource {
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         
         var font = UIFont()
-        if UserDefaults.standard.bool(forKey: .isCordMode)! {
+        if UserDefaults.standard.bool(forKey: .isCordMode) {
             font = UIFont(name: "cordFont", size: 25)!
         } else {
             font = UIFont.systemFont(ofSize: 20, weight: .semibold)
@@ -162,7 +161,7 @@ extension CheckMoneyVC: UITableViewDataSource {
             let isCredit = nowAccount.type.first == "④"
             let title = isCredit ? ("最終引き落とし日","金額") : ("最終確認日","残高")
             
-            if ud.bool(forKey: .isCordMode)! {
+            if ud.bool(forKey: .isCordMode) {
                 attriStr.append(
                     NSAttributedString(string: "\(title.0): \(checkedMonth)/\(checkedDay)\n\(title.1): ")
                 )
@@ -211,7 +210,7 @@ extension CheckMoneyVC: UITableViewDelegate {
                 UIApplication.shared.open(url, options: [:], completionHandler: nil)
             }
         }
-        self.present(alert.contontroller, animated: true, completion: nil)
+        self.present(alert.controller, animated: true, completion: nil)
     }
     
     func tableView(_ tableView: UITableView, canEditRowAt indexPath: IndexPath) -> Bool {
@@ -241,7 +240,7 @@ extension CheckMoneyVC: UITableViewDelegate {
             myAlert.addActions("変更", type: .destructive) { (alert) in
                 if self.editTextField.text! == "" {
                     HUD.flash(.labeledError(title: "Error", subtitle: "空欄があります"), delay: 1.5) {_ in
-                        self.present(alert.contontroller, animated: true, completion: nil)
+                        self.present(alert.controller, animated: true, completion: nil)
                     }
                     return
                 }
@@ -250,7 +249,7 @@ extension CheckMoneyVC: UITableViewDelegate {
                 if res { self.reloadData(); completionHandler(true) }
                 else { HUD.flash(.error, delay: 2.0) ; completionHandler(false)}
             }
-            self.present(myAlert.contontroller, animated: true, completion: nil)
+            self.present(myAlert.controller, animated: true, completion: nil)
         }
 
         let easyPay = UIContextualAction(style: .normal, title: "支払登録") { (ctxAction, view, completionHandler) in
@@ -280,53 +279,7 @@ extension CheckMoneyVC: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         if indexPath.row < userBudget.count {
             if indexPath.row == 0 {
-                let myAlert = MyAlert("設定", "今月のお小遣い額を\n決定しますか？")
-                myAlert.addActions("いいえ", type: .cancel, nil)
-                myAlert.addActions("はい") { (alert) in
-                    //今月のお小遣いをもう設定してしまってるかどうか判定
-                    let d = DateInRegion()
-                    let firstDate = DateInRegion(year: d.year, month: d.month, day: 1).date
-                    let endDate = DateInRegion(year: d.year, month: d.month + 1, day: 1).date
-                    let thisMonthCount = self.realm.objects(Payment.self)
-                        .filter("mainCategoryNumber = %@ AND isUsePoketMoney = %@", 2, true)
-                        .filter("date >= %@ AND date < %@", firstDate, endDate).count
-                    if thisMonthCount != 0 {
-                        HUD.flash(.labeledError(title: "Error",
-                                                subtitle: "\(d.month)月分のお小遣いは\n既に設定済みです"),
-                                  delay: 1.5); return
-                    }
-                    let textAlert = MyAlert("お小遣い設定", "今月のお小遣いを\n入力してください")
-                    textAlert.addTextField("金額を入力")
-                    textAlert.addActions("キャンセル",type: .cancel) { (alert) in
-                        HUD.flash(.label("キャンセルしました"), delay: 1.5)
-                        alert.contontroller.dismiss(animated: true, completion: nil)
-                    }
-                    textAlert.addActions("確定") { (tAlert) in
-                        guard let price = Int(tAlert.textField?.text ?? "") else {
-                            HUD.flash(.labeledError(title: "Error", subtitle: "入力にミスがあります"), delay: 1.0){_ in
-                                self.present(tAlert.contontroller, animated: true, completion: nil)
-                            }; return
-                        }
-                        let checkAlert = MyAlert("金額:¥\(price)", "変更できませんがいいですか？")
-                        checkAlert.addActions("訂正", type: .cancel) { (alert) in
-                            self.present(tAlert.contontroller, animated: true, completion: nil)
-                        }
-                        checkAlert.addActions("はい") { _ in
-                            let payment: Payment = Payment()
-                            payment.mainCategoryNumber = 2
-                            payment.isUsePoketMoney = true
-                            payment.price = price
-                            payment.save()
-                            self.reloadData()
-                            HUD.flash(.labeledSuccess(title: "設定完了",
-                                                      subtitle: "\(d.month)月分のお小遣いを\n入力完了しました"),
-                                      delay: 1.5)
-                        }
-                        self.present(checkAlert.contontroller, animated: true, completion: nil)
-                    }
-                    self.present(textAlert.contontroller, animated: true, completion: nil)
-                }
-                self.present(myAlert.contontroller, animated: true, completion: nil)
+                desidePocketMoney()
             }
             //初期ステップ3->4
             if condition3 {
@@ -352,7 +305,7 @@ extension CheckMoneyVC: UITableViewDelegate {
         switch account.type.first {
         case "①":
             
-            if !ud.bool(forKey: .canUseNotification)! {
+            if !ud.bool(forKey: .canUseNotification) {
                 checkMoneyTableView.deselectRow(at: indexPath, animated: true)
                 moveSetting()
                 return
@@ -362,7 +315,7 @@ extension CheckMoneyVC: UITableViewDelegate {
                 tableView.deselectRow(at: indexPath, animated: true)
                 SceneDelegate.shared.isCheckMode = false
             }
-            self.present(alert.contontroller, animated: true, completion: nil)
+            self.present(alert.controller, animated: true, completion: nil)
             SceneDelegate.shared.isCheckMode = true
             break
         case "②":
@@ -382,7 +335,7 @@ extension CheckMoneyVC: UITableViewDelegate {
                     let adjustBalance = trueBalance - self.accountLists[row].balance
                     self.adjustBalance(account: self.accountLists[row], adjustBalance: adjustBalance)
                 }
-                self.present(alert.contontroller, animated: true, completion: nil)
+                self.present(alert.controller, animated: true, completion: nil)
                 self.checkMoneyTableView.deselectRow(at: indexPath, animated: true)
             }
             checkAlert.addActions("はい") { (alert) in
@@ -403,7 +356,7 @@ extension CheckMoneyVC: UITableViewDelegate {
                     tbc.setStartStep()
                 }
             }
-            self.present(checkAlert.contontroller, animated: true, completion: nil)
+            self.present(checkAlert.controller, animated: true, completion: nil)
             break
         case "④":
             let checkAlert = UIAlertController(title: "支払", message: "\(account.chargeAccount)から\n引き落とし登録行いますか？", preferredStyle: .alert)
@@ -439,7 +392,7 @@ extension CheckMoneyVC: UITableViewDelegate {
                             HUD.flash(.labeledSuccess(title: "引き落とし登録完了",
                                                       subtitle: "家計簿を更新しました。。"),
                                       delay: 1.0)
-                            let newPayment = Payment()
+                            let newPayment = Payment.make()
                             newPayment.mainCategoryNumber = 2
                             newPayment.price = sum * -1 //>0
                             newPayment.paymentMethod = account.name
@@ -458,14 +411,14 @@ extension CheckMoneyVC: UITableViewDelegate {
                                                           message: message,
                                                           preferredStyle: .alert)
                             let okAction = UIAlertAction(title: "OK", style: .default) { (action) in
-                                let newPayment = Payment()
+                                let newPayment = Payment.make()
                                 newPayment.mainCategoryNumber = 2
                                 newPayment.price = sum * -1
                                 newPayment.paymentMethod = account.name
                                 newPayment.withdrawal = account.chargeAccount
                                 newPayment.save()
                                 guard let charge = Account.readValue(name: account.chargeAccount) else { return }
-                                charge.firstAdjustBalance(add: (price + sum) * -1)
+                                charge.write({$0.balance += (price + sum) * -1})
                                 let newCheck = Check()
                                 newCheck.balance = sum
                                 account.newCheck = newCheck
@@ -490,13 +443,13 @@ extension CheckMoneyVC: UITableViewDelegate {
                                                           message: message,
                                                           preferredStyle: .alert)
                             let okAction = UIAlertAction(title: "OK", style: .default) { (action) in
-                                let newPayment = Payment()
+                                let newPayment = Payment.make()
                                 newPayment.mainCategoryNumber = 2
                                 newPayment.price = sum * -1
                                 newPayment.paymentMethod = account.name
                                 newPayment.withdrawal = account.chargeAccount
                                 newPayment.save()
-                                let lostPayment = Payment()
+                                let lostPayment = Payment.make()
                                 lostPayment.mainCategoryNumber = 0
                                 lostPayment.price = (price + sum) * -1
                                 lostPayment.paymentMethod = account.chargeAccount
@@ -598,7 +551,62 @@ extension CheckMoneyVC: UITableViewDelegate {
         // 日付のフォーマット
         dayTextField.text = datePicker.date.toString(.custom("yyyy-MM-dd"))
     }
+    /**
+                お小遣いを入力させる関数。
+     */
+    func desidePocketMoney() {
+        let myAlert = MyAlert("設定", "今月のお小遣い額を\n決定しますか？")
+        myAlert.addActions("いいえ", type: .cancel, nil)
+        myAlert.addActions("はい") { (alert) in
+            //今月のお小遣いをもう設定してしまってるかどうか判定
+            let d = DateInRegion()
+            let firstDate = DateInRegion(year: d.year, month: d.month, day: 1).date
+            let endDate = DateInRegion(year: d.year, month: d.month + 1, day: 1).date
+            let thisMonthCount = self.realm.objects(Payment.self)
+                .filter("mainCategoryNumber = %@ AND isUsePoketMoney = %@", 2, true)
+                .filter("date >= %@ AND date < %@", firstDate, endDate).count
+            if thisMonthCount != 0 {
+                HUD.flash(.labeledError(title: "Error",
+                                        subtitle: "\(d.month)月分のお小遣いは\n既に設定済みです"),
+                          delay: 1.5); return
+            }
+            let textAlert = MyAlert("お小遣い設定", "今月のお小遣いを\n入力してください")
+            textAlert.addTextField("金額を入力")
+            textAlert.addActions("キャンセル",type: .cancel) { (alert) in
+                HUD.flash(.label("キャンセルしました"), delay: 1.5)
+                alert.controller.dismiss(animated: true, completion: nil)
+            }
+            textAlert.addActions("確定") { (tAlert) in
+                guard let price = Int(tAlert.textField?.text ?? "") else {
+                    HUD.flash(.labeledError(title: "Error", subtitle: "入力にミスがあります"), delay: 1.0){_ in
+                        self.present(tAlert.controller, animated: true, completion: nil)
+                    }; return
+                }
+                let checkAlert = MyAlert("金額:¥\(price)", "変更できませんがいいですか？")
+                checkAlert.addActions("訂正", type: .cancel) { (alert) in
+                    self.present(tAlert.controller, animated: true, completion: nil)
+                }
+                checkAlert.addActions("はい") { _ in
+                    let payment: Payment = Payment.make()
+                    payment.mainCategoryNumber = 2
+                    payment.isUsePoketMoney = true
+                    payment.price = price
+                    payment.save()
+                    self.reloadData()
+                    HUD.flash(.labeledSuccess(title: "設定完了",
+                                              subtitle: "\(d.month)月分のお小遣いを\n入力完了しました"),
+                              delay: 1.5)
+                }
+                self.present(checkAlert.controller, animated: true, completion: nil)
+            }
+            self.present(textAlert.controller, animated: true, completion: nil)
+        }
+        self.present(myAlert.controller, animated: true, completion: nil)
+    }
     
+    /**
+                ICカードをスキャンさせる関数。
+     */
     func checkSearchIcCard(index: IndexPath) {
         let alert = MyAlert("確認", "携帯でICカードを\nスキャンしますか？")
         alert.addActions("いいえ", type: .cancel) { _ in
@@ -609,7 +617,7 @@ extension CheckMoneyVC: UITableViewDelegate {
             self.searchIcCard()
             self.checkMoneyTableView.deselectRow(at: index, animated: true)
         }
-        self.present(alert.contontroller, animated: true, completion: nil)
+        self.present(alert.controller, animated: true, completion: nil)
     }
     
     func searchIcCard() {
@@ -617,7 +625,7 @@ extension CheckMoneyVC: UITableViewDelegate {
         //選択されてた口座の場所を取得
         guard let index = self.checkMoneyTableView.indexPathForSelectedRow else { return }
         
-        let felica = NFCReader(type: .univCoopICPrepaid) { (balance,error)  in
+        NFCReader(type: .univCoopICPrepaid) { (balance,error)  in
             print("検出側から反応が返ってきた.")
             DispatchQueue.main.asyncAfter(deadline: .now() + 3) {
                 // エラーのとき
@@ -637,7 +645,7 @@ extension CheckMoneyVC: UITableViewDelegate {
                             }
                             self.reloadData()
                         }
-                        self.present(alert.contontroller, animated: true , completion: nil)
+                        self.present(alert.controller, animated: true , completion: nil)
                     }
                     return
                 }
@@ -664,8 +672,7 @@ extension CheckMoneyVC: UITableViewDelegate {
                     tbc.setStartStep()
                 }
             }
-        }
-        felica.start()
+        }.start()
     }
     
     //画面を閉じるときに、通知を表示
@@ -783,7 +790,7 @@ extension CheckMoneyVC: UITableViewDelegate {
         
         let yesAction = UIAlertAction(title: "登録する", style: .default) { (action) in
             alert.dismiss(animated: true, completion: nil)
-            let lossPayment = Payment()
+            let lossPayment = Payment.make()
             lossPayment.mainCategoryNumber = isMinus ? 0 : 1
             lossPayment.paymentMethod = account.name
             lossPayment.price = adjustBalance
@@ -893,14 +900,8 @@ extension CheckMoneyVC: UIPickerViewDelegate, UIPickerViewDataSource {
         editTextField.text = pickerTitle[row]
     }
     
-//    @objc func cancelPicker() {
-//
-//    }
-    
     @objc func donePicker(_ sender: UIBarButtonItem) {
         editTextField.text = pickerTitle[pickerView.selectedRow(inComponent: 0)]
         editTextField.resignFirstResponder()
     }
-    
-    
 }

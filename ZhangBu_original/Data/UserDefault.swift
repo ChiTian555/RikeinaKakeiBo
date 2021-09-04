@@ -32,6 +32,7 @@ extension UserDefaults {
         case shake
         case startStep
         case alpha
+        case pocketMoney
     }
     enum BoolKey : String {
         case isCordMode
@@ -71,9 +72,9 @@ extension UserDefaults : KeyNamespaceable {
     }
         
     @discardableResult
-    func bool(forKey key: UserDefaults.BoolKey) -> Bool? {
-        let key = namespaced(key)
-        return UserDefaults.standard.bool(forKey: key)
+    func bool(forKey key: UserDefaults.BoolKey) -> Bool {
+        let strKey = namespaced(key)
+        return UserDefaults.standard.bool(forKey: strKey)
     }
 
     func setArray1(_ value: [String]?, forKey key: UserDefaults.Array1Key) {
@@ -123,18 +124,18 @@ extension UserDefaults : KeyNamespaceable {
     }
         
     @discardableResult
-    func color(forKey key: UserDefaults.ColorKey) -> UIColor {
+    func color(forKey key: UserDefaults.ColorKey, alpha: CGFloat = 1) -> UIColor {
         var color: UIColor!
         switch key {
         case .userColor:
-            color = UIColor.orange.withAlphaComponent(0.7)
+            color = UIColor.orange.withAlphaComponent(alpha)
         case .buttonColor:
-            color = UIColor.blue
+            color = UIColor.blue.withAlphaComponent(alpha)
         }
         let key = namespaced(key)
         guard let colorData = UserDefaults.standard.data(forKey: key) else { return color }
         if let udColor = try? (NSKeyedUnarchiver.unarchiveTopLevelObjectWithData(colorData) as? UIColor) {
-            color = udColor
+            color = udColor.withAlphaComponent(alpha)
         }
         return color
     }

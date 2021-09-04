@@ -507,7 +507,7 @@
                                 </segments>
                                 <connections>
                                     <action selector="changeMianCategory:" destination="6Vc-0o-TId" eventType="valueChanged" id="Ghf-Ao-zCf"/>
-                                    <action selector="selectMenu:" destination="Sq7-Dx-Q7T" eventType="valueChanged" id="6DL-mK-lR0"/>
+                                    <action selector="selectedMenu:" destination="dev-dE-S75" eventType="valueChanged" id="8hO-3d-2by"/>
                                 </connections>
                             </segmentedControl>
                         </subviews>
@@ -525,12 +525,15 @@
                         </constraints>
                     </view>
                     <navigationItem key="navigationItem" title="修正欄" id="Lnc-b3-n09">
-                        <barButtonItem key="rightBarButtonItem" title="Item" image="ellipsis.circle" catalog="system" id="dfo-Vo-XMk"/>
+                        <barButtonItem key="rightBarButtonItem" title="Item" image="ellipsis.circle" catalog="system" id="dfo-Vo-XMk">
+                            <connections>
+                                <action selector="openMenu" destination="dev-dE-S75" id="eHF-Hn-sCw"/>
+                            </connections>
+                        </barButtonItem>
                     </navigationItem>
                     <connections>
                         <outlet property="changeMainCategoryTab" destination="Myr-ch-3PH" id="1cA-3H-e9f"/>
                         <outlet property="settingTableView" destination="vNZ-Sh-Tz2" id="8q5-VX-44b"/>
-                        <outlet property="useSavedMoneyCheckLabel" destination="gBv-CD-Q7p" id="7SD-us-gCc"/>
                         <segue destination="64v-33-Dbl" kind="push" identifier="toPLDMemoEdit" id="RPv-vk-JPn"/>
                         <segue destination="4Uu-Nb-ekj" kind="push" identifier="toAdd" id="BsJ-2A-QmA"/>
                     </connections>
@@ -794,7 +797,7 @@
                                 </segments>
                                 <connections>
                                     <action selector="changeMianCategory:" destination="6Vc-0o-TId" eventType="valueChanged" id="It3-ee-hdP"/>
-                                    <action selector="selectMenu:" destination="Sq7-Dx-Q7T" eventType="valueChanged" id="Zhp-Wv-y6c"/>
+                                    <action selector="selectMenu:" destination="Sq7-Dx-Q7T" eventType="valueChanged" id="r65-Ug-tKJ"/>
                                 </connections>
                             </segmentedControl>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="貯金利用 ×" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="rAs-K2-XQM">
@@ -976,7 +979,7 @@
                                                                 <constraint firstAttribute="height" constant="44" id="SOi-wr-WcY"/>
                                                                 <constraint firstAttribute="width" constant="234" id="Tab-bK-RJp"/>
                                                             </constraints>
-                                                            <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                                                            <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                                             <textInputTraits key="textInputTraits"/>
                                                         </textField>
                                                     </subviews>
@@ -998,34 +1001,32 @@
                                                     <autoresizingMask key="autoresizingMask"/>
                                                     <subviews>
                                                         <label opaque="NO" userInteractionEnabled="NO" tag="1" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="メモ" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="TNI-Ys-cdL">
-                                                            <rect key="frame" x="16" y="7" width="39" height="30"/>
+                                                            <rect key="frame" x="16" y="7" width="45" height="30"/>
                                                             <constraints>
                                                                 <constraint firstAttribute="height" constant="30" id="jHt-Ad-S5P"/>
+                                                                <constraint firstAttribute="width" constant="45" id="xog-5W-pLq"/>
                                                             </constraints>
                                                             <fontDescription key="fontDescription" type="system" pointSize="19"/>
                                                             <nil key="textColor"/>
                                                             <nil key="highlightedColor"/>
                                                         </label>
-                                                        <textView clipsSubviews="YES" multipleTouchEnabled="YES" userInteractionEnabled="NO" tag="2" contentMode="scaleToFill" scrollEnabled="NO" editable="NO" textAlignment="natural" selectable="NO" translatesAutoresizingMaskIntoConstraints="NO" id="uQA-ol-KBc">
-                                                            <rect key="frame" x="127" y="5.5" width="234" height="33"/>
+                                                        <label opaque="NO" userInteractionEnabled="NO" tag="2" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="ULp-19-AA6" customClass="LabelWithPlaceHolder" customModule="ZhangBu_original" customModuleProvider="target">
+                                                            <rect key="frame" x="127" y="0.0" width="234" height="44"/>
                                                             <constraints>
-                                                                <constraint firstAttribute="width" constant="234" id="h24-qt-CSv"/>
+                                                                <constraint firstAttribute="height" relation="greaterThanOrEqual" constant="44" id="vwN-Fc-ICY"/>
                                                             </constraints>
-                                                            <color key="textColor" systemColor="labelColor"/>
-                                                            <fontDescription key="fontDescription" type="system" pointSize="14"/>
-                                                            <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
-                                                            <userDefinedRuntimeAttributes>
-                                                                <userDefinedRuntimeAttribute type="string" keyPath="placeholder" value="タップして入力"/>
-                                                            </userDefinedRuntimeAttributes>
-                                                        </textView>
+                                                            <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                                            <nil key="textColor"/>
+                                                            <nil key="highlightedColor"/>
+                                                        </label>
                                                     </subviews>
                                                     <constraints>
-                                                        <constraint firstItem="uQA-ol-KBc" firstAttribute="leading" secondItem="TNI-Ys-cdL" secondAttribute="trailing" constant="72" id="0V7-w9-UDH"/>
-                                                        <constraint firstItem="uQA-ol-KBc" firstAttribute="top" secondItem="SMZ-7x-qQu" secondAttribute="top" constant="5.5" id="2Az-nj-p3W"/>
-                                                        <constraint firstItem="TNI-Ys-cdL" firstAttribute="centerY" secondItem="uQA-ol-KBc" secondAttribute="centerY" id="5OV-hi-7Zj"/>
+                                                        <constraint firstAttribute="trailing" secondItem="ULp-19-AA6" secondAttribute="trailing" constant="14" id="DCF-8w-Zak"/>
+                                                        <constraint firstAttribute="bottom" secondItem="ULp-19-AA6" secondAttribute="bottom" id="W01-iC-bPg"/>
                                                         <constraint firstItem="TNI-Ys-cdL" firstAttribute="centerY" secondItem="SMZ-7x-qQu" secondAttribute="centerY" id="mTD-Ba-qKY"/>
-                                                        <constraint firstAttribute="bottom" secondItem="uQA-ol-KBc" secondAttribute="bottom" constant="5.5" id="qrS-cz-cT1"/>
+                                                        <constraint firstItem="ULp-19-AA6" firstAttribute="leading" secondItem="TNI-Ys-cdL" secondAttribute="trailing" constant="66" id="oOj-YI-Bsr"/>
                                                         <constraint firstItem="TNI-Ys-cdL" firstAttribute="leading" secondItem="SMZ-7x-qQu" secondAttribute="leadingMargin" id="te4-Zd-dbf"/>
+                                                        <constraint firstItem="ULp-19-AA6" firstAttribute="top" secondItem="SMZ-7x-qQu" secondAttribute="top" id="wSW-uS-Fa5"/>
                                                     </constraints>
                                                 </tableViewCellContentView>
                                             </tableViewCell>
@@ -1056,7 +1057,7 @@
                         </barButtonItem>
                     </navigationItem>
                     <connections>
-                        <outlet property="changeMainCategoryTab" destination="to9-Je-0lB" id="D1e-Bx-g5z"/>
+                        <outlet property="changeMainCategoryTab" destination="to9-Je-0lB" id="ALp-Ff-i6X"/>
                         <outlet property="pictureModeView" destination="KT4-xr-aQh" id="GKa-iK-ZmH"/>
                         <outlet property="scrollView" destination="9dy-sn-NMr" id="diD-cQ-obe"/>
                         <outlet property="settingTableView" destination="qg2-8V-VWF" id="K3D-7z-8Ce"/>

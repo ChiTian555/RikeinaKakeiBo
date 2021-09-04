@@ -49,6 +49,17 @@ class AddCategoryViewController: MainBaceVC, UITableViewDataSource {
         self.categoryList.upDate(newList: self.list, name: nil)
         self.setButtonColor()
         self.tableView.reloadData()
+        // 初期ステップ
+        if [1,2].contains(self.ud.integer(forKey: .startStep)){
+            if self.ud.integer(forKey: .startStep) == 1 && self.categoryList.name == "決済方法" {
+                self.ud.setInteger(2, forKey: .startStep)
+            } else if self.ud.integer(forKey: .startStep) == 2 && self.categoryList.name == "項目" {
+                self.ud.setInteger(3, forKey: .startStep)
+            }
+            // 親VCを取り出し
+            let tbc = SceneDelegate.shared.rootVC.current as! MainTBC
+            tbc.setStartStep()
+        }
     }
     
     //シャッフルされたときに呼び出される

@@ -56,7 +56,7 @@ extension ConectPaymentVC: UITableViewDataSource, UITableViewDelegate {
         let dateLabel = cell.contentView.viewWithTag(2) as! UILabel
         let priceLabel = cell.contentView.viewWithTag(3) as! UILabel
         let memoLabel = cell.contentView.viewWithTag(4) as! UILabel
-        if UserDefaults.standard.bool(forKey: .isCordMode)! {
+        if UserDefaults.standard.bool(forKey: .isCordMode) {
             priceLabel.font = UIFont(name: "cordFont", size: 20)
         } else {
             priceLabel.font = UIFont.systemFont(ofSize: 15, weight: .regular)

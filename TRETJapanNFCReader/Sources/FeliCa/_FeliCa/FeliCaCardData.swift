@@ -17,7 +17,7 @@ public protocol FeliCaCardData: Codable {
     
     mutating func convert()
     func toJSONData() -> Data?
-    
+    func getBalance() -> Int?
     
     /// Unavailable
     // var idm: String { get }
@@ -28,5 +28,13 @@ public protocol FeliCaCardData: Codable {
 extension FeliCaCardData {
     public func toJSONData() -> Data? {
         return try? JSONEncoder().encode(self)
+    }
+    public func getBalance() -> Int? {
+        if let d = self as? TransitICCardData { return d.balance }
+        else if let d = self as? RakutenEdyCardData { return d.balance }
+        else if let d = self as? NanacoCardData { return d.balance }
+        else if let d = self as? WaonCardData { return d.balance }
+        else if let d = self as? UnivCoopICPrepaidCardData { return d.balance }
+        return nil
     }
 }

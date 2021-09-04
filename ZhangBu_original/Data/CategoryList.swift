@@ -10,9 +10,8 @@ import RealmSwift
 import Realm
 import Foundation
 
-class CategoryList: Object {
+final class CategoryList: MyRealm {
     
-    @objc dynamic var id: Int = 0
     @objc dynamic var mainCategory: Int = 0
     @objc dynamic var name: String = ""
     @objc dynamic var selectAccount: Bool = false
@@ -21,11 +20,6 @@ class CategoryList: Object {
     // 初期設定
     override static func primaryKey() -> String? {
         return "id"
-    }
-    
-    override init() {
-        super.init()
-        if let last_id = lastObject()?.id { id = last_id }
     }
     
     //readするコード
@@ -64,5 +58,11 @@ class CategoryList: Object {
         guard let realm = Self.getRealm() else { return }
         try! realm.write() { realm.add(newPayment, update: .all) }
     }
-    
+    // データを更新(Update)するためのコード
+    func write(_ set: (Self) -> Void) -> Bool {
+        guard let realm = Self.getRealm() else { return false }
+        do { try realm.write() { set(self as! Self) } }
+        catch { Self.realmError(error); return false }
+        return true
+    }
 }

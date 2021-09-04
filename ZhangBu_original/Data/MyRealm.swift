@@ -10,26 +10,39 @@ import RealmSwift
 import Foundation
 import PKHUD
 
-extension Object {
+class MyRealm: Object {
+    
+    @objc dynamic var id: Int = 0
+    
+    // なんでかわかんないんだけど、継承先で、initしたかったら、
+    // これが必要らしい。
+    required override init() {
+        super.init()
+    }
+    
+    class func make() -> Self {
+        let me = Self.init()
+        me.id = Self.getLastId() + 1
+        return me
+    }
+    
+    private class func getLastId() -> Int {
+        let realm = try! Realm()
+        if let object = realm.objects(Self.self).last { return object.id }
+        else { return 0 }
+    }
     
     class func getRealm() -> Realm? {
         do { return try Realm()
         } catch { Self.realmError(error); return nil }
     }
+    
     class func realmError(_ err:Error) {
         HUD.flash(.labeledError(title: "データベースエラー",
                                 subtitle: "app作成者に、ご連絡ください。\n" + err.localizedDescription),
                   delay: 2.0)
     }
-    @objc func lastObject() -> Self? {
-        let realm = try! Realm()
-        if let object = realm.objects(Self.self).last {
-            return object
-        } else {
-            return nil
-        }
-    }
-    @objc func save() { 
+    func save() {
         do {
             let realm = try Realm()
             try realm.write() {
@@ -37,7 +50,7 @@ extension Object {
             }
         } catch { Self.realmError(error) }
     }
-    @objc func delete() {
+    func delete() {
         do {
             let realm = try Realm()
             try realm.write() {
@@ -46,3 +59,4 @@ extension Object {
         } catch { Self.realmError(error) }
     }
 }
+

@@ -34,7 +34,7 @@ final class SplashVC: MainBaceVC {
     
     private lazy var titleLabel: UILabel = {
         let titleLabel = UILabel()
-        titleLabel.text = "理系の家継簿"
+        titleLabel.text = "理系な家継簿"
         titleLabel.font = UIFont(name: "ERIJI", size: 40)
 //        let frame = CGRectMake(0, 0, screenSize.width, 50)
 //        titleLabel.frame = frame
@@ -214,7 +214,7 @@ extension SplashVC: UIImagePickerControllerDelegate, UINavigationControllerDeleg
     }
         
     func updateImageViewWithImage(_ image: UIImage, fromCropViewController cropViewController: CropViewController) {
-        let receipt = Receipt()
+        let receipt = Receipt.make()
         receipt.photo = image
         receipt.save()
         cropViewController.dismiss(animated: true, completion: nil)

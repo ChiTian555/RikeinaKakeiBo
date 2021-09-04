@@ -16,7 +16,11 @@ class AddPaymentVC: MainBaceVC, UITableViewDataSource & UITableViewDelegate, UIT
     
     var memo = String()
     var memoIndexPath = IndexPath()
-    var memoLabel: LabelWithPlaceHolder!
+    var memoTextView = UITextView()
+    
+    var datePicker = UIDatePicker()
+    
+    var editingTextFieldNomber: Int!
     
     var list = [[String]]()
     var menu = [CategoryList]()
@@ -24,12 +28,19 @@ class AddPaymentVC: MainBaceVC, UITableViewDataSource & UITableViewDelegate, UIT
     
     var tFManager = CustomTextFields(self)
     
+    var textFields = [UITextField]()
+    var allTextFields = [UITextField]()
+    
+    var dayTextField = UITextField()
+    var priceTextField = UITextField()
     var labelZero = UILabel()
     var labelYen = UILabel()
     
     var isNavigationMove: Bool!
     
     var startStepLabel = [UILabel]()
+    
+    var selectAccountNomber = Int()
     
     var coachController = CoachMarksController()
     
@@ -48,6 +59,7 @@ class AddPaymentVC: MainBaceVC, UITableViewDataSource & UITableViewDelegate, UIT
     
     @IBAction func selectMenu(_ sender: UISegmentedControl) {
         useSavedMoneyCheckLabel.text = "貯金利用 ×"
+        textFields = [UITextField]()
         ChangeMenu(menu: sender.selectedSegmentIndex)
         if #available(iOS 14.0, *) {
             menuButton.menu = setMenu()
@@ -78,7 +90,7 @@ class AddPaymentVC: MainBaceVC, UITableViewDataSource & UITableViewDelegate, UIT
         if isNavigationMove {
             isNavigationMove = false
             if memo != "" {
-                memoLabel.text = self.memo
+                memoTextView.text = self.memo
                 settingTableView.reloadRows(at: [self.memoIndexPath], with: .none)
             }
         } else {
@@ -97,6 +109,7 @@ class AddPaymentVC: MainBaceVC, UITableViewDataSource & UITableViewDelegate, UIT
         settingTableView.delegate = self
         let categoryList = CategoryList.readAllCategory(mode)
         menu = categoryList + []
+        list = categoryList.map({ $0.list + [] })
     }
     
     var menuButton: UIBarButtonItem!
@@ -120,6 +133,8 @@ class AddPaymentVC: MainBaceVC, UITableViewDataSource & UITableViewDelegate, UIT
         settingTableView.estimatedRowHeight = 40
         settingTableView.rowHeight = UITableView.automaticDimension
         settingTableView.set()
+
+        textFields = [UITextField]()
         
         let taped = UITapGestureRecognizer(target: self, action: #selector(changeUseSaveMoney(_:)))
         taped.numberOfTouchesRequired = 1
@@ -218,7 +233,7 @@ class AddPaymentVC: MainBaceVC, UITableViewDataSource & UITableViewDelegate, UIT
     var cells = [UITableViewCell]()
     
     func reloadData(allReset: Bool) {
-        makeTextFieldSet(allReset)
+        loadCells(allReset)
         self.settingTableView.reloadData()
     }
     
@@ -227,7 +242,6 @@ class AddPaymentVC: MainBaceVC, UITableViewDataSource & UITableViewDelegate, UIT
     
     func makeTextFieldSet(_ allReset: Bool) {
         let textFieldSet = CustomTextFields(self)
-        cells = []
         for menu in menus {
             
             var cell: UITableViewCell!
@@ -265,9 +279,7 @@ class AddPaymentVC: MainBaceVC, UITableViewDataSource & UITableViewDelegate, UIT
                 textField.tintColor = .clear
                 textField.placeholder = "タップして選択"
                 if menu == "日付" {
-                    if !allReset {
-                        // ここに、データだけ、引き継ぐコード
-                    }
+                    if !allReset { textField.text = dayTextField.text }
                     textFieldSet.addTextField(tF: textField, name: menu, type: .datePicker)
                 } else {
                     textFieldSet.addTextField(tF: textField, name: menu, type: .textPicker) { (me) in
@@ -276,6 +288,7 @@ class AddPaymentVC: MainBaceVC, UITableViewDataSource & UITableViewDelegate, UIT
                     let tapGesture = UITapGestureRecognizer(target: self, action: #selector(tapped(_:)))
                     tapGesture.numberOfTouchesRequired = 1
                     label.addGestureRecognizer(tapGesture)
+                    addPickerView(textField: textField)
                     //最初のチュートリアル用
                     if [1,2].contains(ud.integer(forKey: .startStep)) {
                         if ["決済方法","項目"].contains(menu) { startStepLabel.append(label) }
@@ -285,20 +298,108 @@ class AddPaymentVC: MainBaceVC, UITableViewDataSource & UITableViewDelegate, UIT
                 
             } else {
                 cell = settingTableView.dequeueReusableCell(withIdentifier: "Cell3")!.create()
-                let newLabel = cell.contentView.viewWithTag(2) as! LabelWithPlaceHolder
-                newLabel.placeHolder = "タップして入力"
-                newLabel.text = (allReset ? "" : memoLabel.text)
-                memoLabel = newLabel
+                let newTextView = cell.contentView.viewWithTag(2) as! UITextView
+                newTextView.text = (allReset ? "" : memoTextView.text)
+                memoTextView = newTextView
             }
             cells.append(cell.set())
         }
-        textFieldSet.setToolBars()
-        tFManager = textFieldSet
+    }
+    
+    //true->
+    //false->
+    func loadCells(_ allReset:Bool) {
+        cellCount = menu.count + 3
+        //全部のセルを配列に格納
+        cells = []
+        for row in 0 ..< cellCount {
+            
+            var cell: UITableViewCell!
+                
+            let mode = changeMainCategoryTab.selectedSegmentIndex
+            if row == 0 {
+                pickerTab = 0
+                textFields = []
+                cell = settingTableView.dequeueReusableCell(withIdentifier: "Cell1")!.create()
+                let newPriceTextField = cell.contentView.viewWithTag(3) as! UITextField
+                newPriceTextField.text = (allReset ? "" : priceTextField.text)
+                priceTextField = newPriceTextField
+                allTextFields.append(priceTextField)
+                priceTextField.keyboardType = .numberPad
+                priceTextField.keyboardAppearance = .default
+                let toolbar = CustomToolBar()
+                let doneItem = UIBarButtonItem(title: "Next", style: .done, target: self, action: #selector(done2))
+                doneItem.tintColor = UIColor.orange
+                let cancelItem = UIBarButtonItem(title: "Done", style: .plain, target: self, action: #selector(cancel2))
+                cancelItem.tintColor = UIColor.orange
+                let spaceButton = UIBarButtonItem(barButtonSystemItem: UIBarButtonItem.SystemItem.flexibleSpace, target: nil, action: nil)
+                toolbar.setItems([cancelItem, spaceButton, doneItem], animated: true)
+                priceTextField.inputAccessoryView = toolbar
+                labelZero = cell.contentView.viewWithTag(1) as! UILabel
+                labelYen = cell.contentView.viewWithTag(2) as! UILabel
+                
+                let colors: [UIColor] = [.systemRed,.systemGreen,.systemBlue]
+                labelZero.textColor = colors[mode]
+                labelYen.textColor = colors[mode]
+                labelZero.text = (mode == 0 ? "-" : "")
+                priceTextField.textColor = colors[mode]
+                
+                let currrentFont = ( ud.bool(forKey: .isCordMode) ?
+                                        UIFont(name: "cordFont", size: 35) :
+                                        UIFont.systemFont(ofSize: 35, weight: .light) )
+                priceTextField.font = currrentFont
+                labelYen.font = currrentFont
+                labelZero.font = currrentFont
+
+                priceTextField.attributedPlaceholder = NSAttributedString(string: "ここに金額を入力", attributes: [.font: UIFont.systemFont(ofSize: 35, weight: .thin)])
+                cell.selectionStyle = .none
+                
+            } else if row - 1 <= menu.count {
+                cell = settingTableView.dequeueReusableCell(withIdentifier: "Cell2")!.create()
+                let newRow = row - 1
+                let label = cell.contentView.viewWithTag(1) as! UILabel
+                let textField = cell.contentView.viewWithTag(2) as! UITextField
+                textField.text = ""
+                textField.placeholder = "タップして選択"
+                if newRow == menu.count {
+                    label.text = "日付"
+                    if !allReset { textField.text = dayTextField.text }
+                    dayTextField = textField
+                    addDatePicer(textField: textField)
+                } else {
+                    label.text = menu[newRow].name
+                    //最初のチュートリアル用
+                    if [1,2].contains(ud.integer(forKey: .startStep)) {
+                        if ["決済方法","項目"].contains(menu[newRow].name) {
+                            startStepLabel.append(label)
+                        }
+                    }
+                    let tapGesture = UITapGestureRecognizer(target: self, action: #selector(tapped(_:)))
+                    tapGesture.numberOfTouchesRequired = 1
+                    label.addGestureRecognizer(tapGesture)
+                    textFields.append(textField)
+                    addPickerView(textField: textField)
+                }
+                allTextFields.append(textField)
+                textField.tintColor = .clear
+                cell.selectionStyle = UITableViewCell.SelectionStyle.none
+                
+            } else {
+                cell = settingTableView.dequeueReusableCell(withIdentifier: "Cell3")!.create()
+                memoIndexPath = IndexPath(row: row, section: 0)
+                let newTextView = cell.contentView.viewWithTag(2) as! UITextView
+                newTextView.text = (allReset ? "" : memoTextView.text)
+                memoTextView = newTextView
+                cell.selectedBackgroundView = .getOneColorView(color: ud.color(forKey: .buttonColor))
+            }
+            
+            cells.append(cell.set())
+        }
     }
     
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return cells.count
+        return cellCount
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -318,22 +419,59 @@ class AddPaymentVC: MainBaceVC, UITableViewDataSource & UITableViewDelegate, UIT
         return CGRect(x: x, y: y, width: width, height: height)
     }
     
+    func addDatePicer(textField: UITextField) {
+        let toolbar = CustomToolBar()
+        let spacelItem = UIBarButtonItem(barButtonSystemItem: .flexibleSpace, target: self, action: nil)
+        let doneItem = UIBarButtonItem(title: "Done", style: .done, target: self, action: #selector(done1))
+        doneItem.tintColor = UIColor.orange
+        toolbar.setItems([spacelItem, doneItem], animated: true)
+        
+        datePicker.datePickerMode = .date
+        if #available(iOS 13.4, *) { datePicker.preferredDatePickerStyle = .wheels }
+        if dayTextField.text == "" { datePicker.date = Date() }
+        else { datePicker.date = DateInRegion(dayTextField.text!, format: "yyyy-MM-dd")!.date }
+        datePicker.maximumDate = Date()
+        textField.inputView = datePicker
+        textField.inputAccessoryView = toolbar
+    }
+    
+    func addPickerView(textField: UITextField) {
+        
+        let toolbar = CustomToolBar()
+        let doneItem = UIBarButtonItem(title: "Next", style: .done, target: self, action: #selector(goNext))
+        doneItem.tintColor = ud.color(forKey: .buttonColor)
+        let cancelItem = UIBarButtonItem(title: "Done", style: .plain, target: self, action: #selector(done))
+        cancelItem.tintColor = ud.color(forKey: .buttonColor)
+        let spaceButton = UIBarButtonItem(barButtonSystemItem: UIBarButtonItem.SystemItem.flexibleSpace, target: nil, action: nil)
+        toolbar.setItems([cancelItem, spaceButton, doneItem], animated: true)
+
+        let newPickerView = UIPickerView()
+        
+        newPickerView.delegate = self
+        newPickerView.dataSource = self
+        
+        newPickerView.tag = pickerTab
+        pickerTab += 1
+        textField.inputView = newPickerView
+        textField.inputAccessoryView = toolbar
+        
+    }
+    
     // テーブルビューがタップされたときの動作
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         // 価格、メニュー、日付、メモ
-        print(indexPath.row, tFManager.tFSets.count)
-        if indexPath.row == tFManager.tFSets.count {
+        if tFManager.tFSets[indexPath.row].name == "メモ" {
             self.isNavigationMove = true
             self.performSegue(withIdentifier: "toEdit", sender: nil)
         } else if indexPath.row == 0 && changeMainCategoryTab.selectedSegmentIndex == 0 {
             if labelZero.text == ""{
                 labelZero.text = "-"
                 labelYen.textColor = .red
-                tFManager.tFSets[0].tF.textColor = .red
+                priceTextField.textColor = .red
             } else {
                 labelZero.text = ""
                 labelYen.textColor = UIColor.label
-                tFManager.tFSets[0].tF.textColor = .label
+                priceTextField.textColor = .label
             }
         }
         tableView.cellForRow(at: indexPath)?.isSelected = false
@@ -341,8 +479,8 @@ class AddPaymentVC: MainBaceVC, UITableViewDataSource & UITableViewDelegate, UIT
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         if let vc = segue.destination as? EditMemoViewController {
-            vc.memo = memoLabel.text ?? ""
-            vc.width = memoLabel.frame.width
+            vc.memo = memoTextView.text
+            vc.width = memoTextView.frame.width
         } else if let vc = segue.destination as? AddCategoryViewController {
             vc.mainCategoryNumber = changeMainCategoryTab.selectedSegmentIndex
             vc.tappedCategoriesName = (sender as! String)
@@ -363,10 +501,10 @@ class AddPaymentVC: MainBaceVC, UITableViewDataSource & UITableViewDelegate, UIT
             payment.mainCategoryNumber = Int(self.mainCategory)
             for tFSet in self.tFManager.tFSets {
                 if tFSet.name == "金額" {
-                    payment.price = Int(tFSet.tF.text!)!
+                    payment.price = Int(self.priceTextField.text!)!
                     if self.mainCategory == 0 { payment.price *= self.labelZero.text == "-" ? -1 : 1 }
                 } else if tFSet.name == "日付" {
-                    payment.date = tFSet.tF.text!.toDate("yyyy-MM-dd")!.date
+                    payment.date = self.dayTextField.text!.toDate("yyyy-MM-dd")!.date
                 } else {
                     if !payment.set(title: tFSet.name, value: tFSet.tF.text) {
                         HUD.flash(.labeledError(title: "Error", subtitle: "エラーコード : C01_add")); return
@@ -384,12 +522,14 @@ class AddPaymentVC: MainBaceVC, UITableViewDataSource & UITableViewDelegate, UIT
             
             let resultAlert = MyAlert("保存成功！","新家計簿の記入を続けますか?")
             resultAlert.addActions("一覧に戻る") { _ in
-                self.tFManager.tFSets.forEach { $0.tF.text = "" }
-                self.memoLabel.text = ""
+                for textField in self.allTextFields {
+                    textField.text = ""
+                }
+                self.memoTextView.text = ""
                 self.tabBarController?.selectedIndex = 1
             }
             resultAlert.addActions("続ける") { _ in
-                self.tFManager.tFSets.forEach { $0.tF.text = "" }
+                self.reloadData(allReset: true)
                 //pickerViewを1に選択してあげる必要がある
                 self.setImage()
             }
@@ -423,8 +563,8 @@ extension AddPaymentVC: UIPickerViewDelegate, UIPickerViewDataSource {
     
     func pickerView(_ pickerView: UIPickerView, numberOfRowsInComponent component: Int) -> Int {
         
-        if tFManager.tFSets[pickerView.tag].choices!.count == 0 { return 1 }
-        return tFManager.tFSets[pickerView.tag].choices!.count
+        if list[pickerView.tag].count == 0 { return 1 }
+        return list[pickerView.tag].count
     }
     
     func pickerView(_ pickerView: UIPickerView, titleForRow row: Int, forComponent component: Int) -> String? {

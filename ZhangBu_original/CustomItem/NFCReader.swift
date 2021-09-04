@@ -38,15 +38,18 @@ class NFCReader {
 extension NFCReader: FeliCaReaderSessionDelegate {
     
     func feliCaReaderSession(didInvalidateWithError pollingErrors: [FeliCaSystemCode : Error?]?, readErrors: [FeliCaSystemCode : [FeliCaServiceCode : Error]]?) {
+        print(pollingErrors)
     }
     
     func feliCaReaderSession(didRead feliCaCardData: FeliCaCardData, pollingErrors: [FeliCaSystemCode : Error?]?, readErrors: [FeliCaSystemCode : [FeliCaServiceCode : Error]]?) {
-    }
-    
-    
-    func feliCaReaderSession(didRead feliCaCard: FeliCaCard) {
-        if let balance = feliCaCard.getBalance() { didReadFunc(balance, nil) }
+        
+        print(feliCaCardData.type.localizedString)
+        print(pollingErrors,readErrors)
+        print(feliCaCardData.primaryIDm)
+        print(feliCaCardData)
+        if let balance = feliCaCardData.getBalance() { didReadFunc(balance, nil) }
         else { didReadFunc(-1, nil) }
+        
     }
     
     func japanNFCReaderSession(didInvalidateWithError error: Error) {

@@ -17,7 +17,6 @@ public enum LocalizedLanguage {
     case zhHans
     case zhHant
     case zhHK
-    
     case key
 }
 

@@ -11,7 +11,6 @@ import Foundation
 public typealias FeliCaData = [FeliCaSystemCode : FeliCaSystem]
 
 extension FeliCaData {
-    
     public subscript(parameter: FeliCaReadWithoutEncryptionCommandParameter) -> FeliCaBlockData? {
         return self[parameter.systemCode]?[parameter.serviceCode]
     }

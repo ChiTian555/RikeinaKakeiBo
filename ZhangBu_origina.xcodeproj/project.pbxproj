@@ -52,6 +52,8 @@
 		4A225E7325ECF7F1008A175F /* NSObjectProtocolExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4A225E6925ECF7F1008A175F /* NSObjectProtocolExtension.swift */; };
 		4A225E7425ECF7F1008A175F /* UIImage+.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4A225E6A25ECF7F1008A175F /* UIImage+.swift */; };
 		4A225E7525ECF7F1008A175F /* UIColor+.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4A225E6B25ECF7F1008A175F /* UIColor+.swift */; };
+		4A26A05826E30E3F00D0CEE1 /* CustomTextFields.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4A26A05726E30E3F00D0CEE1 /* CustomTextFields.swift */; };
+		4A26A05C26E39E9500D0CEE1 /* LabelWithPlaceHolder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4A26A05B26E39E9500D0CEE1 /* LabelWithPlaceHolder.swift */; };
 		4A52B806251B2FE5008D07FD /* CustomToolBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4A52B805251B2FE5008D07FD /* CustomToolBar.swift */; };
 		4A52B823251C7F71008D07FD /* iTunesArtwork@1x.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 4A52B80F251C7F70008D07FD /* iTunesArtwork@1x.jpg */; };
 		4A52B824251C7F71008D07FD /* Icon-App-76x76@2x.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 4A52B811251C7F70008D07FD /* Icon-App-76x76@2x.jpg */; };
@@ -101,9 +103,9 @@
 		4AC8909124E63B8200A4948A /* pickerTextField.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4AC8909024E63B8200A4948A /* pickerTextField.swift */; };
 		4AC890A824EB9FC100A4948A /* CustomKeyboard.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4AC890A724EB9FC100A4948A /* CustomKeyboard.swift */; };
 		4AE495302505F5E0003D739C /* cordFont6.otf in Resources */ = {isa = PBXBuildFile; fileRef = 4AE4952F2505F5E0003D739C /* cordFont6.otf */; };
-		4AFA4CE226DFCC8500D7095A /* MyAlert.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4AFA4CE126DFCC8500D7095A /* MyAlert.swift */; };
+		4AFA4CE226DFCC8500D7095A /* CustomAlert.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4AFA4CE126DFCC8500D7095A /* CustomAlert.swift */; };
 		4AFA4CE426DFE8DD00D7095A /* NFCReader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4AFA4CE326DFE8DD00D7095A /* NFCReader.swift */; };
-		4AFAB9AF26E0748E00EB89FA /* Realm+.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4AFAB9AE26E0748E00EB89FA /* Realm+.swift */; };
+		4AFAB9AF26E0748E00EB89FA /* MyRealm.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4AFAB9AE26E0748E00EB89FA /* MyRealm.swift */; };
 		4AFABA6C26E0A7C400EB89FA /* DriversLicenseCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4AFAB9D426E0A43700EB89FA /* DriversLicenseCard.swift */; };
 		4AFABA6D26E0A7C700EB89FA /* DriversLicenseExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4AFAB9D526E0A43700EB89FA /* DriversLicenseExtensions.swift */; };
 		4AFABA6E26E0A7D000EB89FA /* JapanNFCReaderError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4AFAB9F426E0A43700EB89FA /* JapanNFCReaderError.swift */; };
@@ -160,7 +162,6 @@
 		4AFABAA126E0A7D000EB89FA /* RakutenEdyReader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4AFABA0A26E0A43700EB89FA /* RakutenEdyReader.swift */; };
 		4AFABAA226E0A7D000EB89FA /* FeliCa+NFCFeliCaTag.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4AFAB9DF26E0A43700EB89FA /* FeliCa+NFCFeliCaTag.swift */; };
 		4AFABAA326E0A7D000EB89FA /* NanacoCardItemType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4AFAB9F926E0A43700EB89FA /* NanacoCardItemType.swift */; };
-		4AFABAA426E0A7D000EB89FA /* TRETJapanNFCReader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4AFABA1326E0A43700EB89FA /* TRETJapanNFCReader.swift */; };
 		4AFABAA526E0A7D000EB89FA /* DriversLicenseReaderCommands.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4AFAB9D726E0A43700EB89FA /* DriversLicenseReaderCommands.swift */; };
 		4AFABAA626E0A7D000EB89FA /* FeliCaCardData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4AFAB9E326E0A43700EB89FA /* FeliCaCardData.swift */; };
 		4AFABAA726E0A7D000EB89FA /* NTasuCardData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4AFAB9FC26E0A43700EB89FA /* NTasuCardData.swift */; };
@@ -251,6 +252,8 @@
 		4A225E6925ECF7F1008A175F /* NSObjectProtocolExtension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NSObjectProtocolExtension.swift; sourceTree = "<group>"; };
 		4A225E6A25ECF7F1008A175F /* UIImage+.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UIImage+.swift"; sourceTree = "<group>"; };
 		4A225E6B25ECF7F1008A175F /* UIColor+.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UIColor+.swift"; sourceTree = "<group>"; };
+		4A26A05726E30E3F00D0CEE1 /* CustomTextFields.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomTextFields.swift; sourceTree = "<group>"; };
+		4A26A05B26E39E9500D0CEE1 /* LabelWithPlaceHolder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LabelWithPlaceHolder.swift; sourceTree = "<group>"; };
 		4A52B805251B2FE5008D07FD /* CustomToolBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomToolBar.swift; sourceTree = "<group>"; };
 		4A52B80F251C7F70008D07FD /* iTunesArtwork@1x.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = "iTunesArtwork@1x.jpg"; sourceTree = "<group>"; };
 		4A52B811251C7F70008D07FD /* Icon-App-76x76@2x.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = "Icon-App-76x76@2x.jpg"; sourceTree = "<group>"; };
@@ -306,18 +309,18 @@
 		4AC8909024E63B8200A4948A /* pickerTextField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = pickerTextField.swift; sourceTree = "<group>"; };
 		4AC890A724EB9FC100A4948A /* CustomKeyboard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomKeyboard.swift; sourceTree = "<group>"; };
 		4AE4952F2505F5E0003D739C /* cordFont6.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = cordFont6.otf; sourceTree = "<group>"; };
-		4AFA4CE126DFCC8500D7095A /* MyAlert.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyAlert.swift; sourceTree = "<group>"; };
+		4AFA4CE126DFCC8500D7095A /* CustomAlert.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomAlert.swift; sourceTree = "<group>"; };
 		4AFA4CE326DFE8DD00D7095A /* NFCReader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NFCReader.swift; sourceTree = "<group>"; };
-		4AFAB9AE26E0748E00EB89FA /* Realm+.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Realm+.swift"; sourceTree = "<group>"; };
-		4AFAB9D426E0A43700EB89FA /* DriversLicenseCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = DriversLicenseCard.swift; path = Sources/MIFARE/DriversLicense/DriversLicenseCard.swift; sourceTree = "<group>"; };
-		4AFAB9D526E0A43700EB89FA /* DriversLicenseExtensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = DriversLicenseExtensions.swift; path = Sources/MIFARE/DriversLicense/DriversLicenseExtensions.swift; sourceTree = "<group>"; };
-		4AFAB9D626E0A43700EB89FA /* DriversLicenseReader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = DriversLicenseReader.swift; path = Sources/MIFARE/DriversLicense/DriversLicenseReader.swift; sourceTree = "<group>"; };
-		4AFAB9D726E0A43700EB89FA /* DriversLicenseReaderCommands.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = DriversLicenseReaderCommands.swift; path = Sources/MIFARE/DriversLicense/DriversLicenseReaderCommands.swift; sourceTree = "<group>"; };
-		4AFAB9D826E0A43700EB89FA /* DriversLicenseReaderError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = DriversLicenseReaderError.swift; path = Sources/MIFARE/DriversLicense/DriversLicenseReaderError.swift; sourceTree = "<group>"; };
-		4AFAB9D926E0A43700EB89FA /* DriversLicenseReaderExtensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = DriversLicenseReaderExtensions.swift; path = Sources/MIFARE/DriversLicense/DriversLicenseReaderExtensions.swift; sourceTree = "<group>"; };
-		4AFAB9DA26E0A43700EB89FA /* DriversLicenseReaderReadFunctions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = DriversLicenseReaderReadFunctions.swift; path = Sources/MIFARE/DriversLicense/DriversLicenseReaderReadFunctions.swift; sourceTree = "<group>"; };
-		4AFAB9DB26E0A43700EB89FA /* DriversLicenseReaderSessionDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = DriversLicenseReaderSessionDelegate.swift; path = Sources/MIFARE/DriversLicense/DriversLicenseReaderSessionDelegate.swift; sourceTree = "<group>"; };
-		4AFAB9DC26E0A43700EB89FA /* DriversLicenseReaderStatus.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = DriversLicenseReaderStatus.swift; path = Sources/MIFARE/DriversLicense/DriversLicenseReaderStatus.swift; sourceTree = "<group>"; };
+		4AFAB9AE26E0748E00EB89FA /* MyRealm.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MyRealm.swift; sourceTree = "<group>"; };
+		4AFAB9D426E0A43700EB89FA /* DriversLicenseCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DriversLicenseCard.swift; sourceTree = "<group>"; };
+		4AFAB9D526E0A43700EB89FA /* DriversLicenseExtensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DriversLicenseExtensions.swift; sourceTree = "<group>"; };
+		4AFAB9D626E0A43700EB89FA /* DriversLicenseReader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DriversLicenseReader.swift; sourceTree = "<group>"; };
+		4AFAB9D726E0A43700EB89FA /* DriversLicenseReaderCommands.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DriversLicenseReaderCommands.swift; sourceTree = "<group>"; };
+		4AFAB9D826E0A43700EB89FA /* DriversLicenseReaderError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DriversLicenseReaderError.swift; sourceTree = "<group>"; };
+		4AFAB9D926E0A43700EB89FA /* DriversLicenseReaderExtensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DriversLicenseReaderExtensions.swift; sourceTree = "<group>"; };
+		4AFAB9DA26E0A43700EB89FA /* DriversLicenseReaderReadFunctions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DriversLicenseReaderReadFunctions.swift; sourceTree = "<group>"; };
+		4AFAB9DB26E0A43700EB89FA /* DriversLicenseReaderSessionDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DriversLicenseReaderSessionDelegate.swift; sourceTree = "<group>"; };
+		4AFAB9DC26E0A43700EB89FA /* DriversLicenseReaderStatus.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DriversLicenseReaderStatus.swift; sourceTree = "<group>"; };
 		4AFAB9DD26E0A43700EB89FA /* Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = Extensions.swift; path = Sources/Core/Extensions.swift; sourceTree = "<group>"; };
 		4AFAB9DE26E0A43700EB89FA /* FCFCampusCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = FCFCampusCard.swift; path = Sources/FeliCa/FCFCampus/FCFCampusCard.swift; sourceTree = "<group>"; };
 		4AFAB9DF26E0A43700EB89FA /* FeliCa+NFCFeliCaTag.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = "FeliCa+NFCFeliCaTag.swift"; path = "Sources/FeliCa/_FeliCa/FeliCa+NFCFeliCaTag.swift"; sourceTree = "<group>"; };
@@ -372,7 +375,6 @@
 		4AFABA1026E0A43700EB89FA /* TransitICCardData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = TransitICCardData.swift; path = Sources/FeliCa/TransitIC/TransitICCardData.swift; sourceTree = "<group>"; };
 		4AFABA1126E0A43700EB89FA /* TransitICCardItemType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = TransitICCardItemType.swift; path = Sources/FeliCa/TransitIC/TransitICCardItemType.swift; sourceTree = "<group>"; };
 		4AFABA1226E0A43700EB89FA /* TransitICReader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = TransitICReader.swift; path = Sources/FeliCa/TransitIC/TransitICReader.swift; sourceTree = "<group>"; };
-		4AFABA1326E0A43700EB89FA /* TRETJapanNFCReader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = TRETJapanNFCReader.swift; path = Sources/TRETJapanNFCReader/TRETJapanNFCReader.swift; sourceTree = "<group>"; };
 		4AFABA1426E0A43700EB89FA /* UnivCoopICPrepaidCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = UnivCoopICPrepaidCard.swift; path = Sources/FeliCa/UnivCoopICPrepaid/UnivCoopICPrepaidCard.swift; sourceTree = "<group>"; };
 		4AFABA1526E0A43700EB89FA /* UnivCoopICPrepaidCardData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = UnivCoopICPrepaidCardData.swift; path = Sources/FeliCa/UnivCoopICPrepaid/UnivCoopICPrepaidCardData.swift; sourceTree = "<group>"; };
 		4AFABA1626E0A43700EB89FA /* UnivCoopICPrepaidItemType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = UnivCoopICPrepaidItemType.swift; path = Sources/FeliCa/UnivCoopICPrepaid/UnivCoopICPrepaidItemType.swift; sourceTree = "<group>"; };
@@ -400,7 +402,7 @@
 			isa = PBXGroup;
 			children = (
 				4A07BB5225ED1F460077BC44 /* UserDefault.swift */,
-				4AFAB9AE26E0748E00EB89FA /* Realm+.swift */,
+				4AFAB9AE26E0748E00EB89FA /* MyRealm.swift */,
 				4A07BB5325ED1F460077BC44 /* Receipt.swift */,
 				4A07BB5425ED1F460077BC44 /* CategoryList.swift */,
 				4A07BB5525ED1F460077BC44 /* Payment.swift */,
@@ -557,13 +559,31 @@
 		4A63CE4A2513512300888C27 /* CustomItem */ = {
 			isa = PBXGroup;
 			children = (
-				4AFA4CE126DFCC8500D7095A /* MyAlert.swift */,
+				4AFA4CE126DFCC8500D7095A /* CustomAlert.swift */,
 				4A52B805251B2FE5008D07FD /* CustomToolBar.swift */,
 				4AC890A724EB9FC100A4948A /* CustomKeyboard.swift */,
+				4A26A05B26E39E9500D0CEE1 /* LabelWithPlaceHolder.swift */,
+				4A26A05726E30E3F00D0CEE1 /* CustomTextFields.swift */,
 				4A63CE4B2513516000888C27 /* CustomSlider.swift */,
 				4AFA4CE326DFE8DD00D7095A /* NFCReader.swift */,
 			);
 			path = CustomItem;
+			sourceTree = "<group>";
+		};
+		4A82D45626E20A3400C2B6E5 /* DriverLicense */ = {
+			isa = PBXGroup;
+			children = (
+				4AFAB9D426E0A43700EB89FA /* DriversLicenseCard.swift */,
+				4AFAB9D526E0A43700EB89FA /* DriversLicenseExtensions.swift */,
+				4AFAB9D626E0A43700EB89FA /* DriversLicenseReader.swift */,
+				4AFAB9D726E0A43700EB89FA /* DriversLicenseReaderCommands.swift */,
+				4AFAB9D826E0A43700EB89FA /* DriversLicenseReaderError.swift */,
+				4AFAB9D926E0A43700EB89FA /* DriversLicenseReaderExtensions.swift */,
+				4AFAB9DA26E0A43700EB89FA /* DriversLicenseReaderReadFunctions.swift */,
+				4AFAB9DB26E0A43700EB89FA /* DriversLicenseReaderSessionDelegate.swift */,
+				4AFAB9DC26E0A43700EB89FA /* DriversLicenseReaderStatus.swift */,
+			);
+			path = DriverLicense;
 			sourceTree = "<group>";
 		};
 		4AA22DF726E0E383005282F7 /* Language */ = {
@@ -718,15 +738,7 @@
 		4AFABA2426E0A43700EB89FA /* TRETJapanNFCReader */ = {
 			isa = PBXGroup;
 			children = (
-				4AFAB9D426E0A43700EB89FA /* DriversLicenseCard.swift */,
-				4AFAB9D526E0A43700EB89FA /* DriversLicenseExtensions.swift */,
-				4AFAB9D626E0A43700EB89FA /* DriversLicenseReader.swift */,
-				4AFAB9D726E0A43700EB89FA /* DriversLicenseReaderCommands.swift */,
-				4AFAB9D826E0A43700EB89FA /* DriversLicenseReaderError.swift */,
-				4AFAB9D926E0A43700EB89FA /* DriversLicenseReaderExtensions.swift */,
-				4AFAB9DA26E0A43700EB89FA /* DriversLicenseReaderReadFunctions.swift */,
-				4AFAB9DB26E0A43700EB89FA /* DriversLicenseReaderSessionDelegate.swift */,
-				4AFAB9DC26E0A43700EB89FA /* DriversLicenseReaderStatus.swift */,
+				4A82D45626E20A3400C2B6E5 /* DriverLicense */,
 				4AFAB9DD26E0A43700EB89FA /* Extensions.swift */,
 				4AFAB9DE26E0A43700EB89FA /* FCFCampusCard.swift */,
 				4AFAB9DF26E0A43700EB89FA /* FeliCa+NFCFeliCaTag.swift */,
@@ -781,7 +793,6 @@
 				4AFABA1026E0A43700EB89FA /* TransitICCardData.swift */,
 				4AFABA1126E0A43700EB89FA /* TransitICCardItemType.swift */,
 				4AFABA1226E0A43700EB89FA /* TransitICReader.swift */,
-				4AFABA1326E0A43700EB89FA /* TRETJapanNFCReader.swift */,
 				4AFABA1426E0A43700EB89FA /* UnivCoopICPrepaidCard.swift */,
 				4AFABA1526E0A43700EB89FA /* UnivCoopICPrepaidCardData.swift */,
 				4AFABA1626E0A43700EB89FA /* UnivCoopICPrepaidItemType.swift */,
@@ -1041,7 +1052,7 @@
 				4AFABA7726E0A7D000EB89FA /* FeliCaAttribute.swift in Sources */,
 				4AFABA7326E0A7D000EB89FA /* OkicaCard.swift in Sources */,
 				4A225E7125ECF7F1008A175F /* UIViewController+.swift in Sources */,
-				4AFAB9AF26E0748E00EB89FA /* Realm+.swift in Sources */,
+				4AFAB9AF26E0748E00EB89FA /* MyRealm.swift in Sources */,
 				4AFA4CE426DFE8DD00D7095A /* NFCReader.swift in Sources */,
 				4AB55A7E24FA08F8009173B5 /* TabBarItemType.swift in Sources */,
 				4AB55A9A24FA1860009173B5 /* LocalAuthenticationManager.swift in Sources */,
@@ -1056,6 +1067,7 @@
 				4AFABA7626E0A7D000EB89FA /* UnivCoopICPrepaidReader.swift in Sources */,
 				4A225E5425ECF79F008A175F /* ConectPaymentVC.swift in Sources */,
 				4A52B806251B2FE5008D07FD /* CustomToolBar.swift in Sources */,
+				4A26A05826E30E3F00D0CEE1 /* CustomTextFields.swift in Sources */,
 				4A225E5625ECF79F008A175F /* AddPaymentVC.swift in Sources */,
 				4AFABAB226E0A7D000EB89FA /* RyutoCard.swift in Sources */,
 				4AFABA8726E0A7D000EB89FA /* NTasuCardItemType.swift in Sources */,
@@ -1079,7 +1091,6 @@
 				4AC8905F24DE5D0800A4948A /* SceneDelegate.swift in Sources */,
 				4A07BC0225ED34AA0077BC44 /* SignInVC.swift in Sources */,
 				4AB55A7124FA01CE009173B5 /* InputPasscodeDisplayView.swift in Sources */,
-				4AFABAA426E0A7D000EB89FA /* TRETJapanNFCReader.swift in Sources */,
 				4AFABA9326E0A7D000EB89FA /* OctopusCardItemType.swift in Sources */,
 				4AB55AB024FA4A59009173B5 /* SettingViewController.swift in Sources */,
 				4A225E5725ECF79F008A175F /* CheckMoneyVC.swift in Sources */,
@@ -1098,7 +1109,8 @@
 				4AFABA8426E0A7D000EB89FA /* FeliCaSystem.swift in Sources */,
 				4A225E7525ECF7F1008A175F /* UIColor+.swift in Sources */,
 				4AC8909124E63B8200A4948A /* pickerTextField.swift in Sources */,
-				4AFA4CE226DFCC8500D7095A /* MyAlert.swift in Sources */,
+				4AFA4CE226DFCC8500D7095A /* CustomAlert.swift in Sources */,
+				4A26A05C26E39E9500D0CEE1 /* LabelWithPlaceHolder.swift in Sources */,
 				4A225E7325ECF7F1008A175F /* NSObjectProtocolExtension.swift in Sources */,
 				4AFABA8326E0A7D000EB89FA /* OkicaReader.swift in Sources */,
 				4AFABA8226E0A7D000EB89FA /* OkicaCardItemType.swift in Sources */,
@@ -1301,7 +1313,7 @@
 					"@executable_path/Frameworks",
 				);
 				"PODS_CONFIGURATION_BUILD_DIR[sdk=iphoneos13.6]" = "${PODS_BUILD_DIR}/$(CONFIGURATION)$(EFFECTIVE_PLATFORM_NAME)";
-				PRODUCT_BUNDLE_IDENTIFIER = "jp.iketen.RikeinaKakeinbo210902-2";
+				PRODUCT_BUNDLE_IDENTIFIER = "jp.iketen.RikeinaKakeinbo210903-0";
 				PRODUCT_NAME = ZhangBu_original;
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SUPPORTED_PLATFORMS = "iphonesimulator iphoneos";

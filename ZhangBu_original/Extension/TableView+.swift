@@ -20,18 +20,24 @@ extension UITableView {
 
 extension UITableViewCell {
     
+    /**
+     タップされたときの色を決定する。
+     */
     public func set() -> UITableViewCell {
+        let ud = UserDefaults.standard
         if self.backgroundColor != UIColor.clear {
             self.backgroundColor = self.backgroundColor?.withAlphaComponent(0.2)
         }
         if self.selectedBackgroundView != nil || self.selectionStyle != .none {
-            let colorView = UIView()
-            colorView.backgroundColor =  UserDefaults.standard.color(forKey: .buttonColor).withAlphaComponent(0.4)
-            self.selectedBackgroundView = colorView
+            let view = UIView.getOneColorView(color: ud.color(forKey: .buttonColor, alpha: 0.5))
+            self.selectedBackgroundView = view
         }
         return self
     }
     
+    /**
+     透明なCellを生成する。
+     */
     public func create() -> UITableViewCell {
         self.backgroundColor = .clear
         return self

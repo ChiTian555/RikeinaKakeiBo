@@ -10,9 +10,8 @@ import RealmSwift
 import Realm
 import SwiftDate
 
-class Receipt: Object {
+final class Receipt: MyRealm {
     
-    @objc dynamic var id: Int = 0
     @objc dynamic private var _photo = Data()
     //マイグレーション番号1
     @objc dynamic private var date = Date()
@@ -25,11 +24,6 @@ class Receipt: Object {
     //保存しないプロパティの定義
     override static func ignoredProperties() -> [String] {
         return ["photo"]
-    }
-    
-    override init() {
-        super.init()
-        if let last_id = lastObject()?.id { id = last_id }
     }
     
     @objc dynamic var photo: UIImage {
@@ -51,6 +45,12 @@ class Receipt: Object {
         return object + []
         
     }
-    
+    // データを更新(Update)するためのコード
+    func write(_ set: (Receipt) -> Void) -> Bool {
+        guard let realm = Self.getRealm() else { return false }
+        do { try realm.write() { set(self as! Self) } }
+        catch { Self.realmError(error); return false }
+        return true
+    }
 
 }
