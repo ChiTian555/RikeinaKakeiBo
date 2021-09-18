@@ -11,17 +11,19 @@ import UIKit
 
 extension UIView {
     
+    private var ud: UserDefaults { return UserDefaults.standard }
+    
     public func setBackGroundPicture(alpha: CGFloat? = nil) {
         self.backgroundColor = .systemBackground
         let finalAlpha: CGFloat
         //背景画像を入れる器
         let currentBackGround = UIImageView(frame: self.bounds)
         if alpha == nil {
-            finalAlpha = CGFloat(UserDefaults.standard.integer(forKey: .alpha)!) / 100
+            finalAlpha = CGFloat(ud.integer(forKey: .alpha)) / 100
         } else {
             finalAlpha = alpha!
         }
-        currentBackGround.image = UserDefaults.standard.image(forKey: .backGraundPicture)?.alpha(finalAlpha)
+        currentBackGround.image = ud.image(forKey: .backGraundPicture)?.alpha(finalAlpha)
         self.addSubview(currentBackGround)
         self.sendSubviewToBack(currentBackGround)
     }

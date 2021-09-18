@@ -21,8 +21,9 @@ target 'ZhangBu_original' do
   pod 'Instructions'
   pod 'RealmSwift'
   
-  pod 'Google-Mobile-Ads-SDK'
   pod 'Firebase/Auth'
-  pod 'FirebaseFirestore'
+  pod 'Google-Mobile-Ads-SDK'
+  # ここは、コンパイルされたファイルをダウンロードするため、ギットを指定している。
+  pod 'FirebaseFirestore', :git => 'https://github.com/invertase/firestore-ios-sdk-frameworks.git'
   
 end

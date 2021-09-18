@@ -7,56 +7,46 @@
 //
 
 import RealmSwift
-import Foundation
 import PKHUD
 
-class MyRealm: Object {
+extension Object {
     
-    @objc dynamic var id: Int = 0
+    var myRealm: Realm { try! Realm() }
+    var ud: UserDefaults { UserDefaults.standard }
     
-    // なんでかわかんないんだけど、継承先で、initしたかったら、
-    // これが必要らしい。
-    required override init() {
-        super.init()
+    @objc func save() {
+        do {
+            try myRealm.write() {
+                myRealm.add(self)
+            }
+        } catch { Self.realmError(error) }
     }
-    
-    class func make() -> Self {
-        let me = Self.init()
-        me.id = Self.getLastId() + 1
-        return me
+    @objc func delete() {
+        do {
+            try myRealm.write() {
+                myRealm.delete(self)
+            }
+        } catch { Self.realmError(error) }
     }
-    
-    private class func getLastId() -> Int {
-        let realm = try! Realm()
-        if let object = realm.objects(Self.self).last { return object.id }
-        else { return 0 }
-    }
-    
-    class func getRealm() -> Realm? {
-        do { return try Realm()
-        } catch { Self.realmError(error); return nil }
-    }
-    
-    class func realmError(_ err:Error) {
+    @objc class func realmError(_ err:Error) {
         HUD.flash(.labeledError(title: "データベースエラー",
-                                subtitle: "app作成者に、ご連絡ください。\n" + err.localizedDescription),
-                  delay: 2.0)
-    }
-    func save() {
-        do {
-            let realm = try Realm()
-            try realm.write() {
-                realm.add(self)
-            }
-        } catch { Self.realmError(error) }
-    }
-    func delete() {
-        do {
-            let realm = try Realm()
-            try realm.write() {
-                realm.delete(self)
-            }
-        } catch { Self.realmError(error) }
+                                subtitle: "app作成者に、ご連絡ください。\n" + err.localizedDescription))
     }
 }
 
+protocol MyRealmFunction {}
+extension MyRealmFunction where Self: Object, Self: Codable {
+    
+    static var myRealm: Realm { try! Realm() }
+    static var ud: UserDefaults { UserDefaults.standard }
+    
+    func write(_ set:(Self)->Void) -> Bool {
+        do { try realm!.write() { set(self) } }
+        catch { Self.realmError(error); return false }
+        return true
+    }
+    
+    static func restore(newObjects: [Self]) {
+        try! myRealm.write() { myRealm.add(newObjects, update: .all) }
+    }
+}

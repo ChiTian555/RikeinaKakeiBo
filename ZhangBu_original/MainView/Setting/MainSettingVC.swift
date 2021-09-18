@@ -34,7 +34,7 @@ class MainSettingVC: MainBaceVC, UIViewControllerTransitioningDelegate {
     let slider = UISlider()
     let sliderLabel = UILabel()
     
-    //type: 0 -> 未対応, 1 -> Action, 2 -> Button, 3 -> toAdvance
+    //type: 0 -> 未対応, 1 -> Action, 2 -> Switch, 3 -> toAdvance
     let titleArray: [(name:String ,cellType: Int)] = [
         
         ("口座管理", 1),
@@ -42,9 +42,10 @@ class MainSettingVC: MainBaceVC, UIViewControllerTransitioningDelegate {
         ("パスワードの設定", 1),
         ("背景画像とテーマ色", 3),
         ("作成者に意見を送信", 1),
-        ("ログイン", 0),
-        ("定期的な出費の登録(β版未対応)", 0)
-    
+        ("家計簿のヒント", 1),
+        ("バックアップ", 1),
+//        ("定期的な出費の登録(β版未対応)", 0)
+        
     ]
 
     @IBOutlet var tableView: UITableView!
@@ -112,15 +113,7 @@ class MainSettingVC: MainBaceVC, UIViewControllerTransitioningDelegate {
             
             alert.addAction(okAction)
 
-            self.present(alert, animated: true, completion: {
-                
-//                UIView.animate(withDuration: 0.3, delay: 0, options: .curveLinear, animations: {
-//                    alert.view.transform = CGAffineTransform(rotationAngle: CGFloat.pi)
-//                }) { (finished) -> Void in
-//                  // do something if you need
-//                }
-                
-            })
+            self.present(alert, animated: true, completion: nil)
             
         } else {
             
@@ -250,7 +243,7 @@ extension MainSettingVC: UITableViewDataSource {
         //初回起動時にラベルを表示
         if indexPath.row == 0 {
             let startStepLabel = cell.viewWithTag(2) as! UILabel
-            if UserDefaults.standard.integer(forKey: .startStep)! == 0 {
+            if ud.stringArray(forKey: .startSteps)!.first == "0" {
                 startStepLabel.textAlignment = .center
                 startStepLabel.text = "New"
                 startStepLabel.backgroundColor = .systemRed
@@ -289,8 +282,10 @@ extension MainSettingVC: UITableViewDelegate {
                 self.performSegue(withIdentifier: "toEditPasscode", sender: indexPath.row)
             case "作成者に意見を送信":
                 sendEmail()
-            case "ログイン":
+            case "バックアップ":
                 self.performSegue(withIdentifier: "toBackUp", sender: indexPath.row)
+            case "家計簿のヒント":
+                self.performSegue(withIdentifier: "toBrowser", sender: indexPath.row)
             default:
                 HUD.flash(.labeledError(title: "Error", subtitle: "不明なエラー"), delay: 1.5)
             }

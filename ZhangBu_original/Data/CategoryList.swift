@@ -10,22 +10,36 @@ import RealmSwift
 import Realm
 import Foundation
 
-final class CategoryList: MyRealm {
+final class CategoryList: Object, Codable, MyRealmFunction {
     
+    @objc dynamic var id: Int = 0
     @objc dynamic var mainCategory: Int = 0
     @objc dynamic var name: String = ""
     @objc dynamic var selectAccount: Bool = false
-    let list = List<String>()
+    private var _list = List<String>()
+    
+    @objc var list: [String] { get { return _list + [] } }
     
     // 初期設定
     override static func primaryKey() -> String? {
         return "id"
     }
     
+    //保存しないプロパティの定義
+    override static func ignoredProperties() -> [String] {
+        return ["list"]
+    }
+    
+    class func make() -> Self {
+        let me = Self()
+        me.id = ( myRealm.objects(Self.self).max(ofProperty: "id") ?? 0 ) + 1
+        return me
+    }
+    
+    
     //readするコード
     static func readCategory(_ mainCategory:Int,_ name: String ) -> CategoryList? {
-        guard let realm = super.getRealm() else { return nil }
-        let object: CategoryList? = realm.objects(CategoryList.self)
+        let object: CategoryList? = myRealm.objects(CategoryList.self)
             .filter("mainCategory == %@", mainCategory)
             .filter("name == %@", name).first
         return object
@@ -33,9 +47,8 @@ final class CategoryList: MyRealm {
     
     //readするコード
     static func readAllCategory(_ mainCategory:Int?) -> [CategoryList] {
-        guard let realm = super.getRealm() else { return [] }
         var categoryList = [CategoryList]()
-        let objects = realm.objects(CategoryList.self)
+        let objects = myRealm.objects(CategoryList.self)
         if let main = mainCategory {
             categoryList = objects.filter("mainCategory == %@", main) + []
         } else {
@@ -45,24 +58,15 @@ final class CategoryList: MyRealm {
     }
     
     // データを更新(Update)するためのコード
-    func upDate(newList to: [String]? = nil, name: String?) {
-        guard let realm = Self.getRealm() else { return }
-        try! realm.write() {
-            if name != nil { self.name = name! }
-            if to != nil { self.setValue(to, forKey: "list") }
-//            objects.colorCode = self.categoryColor.hex(withHash: true, uppercase: true)
-        }
+    func upDateList(newList list: [String]? = nil, changeName name: String?) {
+        try! myRealm.write({
+            if list != nil { self.setValue(list, forKey: "_list") }
+            if let name = name { self.name = name }
+        })
     }
     
     static func restore(newPayment: [CategoryList]) {
-        guard let realm = Self.getRealm() else { return }
-        try! realm.write() { realm.add(newPayment, update: .all) }
+        try! myRealm.write() { myRealm.add(newPayment, update: .all) }
     }
-    // データを更新(Update)するためのコード
-    func write(_ set: (Self) -> Void) -> Bool {
-        guard let realm = Self.getRealm() else { return false }
-        do { try realm.write() { set(self as! Self) } }
-        catch { Self.realmError(error); return false }
-        return true
-    }
+
 }

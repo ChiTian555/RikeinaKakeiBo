@@ -9,14 +9,16 @@
 import Foundation
 
 class NFCReader {
-    
+    typealias CardType = FeliCaCardType
     var reader: FeliCaReader!
-    var didReadFunc: (Int,Error?) -> Void
-    init(type: FeliCaCardType, didRead :@escaping (Int,Error?) -> Void) {
+    var didReadFunc: (Int, Error?) -> Void
+    var finished: Bool = false
+    init(type: CardType, didRead :@escaping (Int, Error?) -> Void) {
         didReadFunc = didRead
         reader = Self.getReader(type: type, delegate: self)
     }
     func start() {
+        SceneDelegate.shared.isCheckMode = true
         if let r = reader as? TransitICReader { r.get(itemTypes: [.balance]) }
         else if let r = reader as? UnivCoopICPrepaidReader { r.get(itemTypes: [.balance]) }
         else if let r = reader as? RakutenEdyReader { r.get(itemTypes: [.balance]) }
@@ -37,22 +39,39 @@ class NFCReader {
 
 extension NFCReader: FeliCaReaderSessionDelegate {
     
+    func japanNFCReaderSession(didInvalidateWithError error: Error) {
+        print("japanNFCReaderSession")
+        DispatchQueue.main.async {
+            
+            if error.localizedDescription == "Session invalidated by user" { return }
+            print("\(error.localizedDescription)")
+            if self.finished { return }
+            self.finished = true
+            self.didReadFunc(-1, error)
+        }
+    }
+    
     func feliCaReaderSession(didInvalidateWithError pollingErrors: [FeliCaSystemCode : Error?]?, readErrors: [FeliCaSystemCode : [FeliCaServiceCode : Error]]?) {
-        print(pollingErrors)
+        print("feliCaReaderSessionInvalidateWithError")
+        print(pollingErrors,readErrors)
+        DispatchQueue.main.asyncAfter(deadline: .now() + 3) {
+            DispatchQueue.main.async {
+                if self.finished { return }
+                self.finished = true
+                self.didReadFunc(-1, nil)
+            }
+        }
     }
     
     func feliCaReaderSession(didRead feliCaCardData: FeliCaCardData, pollingErrors: [FeliCaSystemCode : Error?]?, readErrors: [FeliCaSystemCode : [FeliCaServiceCode : Error]]?) {
-        
-        print(feliCaCardData.type.localizedString)
+        print("feliCaReaderSessionDidRead")
         print(pollingErrors,readErrors)
-        print(feliCaCardData.primaryIDm)
-        print(feliCaCardData)
-        if let balance = feliCaCardData.getBalance() { didReadFunc(balance, nil) }
-        else { didReadFunc(-1, nil) }
-        
-    }
-    
-    func japanNFCReaderSession(didInvalidateWithError error: Error) {
-        didReadFunc(-1,error)
+        DispatchQueue.main.asyncAfter(deadline: .now() + 3) {
+            DispatchQueue.main.async{
+                self.finished = true
+                if let balance = feliCaCardData.balance { self.didReadFunc(balance, nil) }
+                else { self.didReadFunc(-1, nil) }
+            }
+        }
     }
 }

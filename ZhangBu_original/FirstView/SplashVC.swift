@@ -14,6 +14,8 @@ import RealmSwift
 
 final class SplashVC: MainBaceVC {
     
+    private let ud = UserDefaults.standard
+    
 //    /// 処理中を示すインジケーター
 //    private lazy var activityIndicator: UIActivityIndicatorView = {
 //        let indicator = UIActivityIndicatorView(style: .large)
@@ -55,6 +57,14 @@ final class SplashVC: MainBaceVC {
 //        activityIndicator.startAnimating()
         titleLabel.isHidden = true
         
+        let swipeGuestureLeft = UISwipeGestureRecognizer(target: self, action: #selector(swiped(_:)))
+        swipeGuestureLeft.direction = .left
+        let swipeGuestureUp = UISwipeGestureRecognizer(target: self, action: #selector(swiped(_:)))
+        swipeGuestureUp.direction = .up
+        view.addGestureRecognizer(swipeGuestureLeft)
+        view.addGestureRecognizer(swipeGuestureUp)
+        view.isUserInteractionEnabled = true
+        
     }
     
     override func viewDidAppear(_ animated: Bool) {
@@ -68,92 +78,90 @@ final class SplashVC: MainBaceVC {
     //セレクターで呼び出す関数の指定方法
     @objc func update() {
         
-        //1巡し終わるまでの処理を実行
-        if t <= CGFloat.pi {
+        DispatchQueue.main.async { [self] in
             
-            //青い点(UIImageView)を設定する！
-            let addCircle = UIImageView()
-            addCircle.tintColor = UIColor.orange.withAlphaComponent(0.6)
-            addCircle.image = UIImage(systemName: "circle.fill")
-            addCircle.frame.size = CGSize(width: 5, height: 5)
-            
-            //座標の指定！
-            let x = 0.8 * cos( 6.0 * t )
-            let y = 0.8 * sin( 4.0 * t + thita)
-            addCircle.center = CGPoint(x: (screenSize.width / 2) * ( 1.0 + x ),
-                                       y: (screenSize.height / 2) * ( 1.0 + y ))
-            //UIViewの貼り付け
-            self.view.addSubview(addCircle)
-            
-            //モーションが半ばに入った時、上から「大学生の家計簿」のラベルを下ろしてくる！
-            if t >= 0.5 * CGFloat.pi  {
+            //1巡し終わるまでの処理を実行
+            if t <= CGFloat.pi {
                 
-                titleLabel.isHidden = false
-                titleLabel.center = CGPoint(x: screenSize.width / 2,
-                                       y: screenSize.height * ((t / (CGFloat.pi)) - 0.5))
+                //青い点(UIImageView)を設定する！
+                let addCircle = UIImageView()
+                addCircle.tintColor = UIColor.orange.withAlphaComponent(0.6)
+                addCircle.image = UIImage(systemName: "circle.fill")
+                addCircle.frame.size = CGSize(width: 5, height: 5)
+                
+                //座標の指定！
+                let x = 0.8 * cos( 6.0 * t )
+                let y = 0.8 * sin( 4.0 * t + thita)
+                addCircle.center = CGPoint(x: (screenSize.width / 2) * ( 1.0 + x ),
+                                           y: (screenSize.height / 2) * ( 1.0 + y ))
+                //UIViewの貼り付け
+                self.view.addSubview(addCircle)
+                
+                //モーションが半ばに入った時、上から「大学生の家計簿」のラベルを下ろしてくる！
+                if t >= 0.5 * CGFloat.pi  {
+                    
+                    titleLabel.isHidden = false
+                    titleLabel.center = CGPoint(x: screenSize.width / 2,
+                                           y: screenSize.height * ((t / (CGFloat.pi)) - 0.5))
+                }
             }
-        }
-        
-        t += 0.01
-        if t <= 4 { return }
-        
-        timer.invalidate()
-        let scene = SceneDelegate.shared
-        
-        if scene.rootVC.current == self {
-//            //背景画像追加
-//            scene.rootVC.addPicture()
             
-            if UserDefaults.standard.bool(forKey: .isWatchedWalkThrough) != true {
-                let walkThroughVC = WalkThroughVC()
-                scene.rootVC.transition(to: walkThroughVC)
-            } else {
-                //パスワード画面を表示
-                scene.displayPasscodeLockScreenIfNeeded()
-                // メイン画面へ移動
-                scene.rootVC.transitionToMain()
+            t += 0.01
+            if t <= 4 { return }
+            
+            timer.invalidate()
+            let scene = SceneDelegate.shared
+            
+            if scene.rootVC.current == self {
+    //            //背景画像追加
+    //            scene.rootVC.addPicture()
+                
+                if !ud.bool(forKey: .isWatchedWalkThrough) {
+                    let walkThroughVC = WalkThroughVC()
+                    scene.rootVC.transition(to: walkThroughVC)
+                } else {
+                    //パスワード画面を表示
+                    scene.displayPasscodeLockScreenIfNeeded()
+                    // メイン画面へ移動
+                    scene.rootVC.transitionToMain()
 
-                print("メイン画面へ移動")
+                    print("メイン画面へ移動")
+                }
+                
             }
-            
-        }
-            
-//        displayPasscodeLockScreenIfNeeded(keyWindow: keyWindow)
-        UIApplication.shared.endBackgroundTask(self.backgroundTaskID)
+                
+    //        displayPasscodeLockScreenIfNeeded(keyWindow: keyWindow)
+            UIApplication.shared.endBackgroundTask(self.backgroundTaskID)
         
+        }
+    
     }
     
-    override func motionBegan(_ motion: UIEvent.EventSubtype, with event: UIEvent?) {
-        
-        guard motion == .motionShake else { return }
-        
-        if let timer = timer {
-            timer.invalidate()
-        }
-        
-        let alert = UIAlertController(title: "メニュー", message: "画面を\n→スワイプ：出費手入力画面へ\n←スワイプ：レシートの撮影", preferredStyle: .alert)
-        let swipeGuestureRight = UISwipeGestureRecognizer(target: self, action: #selector(swiped(_:)))
-        swipeGuestureRight.direction = .right
-        let swipeGuestureLeft = UISwipeGestureRecognizer(target: self, action: #selector(swiped(_:)))
-        swipeGuestureLeft.direction = .left
-        present(alert, animated: true, completion: {
-            
-            alert.view.superview?.addGestureRecognizer(swipeGuestureRight)
-            alert.view.superview?.addGestureRecognizer(swipeGuestureLeft)
-            alert.view.superview?.isUserInteractionEnabled = true
-        })
-    }
+//    override func motionBegan(_ motion: UIEvent.EventSubtype, with event: UIEvent?) {
+//
+//        guard motion == .motionShake else { return }
+//
+//        if let timer = timer {
+//            timer.invalidate()
+//        }
+//
+//        let alert = UIAlertController(title: "メニュー", message: "画面を\n→スワイプ：出費手入力画面へ\n←スワイプ：レシートの撮影", preferredStyle: .alert)
+//        let swipeGuestureRight = UISwipeGestureRecognizer(target: self, action: #selector(swiped(_:)))
+//        swipeGuestureRight.direction = .right
+//        let swipeGuestureLeft = UISwipeGestureRecognizer(target: self, action: #selector(swiped(_:)))
+//        swipeGuestureLeft.direction = .left
+//        present(alert, animated: true, completion: {
+//
+//            alert.view.superview?.addGestureRecognizer(swipeGuestureRight)
+//            alert.view.superview?.addGestureRecognizer(swipeGuestureLeft)
+//            alert.view.superview?.isUserInteractionEnabled = true
+//        })
+//    }
     
     @objc private func swiped(_ sender: UISwipeGestureRecognizer) {
-        
-        guard let alert = self.presentedViewController as? UIAlertController else { return }
-        alert.dismiss(animated: true, completion: nil)
-        print(sender.direction)
         switch sender.direction {
-        case .left:
-            takePhoto()
-        case .right:
-            goToAddPayment()
+        case .left: goToAddPayment()
+        case .up: takePhoto()
         default: break
         }
     }
@@ -163,30 +171,29 @@ final class SplashVC: MainBaceVC {
     
         let scene = SceneDelegate.shared
         
-        if scene.rootVC.current == self {
-    //            //背景画像追加
-    //            scene.rootVC.addPicture()
-            
-            if UserDefaults.standard.bool(forKey: .isWatchedWalkThrough) != true {
-                let walkThroughVC = WalkThroughVC()
-                scene.rootVC.transition(to: walkThroughVC)
-            } else {
-                //パスワード画面を表示
-                scene.displayPasscodeLockScreenIfNeeded()
-                // メイン画面へ移動
-                scene.rootVC.transitionToMain()
-                if let tbc = scene.rootVC.current as? MainTBC {
-                    tbc.selectedIndex = 2
-                    guard let nc = tbc.selectedViewController as? UINavigationController else { return }
-                    guard let vc = nc.topViewController as? AddPaymentVC else { return }
-                }
-                print("メイン画面へ移動")
+        if scene.rootVC.current != self { return }
+        
+        if !ud.bool(forKey: .isWatchedWalkThrough) {
+            let walkThroughVC = WalkThroughVC()
+            scene.rootVC.transition(to: walkThroughVC)
+        } else {
+            //パスワード画面を表示
+            scene.displayPasscodeLockScreenIfNeeded()
+            // メイン画面へ移動
+            scene.rootVC.transitionToMain()
+            if let tbc = scene.rootVC.current as? MainTBC {
+                guard let nc = tbc.selectedViewController as? UINavigationController else { return }
+                guard let vc = nc.topViewController as? AddPaymentVC else { return }
             }
-            
+            print("メイン画面へ移動")
         }
+            
+        
     }
     
+    // 上スワイプ
     private func takePhoto() {
+        timer.fire()
         let picker = UIImagePickerController()
         if UIImagePickerController.isSourceTypeAvailable(.camera) {
             picker.sourceType = .camera
@@ -204,6 +211,10 @@ final class SplashVC: MainBaceVC {
     //CGRectを簡単に作る
     private func CGRectMake(_ x: CGFloat, _ y: CGFloat, _ width: CGFloat, _ height: CGFloat) -> CGRect {
         return CGRect(x: x, y: y, width: width, height: height)
+    }
+    
+    override func viewWillDisappear(_ animated: Bool) {
+        timer.invalidate()
     }
 
 }

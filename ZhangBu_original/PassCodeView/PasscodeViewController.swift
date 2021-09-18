@@ -26,7 +26,7 @@ class PasscodeViewController: UIViewController {
 
         // MEMO: PasscodePresenterに定義したプロトコルの処理を実行するようにする
         presenter.delegate = self
-
+        self.setSwipe()
         setupUserInterface()
     }
 

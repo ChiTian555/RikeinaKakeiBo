@@ -10,12 +10,14 @@ import UIKit
 
 class MainBaceVC: UIViewController {
     
+    private let ud = UserDefaults.standard
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         if let nv = self.navigationController as? MainNC {
             nv.loadColor()
         }
-        let alpha = 1 - CGFloat(UserDefaults.standard.integer(forKey: .alpha)!) / 100
+        let alpha = 1 - CGFloat(ud.integer(forKey: .alpha)) / 100
         view.backgroundColor = UIColor.systemBackground.withAlphaComponent(alpha)
     }
     
@@ -23,7 +25,7 @@ class MainBaceVC: UIViewController {
         if let nv = self.navigationController as? MainNC {
             nv.loadColor()
         }
-        let alpha = 1 - CGFloat(UserDefaults.standard.integer(forKey: .alpha)!) / 100
+        let alpha = 1 - CGFloat(ud.integer(forKey: .alpha)) / 100
         view.backgroundColor = UIColor.systemBackground.withAlphaComponent(alpha)
     }
 

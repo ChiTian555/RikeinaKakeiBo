@@ -9,15 +9,18 @@ import RealmSwift
 import SwiftDate
 import Realm
 
-final class Payment: MyRealm {
+final class Payment: Object, Codable, MyRealmFunction {
     
+    @objc dynamic var id: Int = 0
     @objc dynamic var isUsePoketMoney: Bool = true
     
-    @objc dynamic var mainCategoryNumber: Int = 0
+    /// 0 -> pay, 1 -> get, 2 -> trade
+    @objc dynamic var mainCategoryNumber: Int = 0 {
+        didSet { if mainCategoryNumber == 1 { isUsePoketMoney = false } }
+    }
     @objc dynamic var price: Int = 0
     @objc dynamic var date: Date = Date()
-   
-    @objc dynamic var addDate: Date = Date()
+    
     @objc dynamic var category = String()
     
     //(2.0)に実装
@@ -34,32 +37,19 @@ final class Payment: MyRealm {
         return "id"
     }
     
-    func write(_ set: (Payment) -> Void) -> Bool {
-        let oldPayment = self.copy() as! Payment
-        guard let realm = Self.getRealm() else { return false }
-        do { try realm.write() { set(self) } }
-        catch { Self.realmError(error); return false }
-        Account.updateBalance(newPayment: self, deletePayment: oldPayment)
-        return true
-    }
-
-    // データを保存するためのコード
-    override func save() {
-        super.save()
-        if self.mainCategoryNumber == 1 {
-            self.isUsePoketMoney = false
-        }; Account.updateBalance(newPayment: self)
+    class func make() -> Self {
+        let me = Self()
+        me.id = ( myRealm.objects(Self.self).max(ofProperty: "id") ?? 0 ) + 1
+        return me
     }
     
     static func readAllPayment() -> [Payment] {
-        let realm = try! Realm()
-        return realm.objects(Payment.self) + []
+        return myRealm.objects(Payment.self) + []
     }
     
     //追加日時から割り勘を設定
     static func readSortedByAddDate(_ mainCategory: Int?) -> [Payment] {
-        let realm = try! Realm()
-        var payments = realm.objects(Payment.self).sorted(byKeyPath: "addDate")
+        var payments = myRealm.objects(Payment.self).sorted(byKeyPath: "addDate")
         if let main = mainCategory {
             payments = payments.filter("category == %@", main)
         }; return payments.prefix(5) + []
@@ -67,10 +57,9 @@ final class Payment: MyRealm {
     
     static func getMonthPayment(_ mainCategory: Int, year: Int, month: Int, category: String? = nil) -> Results<Payment> {
         
-        let realm = try! Realm()
         let firstDate = DateInRegion(year: year, month: month, day: 1).date
         let endDate = DateInRegion(year: year, month: month + 1, day: 1).date
-        var monthRealmPayments = realm.objects(Payment.self)
+        var monthRealmPayments = myRealm.objects(Payment.self)
             .filter("mainCategoryNumber == \(mainCategory)")
             .filter("date >= %@ AND date < %@", firstDate, endDate)
         if let category = category {
@@ -81,8 +70,7 @@ final class Payment: MyRealm {
     
     //日にちの前後
     static func getCreditPaymentSum(_ account: Account, endDate: Date) -> Int {
-        let realm = try! Realm()
-        let creditPayments = realm.objects(Payment.self)
+        let creditPayments = myRealm.objects(Payment.self)
             .filter("mainCategoryNumber != %@ AND paymentMethod == %@", 2, account.name)
         var sum: Int!
         if let startDate = account.newCheck?.checkDate {
@@ -95,34 +83,62 @@ final class Payment: MyRealm {
         return sum
     }
     
+    // データを保存するためのコード
+    override func save() {
+        super.save()
+        updatePocketMoney(added: true)
+        Account.updateBalance(newPayment: self)
+    }
+    
     // データを削除(Delete)するためのコード
     override func delete() {
+        self.updatePocketMoney(added: false)
         Account.updateBalance(newPayment: nil, deletePayment: self)
         super.delete()
     }
     
-    static func restore(newPayment: [Payment]) {
-        let realm = try! Realm()
-        try! realm.write() {
-            realm.add(newPayment, update: .all)
+    func updatePocketMoney(added: Bool) {
+        if self.isUsePoketMoney {
+            var nowPoketMoney = ud.integer(forKey: .pocketMoney) ?? 0
+            nowPoketMoney += self.price * ((added) ? 1 : -1)
+            ud.setInteger(nowPoketMoney, forKey: .pocketMoney)
         }
     }
     
-    func set(title: String, value: String?) -> Bool {
-        guard let value = value else { return false }
-        if mainCategoryNumber == 0 {
-            if title == "項目" { self.category = title }
+    func setValue(title: String, value: String)  {
+        
+        if title == "金額" { self.price = Int(value)! }
+        else if title == "日付" { self.date = value.toDate("yyyy-MM-dd")!.date }
+        else if mainCategoryNumber == 0 {
+            if title == "項目" { self.category = value }
             else if title == "決済方法" { self.paymentMethod = value }
             else { self.userCategory = value }
         } else if mainCategoryNumber == 1 {
-            if title == "項目" { self.category = title }
-            else if title == "入金講座" { self.paymentMethod = value }
+            if title == "項目" { self.category = value }
+            else if title == "入金口座" { self.paymentMethod = value }
             else { self.userCategory = value }
         } else if mainCategoryNumber == 2 {
-            if title == "出金講座" { self.withdrawal = title }
-            else if title == "入金講座" { self.paymentMethod = value }
+            if title == "出金口座" { self.withdrawal = value }
+            else if title == "入金口座" { self.paymentMethod = value }
             else { self.userCategory = value }
         }
-        return true
+    }
+    
+    func getValue(title: String) -> String {
+        if title == "金額" { return "\(self.price)" }
+        if title == "日付" { return self.date.toFormat("yyyy-MM-dd") }
+        if mainCategoryNumber == 0 {
+            if title == "項目" { return self.category }
+            else if title == "決済方法" { return self.paymentMethod }
+            else { return self.userCategory }
+        } else if mainCategoryNumber == 1 {
+            if title == "項目" { return self.category }
+            else if title == "入金口座" { return self.paymentMethod }
+            else { return self.userCategory }
+        } else if mainCategoryNumber == 2 {
+            if title == "出金口座" { return self.withdrawal }
+            else if title == "入金口座" { return self.paymentMethod }
+            else { return self.userCategory }
+        }; return ""
     }
 }

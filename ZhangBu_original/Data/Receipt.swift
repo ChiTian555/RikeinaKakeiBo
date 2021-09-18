@@ -10,8 +10,9 @@ import RealmSwift
 import Realm
 import SwiftDate
 
-final class Receipt: MyRealm {
+final class Receipt: Object, Codable, MyRealmFunction {
     
+    @objc dynamic var id: Int = 0
     @objc dynamic private var _photo = Data()
     //マイグレーション番号1
     @objc dynamic private var date = Date()
@@ -26,6 +27,14 @@ final class Receipt: MyRealm {
         return ["photo"]
     }
     
+    class func make() -> Self {
+        let me = Self()
+        me.id = ( myRealm.objects(Receipt.self).max(ofProperty: "id") ?? 0 ) + 1
+        return me
+    }
+    
+
+    
     @objc dynamic var photo: UIImage {
         set(photo) {
             guard let data = photo.pngData() else { return }
@@ -38,19 +47,9 @@ final class Receipt: MyRealm {
     }
     
     class func readAll() -> [Receipt] {
-        
-        guard let realm = Self.getRealm() else { return [] }
-        let object: Results<Receipt> = realm.objects(Receipt.self).sorted(byKeyPath: "date")
-        
+        let object: Results<Receipt> = myRealm.objects(Receipt.self).sorted(byKeyPath: "date")
         return object + []
-        
     }
-    // データを更新(Update)するためのコード
-    func write(_ set: (Receipt) -> Void) -> Bool {
-        guard let realm = Self.getRealm() else { return false }
-        do { try realm.write() { set(self as! Self) } }
-        catch { Self.realmError(error); return false }
-        return true
-    }
+
 
 }

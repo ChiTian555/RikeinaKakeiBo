@@ -10,6 +10,8 @@ import UIKit
 
 class MainNC: UINavigationController {
     
+    private let ud = UserDefaults.standard
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         loadColor()
@@ -17,8 +19,8 @@ class MainNC: UINavigationController {
     
     func loadColor() {
         self.navigationBar.barStyle = .default
-        self.navigationBar.tintColor = UserDefaults.standard.color(forKey: .buttonColor)
-        let colorImage = UIImage.colorImage(color: UserDefaults.standard.color(forKey: .userColor))
+        self.navigationBar.tintColor = ud.color(forKey: .buttonColor)
+        let colorImage = UIImage.colorImage(color: ud.color(forKey: .userColor))
         // ナビゲーションを透明にする処理
         self.navigationBar.setBackgroundImage(colorImage, for: .default)
         

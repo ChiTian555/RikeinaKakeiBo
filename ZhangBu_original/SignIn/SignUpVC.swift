@@ -42,48 +42,58 @@ class SignUpVC: UIViewController, UITextFieldDelegate {
         let name = userNameTextField.text ?? ""
         
         if password != checkPassword {
-            HUD.flash(.error, delay: 1)
+            HUD.flash(.labeledError(title: "Error", subtitle: "パスワードが一致しません。"), delay: 1)
             return
         }
         if name.count <= 3 {
             HUD.flash(.labeledError(title: "Error", subtitle: "ユーザー名の文字数が\n足りません。"), delay: 1)
             return
         }
-        
-        Auth.auth().createUser(withEmail: email, password: password) { [weak self] result, error in
-            guard let self = self else { return }
+        HUD.show(.progress)
+        Auth.auth().createUser(withEmail: email, password: password)
+        { [weak self] result, error in
+            guard let self = self else { HUD.hide(); return }
             guard let user = result?.user else {
+                HUD.hide()
                 SignInVC.showErrorIfNeeded(error, target: self)
                 return
             }
             let req = user.createProfileChangeRequest()
             req.displayName = name
             req.commitChanges() { [weak self] error in
-                guard let self = self else { return }
+                guard let self = self else { HUD.hide(); return }
                 if error != nil {
+                    HUD.hide()
                     SignInVC.showErrorIfNeeded(error, target: self)
                     return
                 }
                 user.sendEmailVerification() { [weak self] error in
                     guard let self = self else { return }
                     if error != nil {
+                        HUD.hide()
                         SignInVC.showErrorIfNeeded(error, target: self)
                         return
                     }
-                    // 仮登録完了画面へ遷移する処理
-                    self.performSegue(withIdentifier: "toCheck", sender: user)
+                    HUD.flash(.labeledSuccess(title: "サインアップ成功",
+                                              subtitle: "メールアドレスを確認ください")) {_ in
+                        // 仮登録完了画面へ遷移する処理
+                        self.performSegue(withIdentifier: "toCheck", sender: user)
+                    }
                 }
             }
-            
         }
-        
+    }
+    
+    @IBAction func showPolicy(_ sender: UIButton) {
+        self.performSegue(withIdentifier: "toPolicy", sender: sender.tag)
     }
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        if segue.identifier == "toCheck" {
-            guard let vc = segue.destination as? CheckEMailVC else { return }
+        if let vc = segue.destination as? CheckEMailVC {
             vc.user = sender as? User ?? nil
             vc.pass = passwardTextField.text ?? ""
+        } else if let vc = segue.destination as? PrivacyVC {
+            vc.showMode = sender as! Int
         }
     }
 

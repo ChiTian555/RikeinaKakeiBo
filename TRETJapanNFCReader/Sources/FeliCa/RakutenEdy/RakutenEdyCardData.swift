@@ -71,8 +71,8 @@ public struct RakutenEdyCardData: FeliCaCardData {
     }
     
     private mutating func convertToBalance(_ blockData: [Data]) {
-        let data = blockData.first!
-        let balance = data.toIntReversed(0, 3)
+        let data = blockData.first
+        let balance = data?.toIntReversed(0, 3) ?? -1
         self.balance = balance
     }
     

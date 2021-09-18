@@ -12,28 +12,30 @@ import Realm
 import Siren
 import SwiftDate
 import Firebase
+import GoogleMobileAds
 import PKHUD
 
 @main
 class AppDelegate: UIResponder, UIApplicationDelegate {
     
     var window: UIWindow?
-    var realm: Realm!
+    private var realm: Realm { try! Realm() }
+    private let ud = UserDefaults.standard
     
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
         
         // Override point for customization after application launch.
         SwiftDate.defaultRegion = Region(calendar: Calendars.gregorian, zone: Zones.asiaTokyo, locale: Locales.japanese)
         
-//        FirebaseApp.configure()
-        
+        FirebaseApp.configure()
+
         // Initialize the Google Mobile Ads SDK.
-//        GADMobileAds.sharedInstance().start(completionHandler: nil)
+        GADMobileAds.sharedInstance().start { (status) in
+            print(status)
+        }
         
         print("didFinishLaunchingWithOptions: アプリ起動時")
 //        forceUpdate()
-        
-        let ud = UserDefaults.standard
   
         // マイグレーションが必要な時
         // レコードフォーマットを変更する場合、このバージョンも上げていく。
@@ -46,24 +48,14 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                 if (oldSchemaVersion < migSchemaVersion) {
         }})
         
-//        // DBファイルのfileURLを取得
-//        if let fileURL = Realm.Configuration.defaultConfiguration.fileURL {
-//            try? FileManager.default.removeItem(at: fileURL)
-//        }
         
         config.deleteRealmIfMigrationNeeded = true
         Realm.Configuration.defaultConfiguration = config
-        print(Realm.Configuration.defaultConfiguration)
-        
-        print("②")
-        realm = try? Realm()
-        
-        print("③")
         
         if realm.objects(CategoryList.self).count == 0 {
             let categoryArray = [[("項目", false),("決済方法", true)],
                                  [("項目", false),("入金口座", true)],
-                                 [("出金講座", true),("入金講座", true)]]
+                                 [("出金口座", true),("入金口座", true)]]
             for i in 0 ..< 3 {
                 categoryArray[i].forEach { (menuName) in
                     let menu = CategoryList.make()
@@ -75,28 +67,17 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             }
         }
         
-        
-        if ud.integer(forKey: .alpha) == nil {
+        // 2.0.1でつけた。
+        if ud.stringArray(forKey: .startSteps) == nil {
             ud.setInteger(50, forKey: .alpha)
-        }
-        
-        if ud.stringArray2(forKey: .account) == nil {
-            ud.setArray2([[]], forKey: .account)
-        }
-        
-        if ud.stringArray1(forKey: .notDidCheckAccountTipe) == nil {
+            ud.setStringArray(["0","1","2","3","4"], forKey: .startSteps)
             if #available(iOS 13.0, *) {
-                ud.setArray1(["①　携帯残高確認", "②　本アプリ対応ICカード", "③　その他の口座"],
-                forKey: .notDidCheckAccountTipe)
+                ud.setStringArray(["①　携帯残高確認", "②　本アプリ対応ICカード", "③　その他の口座"],
+                                  forKey: .notDidCheckAccountTipe)
             } else {
-                ud.setArray1(["①　携帯残高確認", "③　その他の口座"],
-                forKey: .notDidCheckAccountTipe)
+                ud.setStringArray(["①　携帯残高確認", "③　その他の口座"],
+                                  forKey: .notDidCheckAccountTipe)
             }
-        }
-        
-        UNUserNotificationCenter.current().requestAuthorization(options: [.alert, .sound, .badge])
-            { (granted, _) in
-            if granted { UNUserNotificationCenter.current().delegate = AppDelegate.shared }
         }
         
         return true
@@ -188,6 +169,16 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 }
 
 extension AppDelegate: UNUserNotificationCenterDelegate {
+    
+    func settingNotify() {
+        UNUserNotificationCenter.current().requestAuthorization(options: [.alert, .sound, .badge])
+            { (granted, _) in
+            if granted {
+                UNUserNotificationCenter.current().delegate = AppDelegate.shared
+                self.ud.setBool(true, forKey: .canUseNotification)
+            }
+        }
+    }
     
     func userNotificationCenter(
         _ center: UNUserNotificationCenter,

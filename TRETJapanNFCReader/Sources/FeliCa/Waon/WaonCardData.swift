@@ -74,9 +74,9 @@ public struct WaonCardData: FeliCaCardData {
     }
     
     private mutating func convertToBalance(_ blockData: [Data]) {
-        let data = blockData.first!
-        let balance = data.toIntReversed(0, 3)
-        self.balance = balance
+        let data = blockData.first
+        let balance = data?.toIntReversed(0, 3)
+        self.balance = balance ?? -1
     }
     
     private mutating func convertToWaonNumber(_ blockData: [Data]) {

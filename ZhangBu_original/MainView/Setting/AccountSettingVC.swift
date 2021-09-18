@@ -41,7 +41,7 @@ class AccountSettingVC: MainBaceVC {
     }
     
     func load() {
-//        accounts = UserDefaults.standard.stringArray2(forKey: .account)!
+
         accounts = Account.readAll() + []
         
         if accounts.count != 0 {
@@ -66,7 +66,7 @@ class AccountSettingVC: MainBaceVC {
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         if sender != nil {
             let nc = segue.destination as! UINavigationController
-            let vc = nc.visibleViewController as! AddAccountViewController
+            let vc = nc.visibleViewController as! AddAccountVC
             let i = sender as! Int
             vc.selectedAccount = accounts[i]
             vc.selectedNumber = i

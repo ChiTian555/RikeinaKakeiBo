@@ -37,13 +37,19 @@ class SignInVC: UIViewController, UITextFieldDelegate {
         let email = eMailTextField.text ?? ""
         let password = passwardTextField.text ?? ""
         
+        HUD.show(.progress)
         Auth.auth().signIn(withEmail: email, password: password) { [weak self] result, error in
             guard let self = self else { return }
             guard let user = result?.user else {
+                HUD.hide()
                 SignInVC.showErrorIfNeeded(error, target: self)
                 return
             }
-            if !user.isEmailVerified { return }
+            if !user.isEmailVerified {
+                HUD.hide()
+                HUD.flash(.label("本登録が\nなされていません。"))
+                return
+            }
             // サインイン後の画面へ
             HUD.flash(.labeledSuccess(title: "ログイン完了", subtitle: "メイン画面に移ります"), delay: 1) { _ in
                 SignInVC.backToMain(target: self)
@@ -54,10 +60,6 @@ class SignInVC: UIViewController, UITextFieldDelegate {
     
     @IBAction func cancel() {
         SignInVC.backToMain(target: self)
-    }
-    
-    @IBAction func fogotPassward() {
-        
     }
     
     func isValidEmail(_ string: String) -> Bool {

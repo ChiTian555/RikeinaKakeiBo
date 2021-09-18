@@ -10,37 +10,35 @@ import UIKit
 
 class LabelWithPlaceHolder: UILabel {
     
-    var _text: String?
-    var _placeHolder: String?
+    private var _text = ""
     
     var placeHolder: String? {
-        get{ return _placeHolder }
-        set(text){
-            if _text == nil || _text == "" { super.text = text }
-            _placeHolder = text
+        didSet {
+            if text?.isEmpty != false { super.text = placeHolder }
         }
     }
     
     override var text: String? {
-        get{ return _text }
-        set(text){
-            _text = text
-            if ( text != "" && text != nil ) {
+        get { return _text }
+        set ( text ) {
+            if text?.isEmpty != false {
+                super.text = placeHolder
+                font = .systemFont(ofSize: font.pointSize)
+                textColor = UIColor.placeholderText
+            } else {
                 super.text = text
+                _text = text ?? ""
                 font = .systemFont(ofSize: font.pointSize)
                 textColor = .label
-            } else {
-                font = .systemFont(ofSize: font.pointSize)
-                textColor = UIColor(displayP3Red: 0, green: 0, blue: 0.0980392, alpha: 0.22)
             }
         }
     }
 
     override init(frame: CGRect) {
         super.init(frame: frame)
-        if text == nil || text == "" {
+        if text?.isEmpty != false {
             font = .systemFont(ofSize: font.pointSize)
-            textColor = UIColor(displayP3Red: 0, green: 0, blue: 0.0980392, alpha: 0.22)
+            textColor = UIColor.placeholderText
         }
     }
     

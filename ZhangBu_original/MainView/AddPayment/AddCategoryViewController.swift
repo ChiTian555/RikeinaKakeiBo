@@ -46,15 +46,16 @@ class AddCategoryViewController: MainBaceVC, UITableViewDataSource {
     //新規口座登録画面から、直接入力
     public func addNewAccount(_ newAccount: String) {
         self.list.append(newAccount)
-        self.categoryList.upDate(newList: self.list, name: nil)
+        self.categoryList.upDateList(newList: self.list, changeName: nil)
         self.setButtonColor()
         self.tableView.reloadData()
         // 初期ステップ
-        if [1,2].contains(self.ud.integer(forKey: .startStep)){
-            if self.ud.integer(forKey: .startStep) == 1 && self.categoryList.name == "決済方法" {
-                self.ud.setInteger(2, forKey: .startStep)
-            } else if self.ud.integer(forKey: .startStep) == 2 && self.categoryList.name == "項目" {
-                self.ud.setInteger(3, forKey: .startStep)
+        let nowStep = ud.stringArray(forKey: .startSteps)!.first
+        if ["1","2"].contains(nowStep){
+            if nowStep == "1" && self.categoryList.name == "決済方法" {
+                self.ud.deleteArrayElement("1", forKey: .startSteps)
+            } else if nowStep == "2" && self.categoryList.name == "項目" {
+                self.ud.deleteArrayElement("2", forKey: .startSteps)
             }
             // 親VCを取り出し
             let tbc = SceneDelegate.shared.rootVC.current as! MainTBC
@@ -81,7 +82,7 @@ class AddCategoryViewController: MainBaceVC, UITableViewDataSource {
         super.viewWillAppear(animated)
         categoryList = CategoryList.readCategory(mainCategoryNumber, tappedCategoriesName)
         
-        list = categoryList.list + []
+        list = categoryList.list
         
         if categoryList.selectAccount {
             accountList = Account.readAll().map({ $0.name })
@@ -171,14 +172,15 @@ class AddCategoryViewController: MainBaceVC, UITableViewDataSource {
             self.list.append(text)
             //アカウントを選択肢から削除
             if self.categoryList.selectAccount { self.accountList.removeAll(where: { $0 == text }) }
-            self.categoryList.upDate(newList: self.list, name: nil)
+            self.categoryList.upDateList(newList: self.list, changeName: nil)
             self.setButtonColor()
             self.tableView.reloadData()
-            if [1,2].contains(self.ud.integer(forKey: .startStep)){
-                if self.ud.integer(forKey: .startStep) == 1 && self.categoryList.name == "決済方法" {
-                    self.ud.setInteger(2, forKey: .startStep)
-                } else if self.ud.integer(forKey: .startStep) == 2 && self.categoryList.name == "項目" {
-                    self.ud.setInteger(3, forKey: .startStep)
+            if ["1","2"].contains(self.ud.stringArray(forKey: .startSteps)!.first){
+                let nowStep = self.ud.stringArray(forKey: .startSteps)!.first
+                if nowStep == "1" && self.categoryList.name == "決済方法" {
+                    self.ud.deleteArrayElement("1", forKey: .startSteps)
+                } else if nowStep == "2" && self.categoryList.name == "項目" {
+                    self.ud.deleteArrayElement("2", forKey: .startSteps)
                 }
                     // 親VCを取り出し
                     let tbc = SceneDelegate.shared.rootVC.current as! MainTBC
@@ -202,17 +204,11 @@ class AddCategoryViewController: MainBaceVC, UITableViewDataSource {
     }
     
     func addPickerView() {
-        let toolbar = CustomToolBar()
-        let cancelItem = UIBarButtonItem(title: "Done", style: .plain, target: self, action: #selector(done))
-        cancelItem.tintColor = UIColor.orange
-        let spaceButton = UIBarButtonItem(barButtonSystemItem: UIBarButtonItem.SystemItem.flexibleSpace, target: nil, action: nil)
-        toolbar.setItems([spaceButton, cancelItem], animated: true)
+        let toolbar = MyToolBar(self, type: .done(done: #selector(done)))
 
         let newPickerView = UIPickerView()
-        
         newPickerView.delegate = self
         newPickerView.dataSource = self
-        
         settingTextField.inputView = newPickerView
         settingTextField.inputAccessoryView = toolbar
     }
@@ -241,7 +237,7 @@ extension AddCategoryViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, moveRowAt sourceIndexPath: IndexPath, to destinationIndexPath: IndexPath) {
         let sourceItem = list.remove(at: sourceIndexPath.row)
         list.insert(sourceItem, at: destinationIndexPath.row)
-        categoryList.upDate(newList: list, name: nil)
+        categoryList.upDateList(newList: list, changeName: nil)
         
     }
     
@@ -272,7 +268,7 @@ extension AddCategoryViewController: UITableViewDelegate {
                 }
                 
                 self.list[indexPath.row] = text
-                self.categoryList.upDate(newList: self.list, name: nil)
+                self.categoryList.upDateList(newList: self.list, changeName: nil)
                 self.tableView.reloadData()
                 textAlert.dismiss(animated: true, completion: nil)
                 completionHandler(true)
@@ -295,7 +291,7 @@ extension AddCategoryViewController: UITableViewDelegate {
             action.backgroundColor = .systemRed
             self.list.remove(at: indexPath.row)
             tableView.deleteRows(at: [indexPath], with: .fade)
-            self.categoryList.upDate(newList: self.list, name: nil)
+            self.categoryList.upDateList(newList: self.list, changeName: nil)
             completionHandler(true)
         }
         let actions = categoryList.selectAccount ? [destructiveAction] : [destructiveAction, normalAction]

@@ -11,6 +11,7 @@ import FontAwesome_swift
 
 class MainTBC: UITabBarController, UITabBarControllerDelegate {
     
+    private let ud = UserDefaults.standard
     let size = CGSize(width: 27, height: 27)
     
     override func viewDidLoad() {
@@ -46,22 +47,22 @@ class MainTBC: UITabBarController, UITabBarControllerDelegate {
     }
     
     func setStartStep() {
-        switch UserDefaults.standard.integer(forKey: .startStep)! {
-        case 0:
+        switch ud.stringArray(forKey: .startSteps)!.first {
+        case "0":
             self.viewControllers![3].tabBarItem.badgeValue = "new"
             break
-        case 1:
+        case "1":
             self.viewControllers![3].tabBarItem.badgeValue = nil
             self.viewControllers![2].tabBarItem.badgeValue = "new"
             break
-        case 2:
+        case "2":
             self.viewControllers![2].tabBarItem.badgeValue = "new"
             break
-        case 3:
+        case "3":
             self.viewControllers![2].tabBarItem.badgeValue = nil
             self.viewControllers![0].tabBarItem.badgeValue = "new"
             break
-        case 4:
+        case "4":
             print(Account.mustCheckCount())
                 self.viewControllers![2].tabBarItem.badgeValue = nil
                 self.viewControllers![0].tabBarItem.badgeValue =

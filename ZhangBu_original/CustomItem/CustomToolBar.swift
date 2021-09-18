@@ -8,9 +8,15 @@
 
 import UIKit
 
-class CustomToolBar: UIToolbar {
+enum ToolBarType {
+    case done(done:Selector)
+    case cancelAndDone(cancel:Selector,done:Selector)
+    case doneAndNext(done:Selector,next:Selector)
+}
+
+class MyToolBar: UIToolbar {
     private let ud = UserDefaults.standard
-    init() {
+    init(_ target: Any?,type:ToolBarType) {
         let width = UIScreen.main.bounds.size.width
         let height = UIScreen.main.bounds.size.height
         var barFrame: CGRect!
@@ -23,6 +29,28 @@ class CustomToolBar: UIToolbar {
         super.init(frame: barFrame)
         self.isTranslucent = true
         self.tintColor = ud.color(forKey: .userColor, alpha: 70)
+        
+        let spaceButton = UIBarButtonItem(barButtonSystemItem: .flexibleSpace,
+                                          target: nil, action: nil)
+        let t = target
+        switch type {
+        case .done(done: let done):
+            let done = UIBarButtonItem(title: "Done", style: .done, target: t, action: done)
+            done.tintColor = self.ud.color(forKey: .userColor, alpha: 0.7)
+            self.setItems([spaceButton, done], animated: true)
+        case .doneAndNext(done: let d, next: let n):
+            let next = UIBarButtonItem(title: "Next", style: .done, target: t, action: n)
+            let done = UIBarButtonItem(title: "Done", style: .plain, target: t, action: d)
+            next.tintColor = ud.color(forKey: .userColor, alpha: 0.7)
+            done.tintColor = ud.color(forKey: .userColor, alpha: 0.7)
+            self.setItems([done, spaceButton, next], animated: true)
+        case .cancelAndDone(cancel: let c, done: let d):
+            let cancel = UIBarButtonItem(barButtonSystemItem: .cancel, target: t, action: c)
+            let done = UIBarButtonItem(barButtonSystemItem: .done, target: t, action: d)
+            cancel.tintColor = ud.color(forKey: .userColor, alpha: 0.7)
+            done.tintColor = ud.color(forKey: .userColor, alpha: 0.7)
+            self.setItems([cancel, spaceButton, done], animated: true)
+        }
     }
     
     required init?(coder: NSCoder) {

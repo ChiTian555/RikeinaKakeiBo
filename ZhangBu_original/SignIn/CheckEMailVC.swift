@@ -19,6 +19,7 @@ class CheckEMailVC: UIViewController {
         super.viewDidLoad()
         
         self.hideKeyboard()
+        navigationItem.hidesBackButton = true
         // Do any additional setup after loading the view.
     }
     

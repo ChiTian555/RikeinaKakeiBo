@@ -60,28 +60,16 @@ class CustomKeyboard: UIControl {
     }
 
     override var inputAccessoryView: UIView? {
-        let toolbar = CustomToolBar()
-
-        let space = UIBarButtonItem(barButtonSystemItem: .fixedSpace, target: self, action: nil)
-        space.width = 12
-        let cancelItem = UIBarButtonItem(barButtonSystemItem: .cancel, target: self, action: #selector(cancelPicker))
-        let flexSpaceItem = UIBarButtonItem(barButtonSystemItem: .flexibleSpace, target: self, action: nil)
-        let doneButtonItem = UIBarButtonItem(barButtonSystemItem: .done, target: self, action: #selector(donePicker))
-        cancelItem.tintColor = .systemOrange
-        doneButtonItem.tintColor = .systemOrange
-
-        let toolbarItems = [space, cancelItem, flexSpaceItem, doneButtonItem, space]
-
-        toolbar.setItems(toolbarItems, animated: true)
-
+        let toolbar = MyToolBar(self, type: .cancelAndDone(cancel: #selector(cancel),
+                                                               done: #selector(done)))
         return toolbar
     }
     
-    @objc func cancelPicker() {
+    @objc func cancel() {
         delegate.didCancel(sender: self)
     }
 
-    @objc func donePicker() {
+    @objc func done() {
         delegate.didDone(sender: self)
     }
 

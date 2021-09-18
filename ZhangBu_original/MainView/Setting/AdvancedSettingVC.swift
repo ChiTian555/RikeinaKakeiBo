@@ -18,6 +18,7 @@ class AdvancedSettingVC: MainBaceVC {
     private var settingTitle = [(name:String, cellTipe: Int)]()
     
     var titleText: String!
+    var alphaLabel: UILabel!
     
     @IBOutlet var settingTableView: UITableView!
     
@@ -71,21 +72,22 @@ extension AdvancedSettingVC: UITableViewDataSource, UITableViewDelegate {
                 cell.textLabel?.text = settingTitle[row].name
             case 2:
                 cell = settingTableView.dequeueReusableCell(withIdentifier: "CellSwitch")!.create()
-                let onOffSwitch = cell.contentView.viewWithTag(1) as! UISwitch
+                _ = cell.contentView.viewWithTag(1) as! UISwitch
             case 3:
                 cell = settingTableView.dequeueReusableCell(withIdentifier: "CellSlider")!.create()
                 let titleLabel = cell.contentView.viewWithTag(1) as! UILabel
-                let sliderLabel = cell.contentView.viewWithTag(2) as! UILabel
-                sliderLabel.layer.cornerRadius = sliderLabel.bounds.height / 4
-                sliderLabel.layer.borderWidth = 1
-                sliderLabel.layer.borderColor = UIColor.systemOrange.cgColor
-                sliderLabel.clipsToBounds = true
-                sliderLabel.backgroundColor = UIColor.systemBackground.withAlphaComponent(0.5)
+                alphaLabel = cell.contentView.viewWithTag(2) as? UILabel
+                alphaLabel.layer.cornerRadius = alphaLabel.bounds.height / 4
+                alphaLabel.layer.borderWidth = 1
+                alphaLabel.layer.borderColor = ud.color(forKey: .userColor).cgColor
+                alphaLabel.clipsToBounds = true
+                alphaLabel.backgroundColor = UIColor.systemBackground.withAlphaComponent(0.5)
                 let slider = cell.contentView.viewWithTag(3) as! CustomSlider
-                slider.value = Float(ud.integer(forKey: .alpha)!) / 100
-                sliderLabel.text = String(format: "%.2f", slider.value)
+                slider.value = Float(ud.integer(forKey: .alpha)
+                ) / 100
+                alphaLabel.text = String(format: "%.2f", slider.value)
                 slider.title = settingTitle[row].name
-                slider.label = sliderLabel
+                slider.label = alphaLabel
                 slider.addTarget(self, action: #selector(touchUp(_:)), for: UIControl.Event.touchUpInside)
                 slider.addTarget(self, action: #selector(changeValue(_:)), for: UIControl.Event.valueChanged)
                 titleLabel.text = settingTitle[row].name
@@ -234,9 +236,6 @@ extension AdvancedSettingVC: UIPickerViewDataSource, UIPickerViewDelegate, Custo
     }
     
     func didCancel(sender: CustomKeyboard) {
-//        guard let keyboardPicker = sender.pickerView else {
-//            <#statements#>
-//        }
         let colorImage = UIImage.colorImage(color: ud.color(forKey: .userColor))
         self.tabBarController?.tabBar.backgroundImage = colorImage
         self.navigationController?.navigationBar.setBackgroundImage(colorImage, for: .default)
@@ -250,12 +249,14 @@ extension AdvancedSettingVC: UIPickerViewDataSource, UIPickerViewDelegate, Custo
         case "テーマ色の変更":
             ud.setColor(colors[sender.pickerView!.selectedRow(inComponent: 0)].withAlphaComponent(0.7),
                         forKey: .userColor)
+            alphaLabel.layer.borderColor = ud.color(forKey: .userColor).cgColor
         case "ボタンの色変更":
             ud.setColor(colors[sender.pickerView!.selectedRow(inComponent: 0)], forKey: .buttonColor)
         default: break
         }
         sender.resignFirstResponder()
         settingTableView.isUserInteractionEnabled = true
+        
     }
     
 }

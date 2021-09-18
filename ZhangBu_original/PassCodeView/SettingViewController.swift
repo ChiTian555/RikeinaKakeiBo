@@ -20,7 +20,7 @@ class SettingViewController: MainBaceVC {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        
+        self.setSwipe()
         setupUserInterface()
     }
 

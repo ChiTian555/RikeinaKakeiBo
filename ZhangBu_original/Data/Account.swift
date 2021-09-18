@@ -9,14 +9,14 @@ import RealmSwift
 import SwiftDate
 import Realm
 
-class Check: MyRealm {
+class Check: Object, Codable {
     @objc dynamic var checkDate = Date()
     @objc dynamic var balance = Int()
 }
 
-final class Account: MyRealm {
+final class Account: Object, Codable, MyRealmFunction {
 
-    
+    @objc dynamic var id: Int = 0
     @objc dynamic var name: String = ""
     @objc dynamic var type: String = ""
     //もし、ICのとき
@@ -24,7 +24,7 @@ final class Account: MyRealm {
     @objc dynamic var balance: Int = 0
     @objc dynamic private var isMustCheckAccont: Bool = false
     @objc dynamic var chargeAccount: String = ""
-    private let check = List<Check>()
+    private var check = List<Check>()
     
     //newCheckのset,get
     @objc dynamic var newCheck: Check? {
@@ -33,8 +33,7 @@ final class Account: MyRealm {
         }
         set(check) {
             guard let check = check else { return }
-            let realm = try! Realm()
-            try! realm.write() {
+            try! myRealm.write() {
                 self.check.append(check)
             }
         }
@@ -53,27 +52,27 @@ final class Account: MyRealm {
     class func make(name: String) -> Self? {
         let isDuplicated = Self.readAll().contains(where: {$0.name == name })
         if name == "" || isDuplicated { return nil }
-        let me = Self.make()
+        let me = Self()
+        me.id = ( myRealm.objects(Self.self).max(ofProperty: "id") ?? 0 ) + 1
         me.name = name
         return me
     }
-    
+
     // 講座の並び替え
     static func moveAccount(_ source: Account,_ destination: Account) -> Bool {
-        guard let realm = getRealm() else { return false }
         if destination.id > source.id  {
-            let moveIdAccounts = realm.objects(Account.self)
+            let moveIdAccounts = myRealm.objects(Account.self)
                                 .filter("id > %@ And id <= %@", source.id, destination.id) + []
-            try! realm.write() {
+            try! myRealm.write() {
                 source.id = destination.id
                 moveIdAccounts.forEach({ $0.id -= 1 })
             }
         } else if destination.id < source.id {
             //値を書き換えると、中の変数も変わっちゃう！
-            let moveIdAccounts = realm.objects(Account.self)
+            let moveIdAccounts = myRealm.objects(Account.self)
                                 .filter("id >= %@ And id < %@", destination.id, source.id) + []
             print(moveIdAccounts.count)
-            try! realm.write() {
+            try! myRealm.write() {
                 source.id = destination.id
                 moveIdAccounts.forEach({ $0.id += 1 })
             }
@@ -82,25 +81,23 @@ final class Account: MyRealm {
     
     static func updateBalance(newPayment: Payment?, deletePayment: Payment? = nil) {
         
-        let realm = try! Realm()
-        
         let payments: [Payment?] = [newPayment, deletePayment]
         for i in 0 ..< payments.count {
             guard let payment = payments[i] else { continue }
             if payment.paymentMethod == "" && payment.withdrawal == "" { return }
             if payment.mainCategoryNumber == 2 {
-                guard let outAccount = realm.object(ofType: Account.self, forPrimaryKey: payment.withdrawal)
+                guard let outAccount = myRealm.object(ofType: Account.self, forPrimaryKey: payment.withdrawal)
                     else { return }
-                guard let inAccount = realm.object(ofType: Account.self, forPrimaryKey: payment.paymentMethod)
+                guard let inAccount = myRealm.object(ofType: Account.self, forPrimaryKey: payment.paymentMethod)
                     else { return }
-                try! realm.write() {
+                try! myRealm.write() {
                     inAccount.balance += payment.price * (i == 0 ? 1 : -1)
                     outAccount.balance -= payment.price * (i == 0 ? 1 : -1)
                 }
             } else {
-                guard let inAccount = realm.object(ofType: Account.self, forPrimaryKey: payment.paymentMethod)
+                guard let inAccount = myRealm.object(ofType: Account.self, forPrimaryKey: payment.paymentMethod)
                 else { return }
-                try! realm.write() {
+                try! myRealm.write() {
                     inAccount.balance += payment.price * (i == 0 ? 1 : -1)
                 }
             }
@@ -114,46 +111,41 @@ final class Account: MyRealm {
     
     //readするコード
     static func readValue(name: String) -> Account? {
-        let realm = try! Realm()
-        let object = realm.object(ofType: Account.self, forPrimaryKey: name)
+        let object = myRealm.object(ofType: Account.self, forPrimaryKey: name)
             return object
     }
     
-    static func readAll(isCredit: Bool? = nil) -> [Account] {
-        let realm = try! Realm()
-        var returnObjects: [Account]!
-        let objects = realm.objects(Account.self).sorted(byKeyPath: "id", ascending: false)
+    static func readAll(isCredit: Bool? = nil) -> Results<Account> {
+        var returnObjects: Results<Account>!
+        let objects = myRealm.objects(Account.self).sorted(byKeyPath: "id", ascending: false)
         switch isCredit {
         case nil:
-            returnObjects = objects + []
+            returnObjects = objects
         case true:
-            returnObjects = objects.filter("chargeAccount != ''") + []
+            returnObjects = objects.filter("chargeAccount != ''")
         case false:
-            returnObjects = objects.filter("chargeAccount == ''") + []
+            returnObjects = objects.filter("chargeAccount == ''")
         case .some(_): break
         }
         return returnObjects
     }
     
     func isCanEdit() -> Bool {
-        let realm = try! Realm()
-        let objectsCount = realm.objects(Payment.self)
+        let objectsCount = myRealm.objects(Payment.self)
             .filter("paymentMethod = %@ OR withdrawal = %@" ,self.name, self.name) + []
         return objectsCount == [] ? true : false
     }
     
     static func mustCheckCount() -> Int {
-        let realm = try! Realm()
-        let objectsCount = realm.objects(Account.self).filter("isMustCheckAccont = %@", true).count
+        let objectsCount = myRealm.objects(Account.self).filter("isMustCheckAccont = %@", true).count
         return objectsCount
     }
     
     func isMustCheck(checked: Bool = false) -> Bool {
         if !self.isMustCheckAccont { return false }
         if checked {
-            let realm = try! Realm()
-            let object = realm.object(ofType: Account.self, forPrimaryKey: self.name)!
-            try! realm.write() {
+            let object = myRealm.object(ofType: Account.self, forPrimaryKey: self.name)!
+            try! myRealm.write() {
                 object.isMustCheckAccont = false
             }
         }
@@ -162,39 +154,27 @@ final class Account: MyRealm {
     
     func resetValue(newCheckValue: Check) {        
         if !self.write({ $0.setValue([newCheckValue], forKey: "check") }) {
-            print("Error: status=setNewCheckFaild")
+            fatalError("Error: status=setNewCheckFaild")
         }
     }
 
-    /**
-     新規データを保存。既存データなら->wright
-     */
+    /// 新規データを保存。既存データなら->wright
     override func save() {
+        super.save()
         //チェックしたことのない口座タイプを登録した時
-        var notChecked = UserDefaults.standard.stringArray1(forKey: .notDidCheckAccountTipe)!
+        let notChecked = ud.stringArray(forKey: .notDidCheckAccountTipe)!
         if notChecked.contains(self.type) {
-            self.isMustCheckAccont = true
-            notChecked.remove(at: notChecked.firstIndex(of: self.type)!)
-            print(notChecked)
-            UserDefaults.standard.setArray1(notChecked, forKey: .notDidCheckAccountTipe)
+            _ = self.write { $0.isMustCheckAccont = true }
+            ud.deleteArrayElement(self.type, forKey: .notDidCheckAccountTipe)
             let tbc = SceneDelegate.shared.rootVC.current as! MainTBC
             tbc.setStartStep()
         }
-        super.save()
     }
 
     
     static func restore(newPayment: [Account]) {
-        let realm = try! Realm()
-        try! realm.write() {
-            realm.add(newPayment, update: .all)
+        try! myRealm.write() {
+            myRealm.add(newPayment, update: .all)
         }
-    }
-    // データを更新(Update)するためのコード
-    func write(_ set: (Account) -> Void) -> Bool {
-        guard let realm = Self.getRealm() else { return false }
-        do { try realm.write() { set(self) } }
-        catch { Self.realmError(error); return false }
-        return true
     }
 }

@@ -11,14 +11,24 @@ import RealmSwift
 import PKHUD
 import SwiftDate
 import Instructions
+import CropViewController
 
-class AddPaymentVC: MainBaceVC, UITableViewDataSource & UITableViewDelegate, UITextFieldDelegate {
+
+class AddPaymentVC: MainBaceVC, UITableViewDataSource, UITableViewDelegate {
     
-    var memo = String()
-    var memoIndexPath = IndexPath()
+    private let ud = UserDefaults.standard
+    
+    /// is coler for price textField
+    let colors: [UIColor] = [.systemRed,.systemGreen,.systemBlue]
+    
+    /// if edditingmode, use this variable
+    /// edited is mark had changed mainCategory
+    var current: (payment:Payment,edited:Bool)?
+    var isNavigationMove: Bool!
+    
+    var memo: String?
     var memoLabel: LabelWithPlaceHolder!
     
-    var list = [[String]]()
     var menu = [CategoryList]()
     var menus: [String] { ["金額"] + menu.map({$0.name}) + ["日付","メモ"] }
     
@@ -27,8 +37,16 @@ class AddPaymentVC: MainBaceVC, UITableViewDataSource & UITableViewDelegate, UIT
     var labelZero = UILabel()
     var labelYen = UILabel()
     
-    var isNavigationMove: Bool!
+    @IBOutlet var changeMainCategoryTab: UISegmentedControl!
+    var mainCategory: Int {
+        get{ changeMainCategoryTab.selectedSegmentIndex }
+        set(i) { changeMainCategoryTab.selectedSegmentIndex = i }
+    }
+    @IBOutlet var usePocketMoneyLabel: UILabel!
     
+    var menuButton : UIBarButtonItem!
+    
+    /// if now is startStep use this variable
     var startStepLabel = [UILabel]()
     
     var coachController = CoachMarksController()
@@ -37,69 +55,22 @@ class AddPaymentVC: MainBaceVC, UITableViewDataSource & UITableViewDelegate, UIT
     var pictureNumber = Int()
     var receipts = [Receipt]()
     
+    @IBOutlet weak var scrollView: UIScrollView!
+    @IBOutlet var settingTableView: UITableView!
+    var cells = [UITableViewCell]()
+    
+    // レシート用ImageView
+    var imageView: UIImageView!
+    @IBOutlet var pictureModeView: UIView!
+    
     // お小遣いの使用について
     @IBOutlet var useSavedMoneyCheckLabel: UILabel!
     var isUsePoketMoney: Bool {
-        set(use) { useSavedMoneyCheckLabel.text = use ? "貯金利用 ○" : "貯金利用 ×" }
-        get { return useSavedMoneyCheckLabel.text == "貯金利用 ○" }
+        set(use) { useSavedMoneyCheckLabel.text = use ? "貯金利用 ×" : "貯金利用 ○" }
+        get { return useSavedMoneyCheckLabel.text == "貯金利用 ×" }
     }
     
-    var mainCategory: Int { changeMainCategoryTab.selectedSegmentIndex }
-    
-    @IBAction func selectMenu(_ sender: UISegmentedControl) {
-        useSavedMoneyCheckLabel.text = "貯金利用 ×"
-        ChangeMenu(menu: sender.selectedSegmentIndex)
-        if #available(iOS 14.0, *) {
-            menuButton.menu = setMenu()
-        }
-        useSavedMoneyCheckLabel.isHidden = (sender.selectedSegmentIndex != 0)
-        reloadData(allReset: false)
-    }
-    
-    @IBOutlet var usePocketMoneyLabel: UILabel!
-    
-    @IBOutlet var pictureModeView: UIView!
-    
-    @IBOutlet weak var scrollView: UIScrollView!
-    // レシート用ImageView
-    var imageView: UIImageView!
-    
-    let ud = UserDefaults.standard
-    
-    override func viewWillAppear(_ animated: Bool) {
-        super.viewWillAppear(animated)
-        
-        receipts = Receipt.readAll()
-        
-        let menuNomber = changeMainCategoryTab.selectedSegmentIndex
-        useSavedMoneyCheckLabel.isHidden = (menuNomber != 0)
-        ChangeMenu(menu: menuNomber)
-        // リロード
-        if isNavigationMove {
-            isNavigationMove = false
-            if memo != "" {
-                memoLabel.text = self.memo
-                settingTableView.reloadRows(at: [self.memoIndexPath], with: .none)
-            }
-        } else {
-            reloadData(allReset: true)
-        }
-        memo = ""
-        
-    }
-    
-    @IBOutlet var settingTableView: UITableView!
-    
-    @IBOutlet var changeMainCategoryTab: UISegmentedControl!
-    
-    
-    func ChangeMenu(menu mode: Int) {
-        settingTableView.delegate = self
-        let categoryList = CategoryList.readAllCategory(mode)
-        menu = categoryList + []
-    }
-    
-    var menuButton: UIBarButtonItem!
+    // MARK: First Step Loding View
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -112,15 +83,17 @@ class AddPaymentVC: MainBaceVC, UITableViewDataSource & UITableViewDelegate, UIT
         
         //キーボード出現を感知
         self.configureObserver()
+        if current != nil { self.setSwipe() }
         
         isNavigationMove = false
         settingTableView.dataSource = self
-        ChangeMenu(menu: changeMainCategoryTab.selectedSegmentIndex)
+        settingTableView.delegate = self
         settingTableView.separatorInset = .init(top: 0, left: 120, bottom: 0, right: 0)
         settingTableView.estimatedRowHeight = 40
         settingTableView.rowHeight = UITableView.automaticDimension
         settingTableView.set()
         
+        // 貯金を崩すか、崩さないかのボタン
         let taped = UITapGestureRecognizer(target: self, action: #selector(changeUseSaveMoney(_:)))
         taped.numberOfTouchesRequired = 1
         useSavedMoneyCheckLabel.addGestureRecognizer(taped)
@@ -132,31 +105,42 @@ class AddPaymentVC: MainBaceVC, UITableViewDataSource & UITableViewDelegate, UIT
         useSavedMoneyCheckLabel.layer.cornerRadius = useSavedMoneyCheckLabel.layer.bounds.height / 5
         useSavedMoneyCheckLabel.clipsToBounds = true
         
+        // iOS14以降で、対応した、Memo機能の実装。
         if #available(iOS 14.0, *) {
-            menuButton = UIBarButtonItem(image: UIImage(systemName: "ellipsis.circle"), menu: setMenu())
+            menuButton = UIBarButtonItem(image: UIImage(systemName: "ellipsis.circle"),
+                                         menu: UIMenu())
         } else {
-            menuButton = UIBarButtonItem(barButtonSystemItem: .action, target: self, action: #selector(addUserCategory(_:)))
+            menuButton = UIBarButtonItem(barButtonSystemItem: .action, target: self,
+                                         action: #selector(addUserCategory(_:)))
         }
+        
         navigationItem.leftBarButtonItem = menuButton
+        
     }
     
     private func setMenu() -> UIMenu {
-        let addUserCategory = UIAction(title: "ユーザー項目の追加", image: UIImage(systemName: "plus")) { (action) in
+        let addUserCategory = UIAction(title: "ユーザー項目の追加", image: UIImage(systemName: "plus")) { _ in
             self.editUserCategory(create: true)
         }
-        let editUserCategory = UIAction(title: "ユーザー項目の編集", image: UIImage(systemName: "square.and.pencil")) { (action) in
+        let editUserCategory = UIAction(title: "ユーザー項目の編集",
+                                        image: UIImage(systemName: "square.and.pencil")) { _ in
             self.editUserCategory(create: false)
         }
-        let deleteUserCategory = UIAction(title: "ユーザー項目の削除", image: UIImage(systemName: "trash")) { (action) in
+        let deleteUserCategory = UIAction(title: "ユーザー項目の削除", image: UIImage(systemName: "trash")) { _ in
             self.deleteUserCategory()
         }
-        let showReceipt = UIAction(title: "レシート表示", image: UIImage(systemName: "paperplane")) { (action) in
+        let showReceipt = UIAction(title: "レシート表示切替", image: UIImage(systemName: "paperplane")) { _ in
             self.turnOnPictureMode()
         }
+        let takePicture = UIAction(title: "レシートの撮影", image: UIImage(systemName: "camera")) { _ in
+            self.takePicture()
+        }
+        
         let menu: UIMenu!
         switch self.menu.count {
-        case 2: menu = UIMenu(title: "", children: [addUserCategory, showReceipt])
-        case 3: menu = UIMenu(title: "", children: [editUserCategory, deleteUserCategory, showReceipt])
+        case 2: menu = UIMenu(title: "", children: [addUserCategory, showReceipt,takePicture])
+        case 3: menu = UIMenu(title: "", children: [editUserCategory, deleteUserCategory,
+                                                    showReceipt, takePicture])
         default: menu = UIMenu()
         }
         return menu
@@ -170,7 +154,8 @@ class AddPaymentVC: MainBaceVC, UITableViewDataSource & UITableViewDelegate, UIT
             alert.addActions("ユーザー項目の変更") { _ in self.editUserCategory(create: false) }
             alert.addActions("ユーザー項目の削除") { _ in self.deleteUserCategory() }
         }
-        alert.addActions("レシートの表示") { _ in self.turnOnPictureMode() }
+        alert.addActions("レシートの表示切替") { _ in self.turnOnPictureMode() }
+        alert.addActions("レシートの撮影") { _ in self.takePicture() }
         present(alert.controller, animated: true, completion: nil)
     }
     
@@ -179,7 +164,7 @@ class AddPaymentVC: MainBaceVC, UITableViewDataSource & UITableViewDelegate, UIT
         alert.addTextField("ここに入力") { (tF) in tF.text = create ? "" : self.menu[2].name }
         alert.addActions("キャンセル", type: .cancel, nil)
         alert.addActions("OK") { (myAlert) in
-            guard let userCategoryName = myAlert.textField?.text else { return }
+            guard let userCategoryName = myAlert.tFs.first?.text else { return }
             if ["金額","日付","メモ"].contains(userCategoryName) {
                 HUD.flash(.labeledError(title: "Error",subtitle: "このｷｰﾜｰﾄﾞは、利用できません")); return
             }
@@ -189,11 +174,11 @@ class AddPaymentVC: MainBaceVC, UITableViewDataSource & UITableViewDelegate, UIT
             if create {
                 let newCategoryList = CategoryList.make()
                 newCategoryList.name = userCategoryName
-                newCategoryList.mainCategory = self.changeMainCategoryTab.selectedSegmentIndex
+                newCategoryList.mainCategory = self.mainCategory
                 newCategoryList.selectAccount = false
                 newCategoryList.save()
                 self.menu.append(newCategoryList)
-            } else { self.menu[2].upDate(name: userCategoryName) }
+            } else { self.menu.last?.upDateList(changeName: userCategoryName) }
             self.reloadData(allReset: false)
             // メニューは、中身を変えてあげる必要がある。
             if #available(iOS 14.0, *) { self.menuButton.menu = self.setMenu() }
@@ -202,37 +187,113 @@ class AddPaymentVC: MainBaceVC, UITableViewDataSource & UITableViewDelegate, UIT
     }
         
     func deleteUserCategory() {
-        menu[2].delete()
-        menu.remove(at: 2)
+        menu.last?.delete()
+        menu.remove(at: menu.count - 1)
         reloadData(allReset: false)
-        if #available(iOS 14.0, *) {
-            menuButton.menu = setMenu()
-        }
+        if #available(iOS 14.0, *) { menuButton.menu = setMenu() }
     }
     
     @objc func changeUseSaveMoney(_ sender: UITapGestureRecognizer) {
         isUsePoketMoney = !isUsePoketMoney
     }
     
-    //tableViewの設定
-    var cells = [UITableViewCell]()
+    // MARK: Move Display Setting
     
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        
+        receipts = Receipt.readAll()
+        
+        if let c = current, !c.edited { mainCategory = c.payment.mainCategoryNumber }
+        useSavedMoneyCheckLabel.isHidden = (mainCategory != 0)
+        menu = CategoryList.readAllCategory(mainCategory)
+        if #available(iOS 14.0, *) { menuButton.menu = setMenu() }
+        
+        navigationItem.title = ( current == nil ) ? "料金入力欄" : "修正欄"
+        
+        // リロード
+        if isNavigationMove {
+            isNavigationMove = false
+            if memo != nil {
+                memoLabel.text = self.memo
+                let memoIndex = IndexPath(row: menus.count - 1, section:0 )
+                settingTableView.reloadRows(at: [memoIndex], with: .none)
+            } else {
+                // ここで、アイテムリストの更新が必要。
+                tFManager.tFSets.forEach { (set) in
+                    if set.type == .textPicker {
+                        set.choices = CategoryList.readCategory(mainCategory, set.name)!.list
+                    }
+                }
+            }
+        } else {
+            // 初期ロード
+            reloadData(allReset: true)
+            if let c = current?.payment {
+                isUsePoketMoney = c.isUsePoketMoney
+                tFManager.tFSets.forEach {
+                    if $0.name == "金額" && c.mainCategoryNumber == 0 {
+                        var value = c.getValue(title: $0.name)
+                        if value.first == "-" {
+                            value.removeFirst()
+                            labelZero.text = "-"
+                        } else {
+                            labelZero.text = ""
+                            labelYen.textColor = .label
+                            tFManager.tFSets[0].tF.textColor = .label
+                        }; $0.tF.text = value
+                    } else { $0.tF.text = c.getValue(title: $0.name) }
+                }
+                memoLabel.text = c.memo
+            }
+        }
+        memo = nil
+    }
+    
+    @IBAction func selectMenu(_ sender: UISegmentedControl) {
+        if let c = current, !c.edited {
+            let alert = MyAlert("注意", "情報が一部、削除されます。\nほんとに、変更しますか")
+            alert.addActions("キャンセル", type: .cancel) { _ in
+                sender.selectedSegmentIndex = c.payment.mainCategoryNumber
+            }
+            alert.addActions("はい") { _ in
+                self.current?.edited = true
+                self.selectMenu(sender)
+            }
+            present(alert.controller, animated: true, completion: nil); return
+        }
+        useSavedMoneyCheckLabel.text = "貯金利用 ×"
+        menu = CategoryList.readAllCategory(sender.selectedSegmentIndex)
+        if #available(iOS 14.0, *) { menuButton.menu = setMenu() }
+        useSavedMoneyCheckLabel.isHidden = (sender.selectedSegmentIndex != 0)
+        reloadData(allReset: false)
+    }
+
+    /// If allReset true delete all text in textField, if not keep Money, Date, and Memo value
     func reloadData(allReset: Bool) {
+        /*
+         呼ぶタイミング：
+            • viewWillApear when is not NavigationMove : allReset = true
+            • delete payment function                  : allReset = true
+            • UserCategory added or deleted            : allReset = false
+            • MainCategory is changed                  : allReset = false
+         */
+        if allReset { isUsePoketMoney = true }
         makeTextFieldSet(allReset)
         self.settingTableView.reloadData()
     }
     
-    var cellCount: Int = 0
-    var pickerTab: Int = 0 //pickerにタブをつけるため。
-    
+    // MARK: About TableView Data
+
     func makeTextFieldSet(_ allReset: Bool) {
+        
+        // 過去の情報を残し、一旦新規で作成。
         let textFieldSet = CustomTextFields(self)
         cells = []
         for menu in menus {
-            
             var cell: UITableViewCell!
                 
-            let mode = changeMainCategoryTab.selectedSegmentIndex
+            let mode = mainCategory
             if menu == "金額" {
                 let colors: [UIColor] = [.systemRed,.systemGreen,.systemBlue]
                 let currrentFont = ( ud.bool(forKey: .isCordMode) ?
@@ -242,7 +303,7 @@ class AddPaymentVC: MainBaceVC, UITableViewDataSource & UITableViewDelegate, UIT
                 cell = settingTableView.dequeueReusableCell(withIdentifier: "Cell1")!.create()
                 let newTF = cell.contentView.viewWithTag(3) as! UITextField
                 textFieldSet.addTextField(tF: newTF, name: menu, type: .inputNum) { (me) in
-                    me.tF.text = ""
+                    me.tF.text = allReset ? "" : self.tFManager.getCurrentText(name: menu)
                     me.tF.attributedPlaceholder = NSAttributedString(string: "ここに金額を入力", attributes: [.font: UIFont.systemFont(ofSize: 35, weight: .thin)])
                     me.tF.font = currrentFont
                     me.tF.textColor = colors[mode]
@@ -261,28 +322,29 @@ class AddPaymentVC: MainBaceVC, UITableViewDataSource & UITableViewDelegate, UIT
                 let label = cell.contentView.viewWithTag(1) as! UILabel
                 let textField = cell.contentView.viewWithTag(2) as! UITextField
                 label.text = menu
-                textField.text = ""
+                // これは、カーソルの色かな。
                 textField.tintColor = .clear
                 textField.placeholder = "タップして選択"
                 if menu == "日付" {
-                    if !allReset {
-                        // ここに、データだけ、引き継ぐコード
-                    }
                     textFieldSet.addTextField(tF: textField, name: menu, type: .datePicker)
+                        { (me) in
+                        me.tF.text = allReset ? "" : self.tFManager.getCurrentText(name: menu)
+                    }
                 } else {
                     textFieldSet.addTextField(tF: textField, name: menu, type: .textPicker) { (me) in
+                        me.tF.text = (allReset || self.mainCategory != self.tFManager.tag)
+                            ? "" : self.tFManager.getCurrentText(name: menu)
                         me.choices = CategoryList.readCategory(mode, menu)!.list + []
                     }
                     let tapGesture = UITapGestureRecognizer(target: self, action: #selector(tapped(_:)))
                     tapGesture.numberOfTouchesRequired = 1
                     label.addGestureRecognizer(tapGesture)
                     //最初のチュートリアル用
-                    if [1,2].contains(ud.integer(forKey: .startStep)) {
+                    if ["1","2"].contains(ud.stringArray(forKey: .startSteps)!.first) {
                         if ["決済方法","項目"].contains(menu) { startStepLabel.append(label) }
                     }
                 }
                 cell.selectionStyle = UITableViewCell.SelectionStyle.none
-                
             } else {
                 cell = settingTableView.dequeueReusableCell(withIdentifier: "Cell3")!.create()
                 let newLabel = cell.contentView.viewWithTag(2) as! LabelWithPlaceHolder
@@ -293,9 +355,9 @@ class AddPaymentVC: MainBaceVC, UITableViewDataSource & UITableViewDelegate, UIT
             cells.append(cell.set())
         }
         textFieldSet.setToolBars()
+        textFieldSet.tag = mainCategory
         tFManager = textFieldSet
     }
-    
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return cells.count
@@ -313,11 +375,6 @@ class AddPaymentVC: MainBaceVC, UITableViewDataSource & UITableViewDelegate, UIT
         }
     }
     
-    //CGRectを簡単に作る
-    func CGRectMake(_ x: CGFloat, _ y: CGFloat, _ width: CGFloat, _ height: CGFloat) -> CGRect {
-        return CGRect(x: x, y: y, width: width, height: height)
-    }
-    
     // テーブルビューがタップされたときの動作
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         // 価格、メニュー、日付、メモ
@@ -325,7 +382,7 @@ class AddPaymentVC: MainBaceVC, UITableViewDataSource & UITableViewDelegate, UIT
         if indexPath.row == tFManager.tFSets.count {
             self.isNavigationMove = true
             self.performSegue(withIdentifier: "toEdit", sender: nil)
-        } else if indexPath.row == 0 && changeMainCategoryTab.selectedSegmentIndex == 0 {
+        } else if indexPath.row == 0 && mainCategory == 0 {
             if labelZero.text == ""{
                 labelZero.text = "-"
                 labelYen.textColor = .red
@@ -344,35 +401,37 @@ class AddPaymentVC: MainBaceVC, UITableViewDataSource & UITableViewDelegate, UIT
             vc.memo = memoLabel.text ?? ""
             vc.width = memoLabel.frame.width
         } else if let vc = segue.destination as? AddCategoryViewController {
-            vc.mainCategoryNumber = changeMainCategoryTab.selectedSegmentIndex
+            vc.mainCategoryNumber = mainCategory
             vc.tappedCategoriesName = (sender as! String)
         }
     }
     
+    // MARK: Save Data
+    
     @IBAction func add() {
         
-        if tFManager.tFSets.contains(where: { $0.tF.text == "" }) {
+        // .isEnpty != false : enpty
+        if tFManager.tFSets.contains(where: { $0.tF.text?.isEmpty != false }) {
             HUD.flash(.labeledError(title: "Error", subtitle: "空欄があります！")); return
         }
         
-        let alert = MyAlert("保存", "ほんとに保存しても?\nよろしいですか?")
+        let edit = current != nil
+        
+        let alert = MyAlert("保存", "ほんとに\(edit ? "上書き":"")保存しても?\nよろしいですか?")
         alert.addActions("戻る", type: .cancel, nil)
         alert.addActions("はい") { _ in
-            let payment = Payment.make()
+            let payment = edit ? Payment(value: self.current!.payment): Payment.make()
             if self.mainCategory == 0 { payment.isUsePoketMoney = self.isUsePoketMoney }
-            payment.mainCategoryNumber = Int(self.mainCategory)
+            payment.mainCategoryNumber = self.mainCategory
+            payment.memo = self.memoLabel.text ?? ""
             for tFSet in self.tFManager.tFSets {
-                if tFSet.name == "金額" {
-                    payment.price = Int(tFSet.tF.text!)!
-                    if self.mainCategory == 0 { payment.price *= self.labelZero.text == "-" ? -1 : 1 }
-                } else if tFSet.name == "日付" {
-                    payment.date = tFSet.tF.text!.toDate("yyyy-MM-dd")!.date
-                } else {
-                    if !payment.set(title: tFSet.name, value: tFSet.tF.text) {
-                        HUD.flash(.labeledError(title: "Error", subtitle: "エラーコード : C01_add")); return
-                    }
+                payment.setValue(title: tFSet.name, value: tFSet.tF.text!)
+                if tFSet.name == "金額" && self.mainCategory == 0 {
+                    payment.price *= self.labelZero.text == "-" ? -1 : 1
                 }
             }
+            if edit { self.current!.payment.delete() }
+            payment.save()
             
             if let picture = self.receipts[safe: self.pictureNumber] {
                 picture.delete()
@@ -381,22 +440,52 @@ class AddPaymentVC: MainBaceVC, UITableViewDataSource & UITableViewDelegate, UIT
                     self.pictureNumber -= 1
                 }
             }
-            
-            let resultAlert = MyAlert("保存成功！","新家計簿の記入を続けますか?")
-            resultAlert.addActions("一覧に戻る") { _ in
-                self.tFManager.tFSets.forEach { $0.tF.text = "" }
-                self.memoLabel.text = ""
-                self.tabBarController?.selectedIndex = 1
+            if edit {
+                HUD.flash(.success, delay: 1.0) { _ in
+                    self.navigationController?.popViewController(animated: true)
+                }
+            } else {
+                let resultAlert = MyAlert("保存成功！","新家計簿の記入を続けますか?")
+                resultAlert.addActions("一覧に戻る") { _ in
+                    self.tFManager.tFSets.forEach { $0.tF.text = "" }
+                    self.memoLabel.text = ""
+                    self.tabBarController?.selectedIndex = 1
+                }
+                resultAlert.addActions("続ける") { _ in
+                    self.tFManager.tFSets.forEach { $0.tF.text = "" }
+                    //pickerViewを1に選択してあげる必要がある
+                    self.setImage()
+                }
+                self.present(resultAlert.controller, animated: true, completion: nil)
             }
-            resultAlert.addActions("続ける") { _ in
-                self.tFManager.tFSets.forEach { $0.tF.text = "" }
-                //pickerViewを1に選択してあげる必要がある
-                self.setImage()
-            }
-            self.present(resultAlert.controller, animated: true, completion: nil)
         }
         self.present(alert.controller, animated: true, completion: nil)
     }
+    
+    @IBAction func trush(_ sender: UIBarButtonItem) {
+        if let c = current?.payment {
+            // ほんとに削除しますか？
+            let alert = MyAlert("確認", "ほんとに削除しますか？")
+            alert.addActions("キャンセル", type: .cancel, nil)
+            alert.addActions("削除", type: .destructive) { _ in
+                c.delete()
+                HUD.flash(.labeledSuccess(title: "成功", subtitle: "一覧画面に\n戻ります"))
+                { _ in
+                    self.navigationController?.popViewController(animated: true)
+                }
+            }
+            present(alert.controller, animated: true, completion: nil)
+        } else {
+            // 入力をリセットしますか？
+            let alert = MyAlert("確認", "入力をリセットしますか？")
+            alert.addActions("キャンセル", type: .cancel, nil)
+            alert.addActions("リセット", type: .destructive) { _ in
+                self.reloadData(allReset: true)
+            }
+            present(alert.controller, animated: true, completion: nil)
+        }
+    }
+    
 
     
     //tableViewのインセットを調整
@@ -406,13 +495,16 @@ class AddPaymentVC: MainBaceVC, UITableViewDataSource & UITableViewDelegate, UIT
         let keyboardSize = (userInfo[UIResponder.keyboardFrameEndUserInfoKey] as! NSValue).cgRectValue.height
         print(keyboardSize)
         
-        settingTableView.contentInset.bottom = keyboardSize - tabBarController!.tabBar.bounds.height
+        settingTableView.contentInset.bottom = keyboardSize -
+            ( tabBarController?.tabBar.bounds.height ?? 0 )
     }
     override func keyboardWillHide(_ notification: NSNotification) {
         settingTableView.contentInset = .zero
     }
     
 }
+
+// MARK: About PickerView
 
 extension AddPaymentVC: UIPickerViewDelegate, UIPickerViewDataSource {
 
@@ -423,15 +515,13 @@ extension AddPaymentVC: UIPickerViewDelegate, UIPickerViewDataSource {
     
     func pickerView(_ pickerView: UIPickerView, numberOfRowsInComponent component: Int) -> Int {
         
-        if tFManager.tFSets[pickerView.tag].choices!.count == 0 { return 1 }
-        return tFManager.tFSets[pickerView.tag].choices!.count
+        let count = tFManager.tFSets[pickerView.tag].choices!.count
+        return ( count == 0 ) ? 1 : count
     }
     
     func pickerView(_ pickerView: UIPickerView, titleForRow row: Int, forComponent component: Int) -> String? {
-        if tFManager.tFSets[pickerView.tag].choices!.count == 0 {
-            return "項目がありません!"
-        }
-        return tFManager.tFSets[pickerView.tag].choices![row]
+        let choices = tFManager.tFSets[pickerView.tag].choices!
+        return ( choices.count == 0 ) ? "項目がありません!" : choices[row]
     }
     
     func pickerView(_ pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int) {
@@ -441,10 +531,12 @@ extension AddPaymentVC: UIPickerViewDelegate, UIPickerViewDataSource {
     
 }
 
+//MARK: About Fiest Step Recture
+
 extension AddPaymentVC: CoachMarksControllerDataSource {
     
     override func viewDidAppear(_ animated: Bool) {
-        if [1,2].contains(self.ud.integer(forKey: .startStep)) {
+        if ["1","2"].contains(self.ud.stringArray(forKey: .startSteps)!.first) {
             coachController.dataSource = self
             self.coachController.start(in: .viewController(self))
             changeMainCategoryTab.isHidden = true
@@ -457,6 +549,13 @@ extension AddPaymentVC: CoachMarksControllerDataSource {
         print("isNavigationMove:",isNavigationMove!)
     }
     
+    override func viewDidDisappear(_ animated: Bool) {
+        if !isNavigationMove && current != nil {
+            current = nil
+            self.navigationController?.popViewController(animated: false)
+        }
+    }
+    
     func numberOfCoachMarks(for coachMarksController: CoachMarksController) -> Int {
         return 1
     }
@@ -465,10 +564,10 @@ extension AddPaymentVC: CoachMarksControllerDataSource {
         
         var label = UILabel()
         
-        switch self.ud.integer(forKey: .startStep) {
-        case 1:
+        switch self.ud.stringArray(forKey: .startSteps)!.first {
+        case "1":
             label = startStepLabel[1]
-        case 2:
+        case "2":
             label = startStepLabel[0]
         default: break
         }
@@ -484,14 +583,76 @@ extension AddPaymentVC: CoachMarksControllerDataSource {
             "ここをタップして\n登録済みの\n口座を登録してください",
             "ここをタップして\n新しい項目を登録しましょう\n例えば、食費、交通費、\n交際費などなど！"
         ]
-        
-        coachViews.bodyView.hintLabel.text = texts[ud.integer(forKey: .startStep)! - 1]
+        let nowStep = Int( ud.stringArray(forKey: .startSteps)!.first! )!
+        coachViews.bodyView.hintLabel.text = texts[nowStep - 1]
         coachViews.bodyView.nextLabel.text = "了解" // 「次へ」などの文章
 
         return (bodyView: coachViews.bodyView, arrowView: coachViews.arrowView)
     }
     
 }
+
+// MARK: ImagePicker
+
+extension AddPaymentVC: UIImagePickerControllerDelegate,
+                        UINavigationControllerDelegate,
+                        CropViewControllerDelegate {
+    private func takePicture() {
+        let picker = UIImagePickerController()
+        picker.allowsEditing = false
+        if UIImagePickerController.isSourceTypeAvailable(.camera) {
+            picker.sourceType = .camera
+        } else if UIImagePickerController.isSourceTypeAvailable(.photoLibrary) {
+            picker.sourceType = .photoLibrary
+        } else {
+            HUD.flash(.labeledError(title: "エラー", subtitle: "カメラ,アルバム機能が使えません"), delay: 2)
+            return
+        }
+        
+        picker.delegate = self
+        // UIImagePickerController カメラを起動する
+        present(picker, animated: true, completion: nil)
+    }
+    
+    func cropViewController(_ cropViewController: CropViewController, didCropToImage image: UIImage, withRect cropRect: CGRect, angle: Int) {
+        updateImageViewWithImage(image, fromCropViewController: cropViewController)
+    }
+        
+    func updateImageViewWithImage(_ image: UIImage, fromCropViewController cropViewController: CropViewController) {
+        let receipt = Receipt.make()
+        receipt.photo = image
+        receipt.save()
+        receipts.append(receipt)
+        if !pictureModeView.isHidden { setImage() }
+        cropViewController.dismiss(animated: true, completion: nil)
+    }
+
+    func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
+//        var image = info[.originalImage] as! UIImage
+        guard let pickerImage = (info[UIImagePickerController.InfoKey.originalImage] as? UIImage) else { return }
+        
+        let cropController = CropViewController(croppingStyle: .default, image: pickerImage)
+        cropController.delegate = self
+        //サイズ指定！
+        cropController.customAspectRatio = view.bounds.size
+        
+        //今回は使わないボタン等を非表示にする。
+        cropController.aspectRatioPickerButtonHidden = true
+        cropController.resetAspectRatioEnabled = false
+        cropController.rotateButtonsHidden = true
+        
+        cropController.cropView.cropViewPadding = 25
+        
+        //cropBoxのサイズを固定する。
+        cropController.cropView.cropBoxResizeEnabled = false
+        //pickerを閉じたら、cropControllerを表示する。
+        picker.dismiss(animated: true) {
+            self.present(cropController, animated: true, completion: nil)
+        }
+    }
+}
+
+// MARK: ScrollView
 
 extension AddPaymentVC: UIScrollViewDelegate {
     
@@ -502,18 +663,34 @@ extension AddPaymentVC: UIScrollViewDelegate {
         setImage()
         // 初期表示のためcontentInsetを更新
         updateScrollInset()
+    }
 
-    }
-    
-    @IBAction func selectPicture() {
-        
-    }
-    
     @IBAction func toUpp() { setImage(isUp: true) }
     
     @IBAction func toDown() { setImage(isUp: false) }
+    
+    @IBAction func deletePicture() {
+        if receipts[safe: pictureNumber] == nil { return }
+        let alert = MyAlert("確認", "写真を削除しますか？")
+        alert.addActions("キャンセル", type: .cancel, nil)
+        alert.addActions("削除", type: .destructive) { [self] _ in
+            receipts[pictureNumber].delete()
+            receipts.remove(at: pictureNumber)
+            HUD.flash(.labeledSuccess(title: "成功", subtitle: nil)) { _ in setImage() }
+        }
+        present(alert.controller, animated: true, completion: nil)
+    }
+    
+//    @objc func deletePicture() {
+//        let alert = MyAlert("確認", "写真を削除しますか？")
+//        alert.addActions("キャンセル", type: .cancel, nil)
+//        alert.addActions("削除", type: .destructive) { [self] _ in
+//            receipts[pictureNumber].delete()
+//            HUD.flash(.labeledSuccess(title: "成功", subtitle: nil)) { _ in setImage() }
+//        }
+//    }
         
-    private func setImage( isUp: Bool? = nil ){
+    private func setImage( isUp: Bool? = nil ) {
         
         if isUp != nil { pictureNumber += ( isUp! ? 1 : -1 ) }
         //extensionで作った自作out of range回避方法
@@ -549,8 +726,8 @@ extension AddPaymentVC: UIScrollViewDelegate {
     }
 
     func scrollViewDidZoom(_ scrollView: UIScrollView) {
-            // ズームのタイミングでcontentInsetを更新
-            updateScrollInset()
+        // ズームのタイミングでcontentInsetを更新
+        updateScrollInset()
     }
     
     private func updateScrollInset() {

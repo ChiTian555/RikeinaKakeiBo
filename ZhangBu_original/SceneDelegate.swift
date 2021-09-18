@@ -13,6 +13,8 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     var window: UIWindow?
     var isCheckMode: Bool = false
     
+    private let ud = UserDefaults.standard
+    
     func scene(_ scene: UIScene, willConnectTo session: UISceneSession, options connectionOptions: UIScene.ConnectionOptions) {
         
         print("SceneDelegateWillConnectTo: アプリ起動時")
@@ -37,9 +39,8 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         
         UNUserNotificationCenter.current().getNotificationSettings { (settings) in
             let canNotice = settings.authorizationStatus == .authorized
-            UserDefaults.standard.setBool(canNotice, forKey: .canUseNotification)
+            self.ud.setBool(canNotice, forKey: .canUseNotification)
             print("\(settings.authorizationStatus)")
-                
         }
     }
 

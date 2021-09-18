@@ -23,7 +23,7 @@ final class WalkThroughVC: UIViewController, EAIntroDelegate, UNUserNotification
         pages.append(page1)
         
         let page2 = EAIntroPage()
-        page2.title = "iPhoneアプリ「理系な家継簿」です!"
+        page2.title = "こちは、iPhoneアプリ\n「理系な家継簿」です!"
         page2.desc = "これからも、アプリ開発を続けますので\nご支援よろしくお願いします！"
         pages.append(page2)
 
@@ -37,7 +37,7 @@ final class WalkThroughVC: UIViewController, EAIntroDelegate, UNUserNotification
         pages.append(page3)
         
         let page4 = EAIntroPage()
-        page4.title = "設定ページに意見箱を設けてます"
+        page4.title = "設定ページに意見箱を\n設けてます"
         page4.desc = "皆さんの貴重なご意見、感想を\nお待ちしております!"
         pages.append(page4)
         
@@ -57,7 +57,7 @@ final class WalkThroughVC: UIViewController, EAIntroDelegate, UNUserNotification
         introView?.tintColor = .label
         introView?.backgroundColor = .systemBackground
         introView?.easeOutCrossDisolves = true
-        introView?.skipButton.setTitle("スキップ", for: .normal)
+        introView?.skipButton.setTitle("完了", for: .normal)
         introView?.skipButton.setTitleColor(.systemOrange, for: .normal)
         introView?.delegate = self
         introView?.showSkipButtonOnlyOnLastPage = true
@@ -82,8 +82,5 @@ final class WalkThroughVC: UIViewController, EAIntroDelegate, UNUserNotification
         // メイン画面へ移動
         SceneDelegate.shared.rootVC.transitionToMain()
     }
-    
-
-
 
 }

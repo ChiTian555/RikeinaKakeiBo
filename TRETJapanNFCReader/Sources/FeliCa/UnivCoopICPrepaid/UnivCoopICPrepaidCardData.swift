@@ -75,9 +75,9 @@ public struct UnivCoopICPrepaidCardData: FeliCaCardData {
     }
     
     private mutating func convertToBalance(_ blockData: [Data]) {
-        guard let data = blockData.first else { return }
-        let balance = data.toIntReversed(0, 3)
-        self.balance = balance
+        let data = blockData.first
+        let balance = data?.toIntReversed(0, 3)
+        self.balance = balance ?? -1
     }
     
     private mutating func convertToUnivCoopInfo(_ blockData: [Data]) {
