@@ -458,6 +458,10 @@ extension PaymentListVC: UITableViewDelegate, UITableViewDataSource {
             let row = tappedIndex.row - 1
             categoryTableView.deselectRow(at: tappedIndex, animated: true)
             barChartVC.category = (row < 0) ? nil : allCategories[row]
+            if row < 0 { barChartVC.color = .label }
+            else if row < colors.count { barChartVC.color = colors[row] }
+            else { barChartVC.color = .systemGray }
+
             barChartVC.mainCategory = changeMainCategoryTab.selectedSegmentIndex
         }
         

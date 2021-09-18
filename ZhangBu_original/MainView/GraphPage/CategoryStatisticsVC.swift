@@ -26,6 +26,7 @@ class CategoryStatisticsVC: MainBaceVC {
     @IBOutlet var spanLabel: UILabel!
     
     var category: String?
+    var color: UIColor!
     
     var mainCategory: Int!
     
@@ -132,7 +133,7 @@ class CategoryStatisticsVC: MainBaceVC {
         set1.drawIconsEnabled = false
         
         set1.drawValuesEnabled = true
-        set1.setColor(UserDefaults.standard.color(forKey: .buttonColor).withAlphaComponent(0.5))
+        set1.setColor(color.withAlphaComponent(0.8))
         set1.barBorderWidth = 1
         set1.barBorderColor = .label
         set1.drawValuesEnabled = false
