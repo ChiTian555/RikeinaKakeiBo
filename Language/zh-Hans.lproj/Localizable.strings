@@ -1,0 +1,14 @@
+/* 
+  Localizable.strings
+  ZhangBu_origina
+
+  Created by Kiichi Ikeda on 2021/09/02.
+  Copyright © 2021 net.Chee-Saga. All rights reserved.
+*/
+
+"nfcReaderSessionAlertMessage" = "开始扫描IC卡";
+"nfcTagReaderSessionDoneMessage" = "已成功扫描IC卡";
+"cannotFindSelectedNode" = "没找到你选择的IC卡";
+"unexpectedError" = "意外的错误";
+"nfcTagReaderSessionReadingMessage" = "正在扫描中";
+"notGetBalance" = "无法读出卡余额";
