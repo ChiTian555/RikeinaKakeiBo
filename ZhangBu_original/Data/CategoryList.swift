@@ -65,6 +65,16 @@ final class CategoryList: Object, Codable, MyRealmFunction {
         })
     }
     
+    class func deleteAccount(name: String) {
+        let objects = myRealm.objects(Self.self).filter("selectAccount == %@", true)
+        try! myRealm.write() {
+            objects.forEach {
+                guard let index = $0._list.firstIndex(of: name) else { return }
+                $0._list.remove(at: index)
+            }
+        }
+    }
+    
     static func restore(newPayment: [CategoryList]) {
         try! myRealm.write() { myRealm.add(newPayment, update: .all) }
     }

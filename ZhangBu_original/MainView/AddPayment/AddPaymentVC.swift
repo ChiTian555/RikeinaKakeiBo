@@ -430,34 +430,44 @@ class AddPaymentVC: MainBaceVC, UITableViewDataSource, UITableViewDelegate {
                     payment.price *= self.labelZero.text == "-" ? -1 : 1
                 }
             }
-            if edit { self.current!.payment.delete() }
-            payment.save()
+            guard let account = Account.get(payment.paymentMethod) else {
+                HUD.flash(.label("一致する口座がありません。")); return
+            }
             
-            if let picture = self.receipts[safe: self.pictureNumber] {
-                picture.delete()
-                self.receipts.remove(at: self.pictureNumber)
-                if self.receipts.count - 1 == self.pictureNumber && self.receipts.count != 1 {
-                    self.pictureNumber -= 1
+            // ↓最終保存のためのクロージャーを定義。
+            let finalSave: () -> Void = {
+                if edit { self.current!.payment.delete() }
+                payment.save()
+                if let picture = self.receipts[safe: self.pictureNumber] {
+                    picture.delete()
+                    self.receipts.remove(at: self.pictureNumber)
+                    if self.receipts.count - 1 == self.pictureNumber && self.receipts.count != 1 {
+                        self.pictureNumber -= 1
+                    }
+                }
+                if edit {
+                    HUD.flash(.success, delay: 1.0) { _ in
+                        self.navigationController?.popViewController(animated: true)
+                    }
+                } else {
+                    HUD.flash(.success, delay: 1.0) { _ in
+                        self.tFManager.tFSets.forEach { $0.tF.text = "" }
+                        self.memoLabel.text = ""
+                    }
                 }
             }
-            if edit {
-                HUD.flash(.success, delay: 1.0) { _ in
-                    self.navigationController?.popViewController(animated: true)
+            //　↑ここまで
+            
+            if !edit && payment.date < account.createDate {
+                let checkAlert = MyAlert("口座追加以前の出費",
+                                         "口座の残高からこの出費分を\n差し引きますか？")
+                checkAlert.addActions("はい") { _ in finalSave() }
+                checkAlert.addActions("いいえ",type: .destructive) { _ in
+                    payment.avoidSpending = true; finalSave()
                 }
-            } else {
-                let resultAlert = MyAlert("保存成功！","新家計簿の記入を続けますか?")
-                resultAlert.addActions("一覧に戻る") { _ in
-                    self.tFManager.tFSets.forEach { $0.tF.text = "" }
-                    self.memoLabel.text = ""
-                    self.tabBarController?.selectedIndex = 1
-                }
-                resultAlert.addActions("続ける") { _ in
-                    self.tFManager.tFSets.forEach { $0.tF.text = "" }
-                    //pickerViewを1に選択してあげる必要がある
-                    self.setImage()
-                }
-                self.present(resultAlert.controller, animated: true, completion: nil)
+                self.present(checkAlert.controller, animated: true, completion: nil); return
             }
+            finalSave()
         }
         self.present(alert.controller, animated: true, completion: nil)
     }

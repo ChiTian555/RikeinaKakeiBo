@@ -16,6 +16,7 @@ class Check: Object, Codable {
 
 final class Account: Object, Codable, MyRealmFunction {
 
+    //migration:3
     @objc dynamic var id: Int = 0
     @objc dynamic var name: String = ""
     @objc dynamic var type: String = ""
@@ -25,6 +26,11 @@ final class Account: Object, Codable, MyRealmFunction {
     @objc dynamic private var isMustCheckAccont: Bool = false
     @objc dynamic var chargeAccount: String = ""
     private var check = List<Check>()
+    
+    //migration:4
+    @objc dynamic var createDate: Date = Date()
+    
+    // MARK: Functions
     
     //newCheckのset,get
     @objc dynamic var newCheck: Check? {
@@ -49,9 +55,12 @@ final class Account: Object, Codable, MyRealmFunction {
         return ["newCheck"]
     }
     
+    class func get(_ name: String) -> Self? {
+        return myRealm.object(ofType: Self.self, forPrimaryKey: name)
+    }
+    
     class func make(name: String) -> Self? {
-        let isDuplicated = Self.readAll().contains(where: {$0.name == name })
-        if name == "" || isDuplicated { return nil }
+        if name == "" || Self.get(name) != nil { return nil }
         let me = Self()
         me.id = ( myRealm.objects(Self.self).max(ofProperty: "id") ?? 0 ) + 1
         me.name = name
@@ -169,6 +178,10 @@ final class Account: Object, Codable, MyRealmFunction {
             let tbc = SceneDelegate.shared.rootVC.current as! MainTBC
             tbc.setStartStep()
         }
+    }
+    override func delete() {
+        CategoryList.deleteAccount(name: self.name)
+        super.delete()
     }
 
     

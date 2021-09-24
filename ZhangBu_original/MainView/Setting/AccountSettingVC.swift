@@ -36,20 +36,12 @@ class AccountSettingVC: MainBaceVC {
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        load()
-        print(accounts)
+        accounts = Account.readAll() + []; reloadData()
     }
     
-    func load() {
-
-        accounts = Account.readAll() + []
-        
-        if accounts.count != 0 {
-            tableView.rowHeight = 50
-            tableView.estimatedRowHeight = 50
-        }
-        moveButton.tintColor =
-            accounts.count > 1 ? UserDefaults.standard.color(forKey: .buttonColor) : .systemGray3
+    func reloadData() {
+        moveButton.tintColor = accounts.count > 1 ?
+            UserDefaults.standard.color(forKey: .buttonColor) : .systemGray3
         moveButton.isEnabled = accounts.count > 1
         
         tableView.reloadData()
@@ -75,6 +67,8 @@ class AccountSettingVC: MainBaceVC {
     }
 
 }
+
+// MARK: TableView Func
 
 extension AccountSettingVC: UITableViewDataSource {
     
@@ -134,17 +128,18 @@ extension AccountSettingVC: UITableViewDelegate {
         accounts.insert(source, at: destinationRow)
     }
     
-    //後方スワイプ
+    // MARK: Back Swipe Cell Func
     func tableView(_ tableView: UITableView, trailingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
         
         let action = UIContextualAction(style: .destructive, title: nil) { (ctxAction, view, completionHandler) in
             
-            let alert = UIAlertController(title: "削除", message: "ほんとに削除してもよろしいですか？", preferredStyle: .alert)
-            let okAction = UIAlertAction(title: "削除", style: .destructive) { (action) in
-                alert.dismiss(animated: true, completion: nil)
+            let alert = MyAlert("削除", "ほんとに削除してもよろしいですか？")
+            alert.addActions("キャンセル", type: .cancel)  { _ in completionHandler(false) }
+            alert.addActions("削除", type: .destructive) { _ in
                 self.accounts[indexPath.row].delete()
                 self.accounts.remove(at: indexPath.row)
-                tableView.deleteRows(at: [indexPath], with: .automatic)
+                if self.accounts.isEmpty { self.reloadData() }
+                else { tableView.deleteRows(at: [indexPath], with: .automatic) }
                 
                 //並び替えボタンの更新
                 self.moveButton.tintColor = self.accounts.count > 1 ? .systemBlue : .systemGray3
@@ -152,15 +147,10 @@ extension AccountSettingVC: UITableViewDelegate {
                 
                 completionHandler(true)
             }
-            let cancelAction = UIAlertAction(title: "キャンセル", style: .cancel) { (action) in
-                alert.dismiss(animated: true, completion: nil)
-                completionHandler(false)
-            }
-            alert.addAction(okAction)
-            alert.addAction(cancelAction)
-            self.present(alert, animated: true, completion: nil)
+            self.present(alert.controller, animated: true, completion: nil)
         }
-        action.image = UIImage.fontAwesomeIcon(name: .trashAlt, style: .regular, textColor: .label, size: CGSize(width: 50, height: 50))
+        action.image = UIImage(systemName: "trash")
+        
         let swipeAction = UISwipeActionsConfiguration(actions: [action])
         swipeAction.performsFirstActionWithFullSwipe = false
         return swipeAction

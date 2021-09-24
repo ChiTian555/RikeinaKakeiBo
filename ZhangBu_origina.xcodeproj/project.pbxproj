@@ -9,11 +9,6 @@
 /* Begin PBXBuildFile section */
 		4A07BB5725ED1F460077BC44 /* UserDefault.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4A07BB5225ED1F460077BC44 /* UserDefault.swift */; };
 		4A07BB5825ED1F460077BC44 /* Receipt.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4A07BB5325ED1F460077BC44 /* Receipt.swift */; };
-		4A07BB5925ED1F460077BC44 /* CategoryList.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4A07BB5425ED1F460077BC44 /* CategoryList.swift */; };
-		4A07BB5A25ED1F460077BC44 /* Payment.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4A07BB5525ED1F460077BC44 /* Payment.swift */; };
-		4A07BB5B25ED1F460077BC44 /* Account.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4A07BB5625ED1F460077BC44 /* Account.swift */; };
-		4A07BBC725ED219C0077BC44 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4A07BBC625ED219C0077BC44 /* AppDelegate.swift */; };
-		4A07BBED25ED2D030077BC44 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 4A07BBEC25ED2D030077BC44 /* GoogleService-Info.plist */; };
 		4A07BC0125ED34AA0077BC44 /* CheckEMailVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4A07BBFC25ED34A80077BC44 /* CheckEMailVC.swift */; };
 		4A07BC0225ED34AA0077BC44 /* SignInVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4A07BBFD25ED34A80077BC44 /* SignInVC.swift */; };
 		4A07BC0325ED34AA0077BC44 /* SignUpVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4A07BBFE25ED34A80077BC44 /* SignUpVC.swift */; };
@@ -27,13 +22,10 @@
 		4A225E5325ECF79F008A175F /* SendForFriendVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4A225E4125ECF79A008A175F /* SendForFriendVC.swift */; };
 		4A225E5425ECF79F008A175F /* ConectPaymentVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4A225E4225ECF79A008A175F /* ConectPaymentVC.swift */; };
 		4A225E5525ECF79F008A175F /* EditMemoViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4A225E4325ECF79A008A175F /* EditMemoViewController.swift */; };
-		4A225E5625ECF79F008A175F /* AddPaymentVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4A225E4425ECF79A008A175F /* AddPaymentVC.swift */; };
 		4A225E5725ECF79F008A175F /* CheckMoneyVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4A225E4625ECF79B008A175F /* CheckMoneyVC.swift */; };
 		4A225E5825ECF79F008A175F /* MainTBC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4A225E4825ECF79C008A175F /* MainTBC.swift */; };
 		4A225E5925ECF79F008A175F /* MainBaceVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4A225E4925ECF79C008A175F /* MainBaceVC.swift */; };
 		4A225E5A25ECF79F008A175F /* MainNC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4A225E4A25ECF79C008A175F /* MainNC.swift */; };
-		4A225E5B25ECF79F008A175F /* AddAccountVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4A225E4C25ECF79D008A175F /* AddAccountVC.swift */; };
-		4A225E5C25ECF79F008A175F /* AccountSettingVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4A225E4D25ECF79D008A175F /* AccountSettingVC.swift */; };
 		4A225E5D25ECF79F008A175F /* MainSettingVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4A225E4E25ECF79D008A175F /* MainSettingVC.swift */; };
 		4A225E5E25ECF79F008A175F /* AdvancedSettingVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4A225E4F25ECF79D008A175F /* AdvancedSettingVC.swift */; };
 		4A225E5F25ECF79F008A175F /* BackUpVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4A225E5025ECF79D008A175F /* BackUpVC.swift */; };
@@ -49,6 +41,14 @@
 		4A225E7525ECF7F1008A175F /* UIColor+.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4A225E6B25ECF7F1008A175F /* UIColor+.swift */; };
 		4A26A05826E30E3F00D0CEE1 /* CustomTextFields.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4A26A05726E30E3F00D0CEE1 /* CustomTextFields.swift */; };
 		4A26A05C26E39E9500D0CEE1 /* LabelWithPlaceHolder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4A26A05B26E39E9500D0CEE1 /* LabelWithPlaceHolder.swift */; };
+		4A3C0EFE26FDD6320097BC00 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 4A3C0EFD26FDD6320097BC00 /* GoogleService-Info.plist */; };
+		4A3C0F0426FDD8E00097BC00 /* Account.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4A3C0F0326FDD8E00097BC00 /* Account.swift */; };
+		4A3C0F0626FDD9020097BC00 /* AccountSettingVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4A3C0F0526FDD9020097BC00 /* AccountSettingVC.swift */; };
+		4A3C0F0826FDD9320097BC00 /* AddAccountVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4A3C0F0726FDD9320097BC00 /* AddAccountVC.swift */; };
+		4A3C0F0A26FDD94F0097BC00 /* AddPaymentVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4A3C0F0926FDD94F0097BC00 /* AddPaymentVC.swift */; };
+		4A3C0F0C26FDD96F0097BC00 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4A3C0F0B26FDD96F0097BC00 /* AppDelegate.swift */; };
+		4A3C0F0E26FDD9820097BC00 /* CategoryList.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4A3C0F0D26FDD9820097BC00 /* CategoryList.swift */; };
+		4A3C0F1026FDD9C70097BC00 /* Payment.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4A3C0F0F26FDD9C70097BC00 /* Payment.swift */; };
 		4A52B806251B2FE5008D07FD /* CustomToolBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4A52B805251B2FE5008D07FD /* CustomToolBar.swift */; };
 		4A52B823251C7F71008D07FD /* iTunesArtwork@1x.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 4A52B80F251C7F70008D07FD /* iTunesArtwork@1x.jpg */; };
 		4A52B824251C7F71008D07FD /* Icon-App-76x76@2x.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 4A52B811251C7F70008D07FD /* Icon-App-76x76@2x.jpg */; };
@@ -208,11 +208,6 @@
 		3ADE71238E74CF0E8E32F8A2 /* Pods-ZhangBu_original.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ZhangBu_original.debug.xcconfig"; path = "Target Support Files/Pods-ZhangBu_original/Pods-ZhangBu_original.debug.xcconfig"; sourceTree = "<group>"; };
 		4A07BB5225ED1F460077BC44 /* UserDefault.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UserDefault.swift; sourceTree = "<group>"; };
 		4A07BB5325ED1F460077BC44 /* Receipt.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Receipt.swift; sourceTree = "<group>"; };
-		4A07BB5425ED1F460077BC44 /* CategoryList.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CategoryList.swift; sourceTree = "<group>"; };
-		4A07BB5525ED1F460077BC44 /* Payment.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Payment.swift; sourceTree = "<group>"; };
-		4A07BB5625ED1F460077BC44 /* Account.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Account.swift; sourceTree = "<group>"; };
-		4A07BBC625ED219C0077BC44 /* AppDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
-		4A07BBEC25ED2D030077BC44 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		4A07BBFC25ED34A80077BC44 /* CheckEMailVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CheckEMailVC.swift; sourceTree = "<group>"; };
 		4A07BBFD25ED34A80077BC44 /* SignInVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SignInVC.swift; sourceTree = "<group>"; };
 		4A07BBFE25ED34A80077BC44 /* SignUpVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SignUpVC.swift; sourceTree = "<group>"; };
@@ -221,18 +216,16 @@
 		4A07BC0725ED3B330077BC44 /* SplashVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SplashVC.swift; sourceTree = "<group>"; };
 		4A07BC0825ED3B330077BC44 /* BackGround.jpeg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = BackGround.jpeg; sourceTree = "<group>"; };
 		4A07BC0925ED3B330077BC44 /* WalkThroughVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WalkThroughVC.swift; sourceTree = "<group>"; };
+		4A22316726F68EAD00C2C603 /* ZhangBu_originalRelease.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = ZhangBu_originalRelease.entitlements; sourceTree = "<group>"; };
 		4A225E2F25ECF718008A175F /* Main.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = Main.storyboard; sourceTree = "<group>"; };
 		4A225E3F25ECF79A008A175F /* AddCategoryViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AddCategoryViewController.swift; sourceTree = "<group>"; };
 		4A225E4125ECF79A008A175F /* SendForFriendVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SendForFriendVC.swift; sourceTree = "<group>"; };
 		4A225E4225ECF79A008A175F /* ConectPaymentVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ConectPaymentVC.swift; sourceTree = "<group>"; };
 		4A225E4325ECF79A008A175F /* EditMemoViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EditMemoViewController.swift; sourceTree = "<group>"; };
-		4A225E4425ECF79A008A175F /* AddPaymentVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AddPaymentVC.swift; sourceTree = "<group>"; };
 		4A225E4625ECF79B008A175F /* CheckMoneyVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CheckMoneyVC.swift; sourceTree = "<group>"; };
 		4A225E4825ECF79C008A175F /* MainTBC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MainTBC.swift; sourceTree = "<group>"; };
 		4A225E4925ECF79C008A175F /* MainBaceVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MainBaceVC.swift; sourceTree = "<group>"; };
 		4A225E4A25ECF79C008A175F /* MainNC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MainNC.swift; sourceTree = "<group>"; };
-		4A225E4C25ECF79D008A175F /* AddAccountVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AddAccountVC.swift; sourceTree = "<group>"; };
-		4A225E4D25ECF79D008A175F /* AccountSettingVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AccountSettingVC.swift; sourceTree = "<group>"; };
 		4A225E4E25ECF79D008A175F /* MainSettingVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MainSettingVC.swift; sourceTree = "<group>"; };
 		4A225E4F25ECF79D008A175F /* AdvancedSettingVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AdvancedSettingVC.swift; sourceTree = "<group>"; };
 		4A225E5025ECF79D008A175F /* BackUpVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BackUpVC.swift; sourceTree = "<group>"; };
@@ -248,6 +241,14 @@
 		4A225E6B25ECF7F1008A175F /* UIColor+.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UIColor+.swift"; sourceTree = "<group>"; };
 		4A26A05726E30E3F00D0CEE1 /* CustomTextFields.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomTextFields.swift; sourceTree = "<group>"; };
 		4A26A05B26E39E9500D0CEE1 /* LabelWithPlaceHolder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LabelWithPlaceHolder.swift; sourceTree = "<group>"; };
+		4A3C0EFD26FDD6320097BC00 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
+		4A3C0F0326FDD8E00097BC00 /* Account.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Account.swift; sourceTree = "<group>"; };
+		4A3C0F0526FDD9020097BC00 /* AccountSettingVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AccountSettingVC.swift; sourceTree = "<group>"; };
+		4A3C0F0726FDD9320097BC00 /* AddAccountVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AddAccountVC.swift; sourceTree = "<group>"; };
+		4A3C0F0926FDD94F0097BC00 /* AddPaymentVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AddPaymentVC.swift; sourceTree = "<group>"; };
+		4A3C0F0B26FDD96F0097BC00 /* AppDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
+		4A3C0F0D26FDD9820097BC00 /* CategoryList.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CategoryList.swift; sourceTree = "<group>"; };
+		4A3C0F0F26FDD9C70097BC00 /* Payment.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Payment.swift; sourceTree = "<group>"; };
 		4A52B805251B2FE5008D07FD /* CustomToolBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomToolBar.swift; sourceTree = "<group>"; };
 		4A52B80F251C7F70008D07FD /* iTunesArtwork@1x.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = "iTunesArtwork@1x.jpg"; sourceTree = "<group>"; };
 		4A52B811251C7F70008D07FD /* Icon-App-76x76@2x.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = "Icon-App-76x76@2x.jpg"; sourceTree = "<group>"; };
@@ -383,7 +384,6 @@
 		4AFABA1926E0A43700EB89FA /* WaonCardData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = WaonCardData.swift; path = Sources/FeliCa/Waon/WaonCardData.swift; sourceTree = "<group>"; };
 		4AFABA1A26E0A43700EB89FA /* WaonCardItemType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = WaonCardItemType.swift; path = Sources/FeliCa/Waon/WaonCardItemType.swift; sourceTree = "<group>"; };
 		4AFABA1B26E0A43700EB89FA /* WaonReader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = WaonReader.swift; path = Sources/FeliCa/Waon/WaonReader.swift; sourceTree = "<group>"; };
-		4AFED43F2537DAD5004FBE06 /* ZhangBu_original.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = ZhangBu_original.entitlements; sourceTree = "<group>"; };
 		8969DC734FFD044D5C25FCEC /* Pods_ZhangBu_original.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_ZhangBu_original.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		B479B2FAE17081EEBA5A5655 /* Pods-ZhangBu_original.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ZhangBu_original.release.xcconfig"; path = "Target Support Files/Pods-ZhangBu_original/Pods-ZhangBu_original.release.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -406,9 +406,9 @@
 				4A07BB5225ED1F460077BC44 /* UserDefault.swift */,
 				4AFAB9AE26E0748E00EB89FA /* MyRealm.swift */,
 				4A07BB5325ED1F460077BC44 /* Receipt.swift */,
-				4A07BB5425ED1F460077BC44 /* CategoryList.swift */,
-				4A07BB5525ED1F460077BC44 /* Payment.swift */,
-				4A07BB5625ED1F460077BC44 /* Account.swift */,
+				4A3C0F0D26FDD9820097BC00 /* CategoryList.swift */,
+				4A3C0F0F26FDD9C70097BC00 /* Payment.swift */,
+				4A3C0F0326FDD8E00097BC00 /* Account.swift */,
 			);
 			path = Data;
 			sourceTree = "<group>";
@@ -441,7 +441,7 @@
 				4A225E3F25ECF79A008A175F /* AddCategoryViewController.swift */,
 				4A225E4025ECF79A008A175F /* Conect */,
 				4A225E4325ECF79A008A175F /* EditMemoViewController.swift */,
-				4A225E4425ECF79A008A175F /* AddPaymentVC.swift */,
+				4A3C0F0926FDD94F0097BC00 /* AddPaymentVC.swift */,
 			);
 			path = AddPayment;
 			sourceTree = "<group>";
@@ -476,8 +476,8 @@
 		4A225E4B25ECF79D008A175F /* Setting */ = {
 			isa = PBXGroup;
 			children = (
-				4A225E4C25ECF79D008A175F /* AddAccountVC.swift */,
-				4A225E4D25ECF79D008A175F /* AccountSettingVC.swift */,
+				4A3C0F0726FDD9320097BC00 /* AddAccountVC.swift */,
+				4A3C0F0526FDD9020097BC00 /* AccountSettingVC.swift */,
 				4A75ED8726EA027D00046A00 /* InstractVC.swift */,
 				4A225E4E25ECF79D008A175F /* MainSettingVC.swift */,
 				4A225E4F25ECF79D008A175F /* AdvancedSettingVC.swift */,
@@ -680,8 +680,8 @@
 			isa = PBXGroup;
 			children = (
 				4AC8905B24DE5D0800A4948A /* ZhangBu_original */,
-				4A07BBEC25ED2D030077BC44 /* GoogleService-Info.plist */,
 				4AB55AA424FA3588009173B5 /* Info.plist */,
+				4A3C0EFD26FDD6320097BC00 /* GoogleService-Info.plist */,
 				4AA22DF726E0E383005282F7 /* Language */,
 				4AFABA2426E0A43700EB89FA /* TRETJapanNFCReader */,
 				4AB55AB524FE3089009173B5 /* Icons */,
@@ -702,11 +702,11 @@
 		4AC8905B24DE5D0800A4948A /* ZhangBu_original */ = {
 			isa = PBXGroup;
 			children = (
-				4AFED43F2537DAD5004FBE06 /* ZhangBu_original.entitlements */,
+				4A22316726F68EAD00C2C603 /* ZhangBu_originalRelease.entitlements */,
 				4A63CE4A2513512300888C27 /* CustomItem */,
 				4A225E6125ECF7F1008A175F /* Extension */,
 				4AB55AAA24FA405C009173B5 /* TouchIDExample-Bridging-Header.h */,
-				4A07BBC625ED219C0077BC44 /* AppDelegate.swift */,
+				4A3C0F0B26FDD96F0097BC00 /* AppDelegate.swift */,
 				4AC8905E24DE5D0800A4948A /* SceneDelegate.swift */,
 				4AE4952F2505F5E0003D739C /* cordFont6.otf */,
 				4AB55BDE2504B600009173B5 /* えり字.otf */,
@@ -917,10 +917,10 @@
 				4A52B82C251C7F71008D07FD /* Icon-App-29x29@3x.jpg in Resources */,
 				4A07BC0B25ED3B330077BC44 /* BackGround.jpeg in Resources */,
 				4AB55A6324FA00B6009173B5 /* Passcode.storyboard in Resources */,
-				4A07BBED25ED2D030077BC44 /* GoogleService-Info.plist in Resources */,
 				4A52B82A251C7F71008D07FD /* Contents.json in Resources */,
 				4A52B824251C7F71008D07FD /* Icon-App-76x76@2x.jpg in Resources */,
 				4A07BC0525ED34AA0077BC44 /* SignIn.storyboard in Resources */,
+				4A3C0EFE26FDD6320097BC00 /* GoogleService-Info.plist in Resources */,
 				4A52B823251C7F71008D07FD /* iTunesArtwork@1x.jpg in Resources */,
 				4A63CE46251075ED00888C27 /* oxkouSrx0WogQmu1600142852_1600142913.png in Resources */,
 				4A225E3025ECF718008A175F /* Main.storyboard in Resources */,
@@ -995,9 +995,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				4A225E5E25ECF79F008A175F /* AdvancedSettingVC.swift in Sources */,
-				4A07BB5B25ED1F460077BC44 /* Account.swift in Sources */,
 				4AFABAA526E0A7D000EB89FA /* DriversLicenseReaderCommands.swift in Sources */,
-				4A07BB5A25ED1F460077BC44 /* Payment.swift in Sources */,
 				4AB55A7324FA030F009173B5 /* CustomViewBase.swift in Sources */,
 				4AFABAA826E0A7D000EB89FA /* FeliCaCardTransaction.swift in Sources */,
 				4AFABA7126E0A7D000EB89FA /* FeliCaServiceCode.swift in Sources */,
@@ -1012,7 +1010,6 @@
 				4A225E6E25ECF7F1008A175F /* Array+.swift in Sources */,
 				4AFABAAB26E0A7D000EB89FA /* NanacoReader.swift in Sources */,
 				4A68941926F48E8000CFBBE7 /* PrivacyVC.swift in Sources */,
-				4A07BBC725ED219C0077BC44 /* AppDelegate.swift in Sources */,
 				4AFABA8B26E0A7D000EB89FA /* DriversLicenseReaderReadFunctions.swift in Sources */,
 				4A07BC0C25ED3B330077BC44 /* WalkThroughVC.swift in Sources */,
 				4A68942226F5B40700CFBBE7 /* PaymentListVC.swift in Sources */,
@@ -1020,6 +1017,7 @@
 				4A225E7025ECF7F1008A175F /* UIView+.swift in Sources */,
 				4A225E6F25ECF7F1008A175F /* TableView+.swift in Sources */,
 				4A225E5925ECF79F008A175F /* MainBaceVC.swift in Sources */,
+				4A3C0F0E26FDD9820097BC00 /* CategoryList.swift in Sources */,
 				4A225E6025ECF79F008A175F /* TestAddMobViewController.swift in Sources */,
 				4AFABAAD26E0A7D000EB89FA /* JapanNFCReader.swift in Sources */,
 				4AB55BD125022976009173B5 /* RootVC.swift in Sources */,
@@ -1032,7 +1030,6 @@
 				4A225E7225ECF7F1008A175F /* String+.swift in Sources */,
 				4AB55A8124FA08F8009173B5 /* InputPasscodeType.swift in Sources */,
 				4AFABA9B26E0A7D000EB89FA /* FeliCaReadWithoutEncryptionCommandParameter.swift in Sources */,
-				4A225E5B25ECF79F008A175F /* AddAccountVC.swift in Sources */,
 				4AFABA9626E0A7D000EB89FA /* RyutoReader.swift in Sources */,
 				4AFABA8A26E0A7D000EB89FA /* RyutoCardData.swift in Sources */,
 				4AFABA9726E0A7D000EB89FA /* FeliCaCard.swift in Sources */,
@@ -1047,15 +1044,18 @@
 				4A225E5A25ECF79F008A175F /* MainNC.swift in Sources */,
 				4AFABA7D26E0A7D000EB89FA /* FCFCampusCard.swift in Sources */,
 				4AFABA8E26E0A7D000EB89FA /* OctopusCard.swift in Sources */,
+				4A3C0F1026FDD9C70097BC00 /* Payment.swift in Sources */,
 				4AFABAA326E0A7D000EB89FA /* NanacoCardItemType.swift in Sources */,
 				4A68942026F5B40700CFBBE7 /* CategoryStatisticsVC.swift in Sources */,
 				4AFABA7E26E0A7D000EB89FA /* FeliCaReaderProtocol.swift in Sources */,
 				4AFABAAC26E0A7D000EB89FA /* WaonCard.swift in Sources */,
 				4AFABAB026E0A7D000EB89FA /* TransitICCard.swift in Sources */,
 				4AB55A8424FA09F9009173B5 /* PasscodePresenter.swift in Sources */,
+				4A3C0F0A26FDD94F0097BC00 /* AddPaymentVC.swift in Sources */,
 				4A07BC0425ED34AA0077BC44 /* ResetPassVC.swift in Sources */,
 				4AFABA6D26E0A7C700EB89FA /* DriversLicenseExtensions.swift in Sources */,
 				4AFABA9026E0A7D000EB89FA /* TransitICCardItemType.swift in Sources */,
+				4A3C0F0826FDD9320097BC00 /* AddAccountVC.swift in Sources */,
 				4A225E5525ECF79F008A175F /* EditMemoViewController.swift in Sources */,
 				4AFABA6F26E0A7D000EB89FA /* DriversLicenseReader.swift in Sources */,
 				4AFABA9A26E0A7D000EB89FA /* OctopusReader.swift in Sources */,
@@ -1068,15 +1068,16 @@
 				4A07BC0325ED34AA0077BC44 /* SignUpVC.swift in Sources */,
 				4AFABA7726E0A7D000EB89FA /* FeliCaAttribute.swift in Sources */,
 				4AFABA7326E0A7D000EB89FA /* OkicaCard.swift in Sources */,
+				4A3C0F0C26FDD96F0097BC00 /* AppDelegate.swift in Sources */,
 				4A225E7125ECF7F1008A175F /* UIViewController+.swift in Sources */,
 				4A68942126F5B40700CFBBE7 /* ?PaymentListViewController.swift in Sources */,
 				4AFAB9AF26E0748E00EB89FA /* MyRealm.swift in Sources */,
 				4AFA4CE426DFE8DD00D7095A /* NFCReader.swift in Sources */,
 				4AB55A7E24FA08F8009173B5 /* TabBarItemType.swift in Sources */,
 				4AB55A9A24FA1860009173B5 /* LocalAuthenticationManager.swift in Sources */,
-				4A07BB5925ED1F460077BC44 /* CategoryList.swift in Sources */,
 				4AFABA9826E0A7D000EB89FA /* RakutenEdyCard.swift in Sources */,
 				4AFABA7226E0A7D000EB89FA /* RakutenEdyCardItemType.swift in Sources */,
+				4A3C0F0626FDD9020097BC00 /* AccountSettingVC.swift in Sources */,
 				4AFABAAE26E0A7D000EB89FA /* WaonCardItemType.swift in Sources */,
 				4AFABA6C26E0A7C400EB89FA /* DriversLicenseCard.swift in Sources */,
 				4AFABA9E26E0A7D000EB89FA /* FeliCaSystemCode.swift in Sources */,
@@ -1084,7 +1085,6 @@
 				4A225E5425ECF79F008A175F /* ConectPaymentVC.swift in Sources */,
 				4A52B806251B2FE5008D07FD /* CustomToolBar.swift in Sources */,
 				4A26A05826E30E3F00D0CEE1 /* CustomTextFields.swift in Sources */,
-				4A225E5625ECF79F008A175F /* AddPaymentVC.swift in Sources */,
 				4AFABAB226E0A7D000EB89FA /* RyutoCard.swift in Sources */,
 				4AFABA8726E0A7D000EB89FA /* NTasuCardItemType.swift in Sources */,
 				4A68941B26F4E7AD00CFBBE7 /* BrowserVC.swift in Sources */,
@@ -1099,7 +1099,6 @@
 				4A07BC0A25ED3B330077BC44 /* SplashVC.swift in Sources */,
 				4A225E5F25ECF79F008A175F /* BackUpVC.swift in Sources */,
 				4AFABA8D26E0A7D000EB89FA /* FeliCaCardType.swift in Sources */,
-				4A225E5C25ECF79F008A175F /* AccountSettingVC.swift in Sources */,
 				4A07BB5725ED1F460077BC44 /* UserDefault.swift in Sources */,
 				4AFABAA026E0A7D000EB89FA /* WaonCardData.swift in Sources */,
 				4AFABAA926E0A7D000EB89FA /* ICUCardItemType.swift in Sources */,
@@ -1114,6 +1113,7 @@
 				4AFABAA226E0A7D000EB89FA /* FeliCa+NFCFeliCaTag.swift in Sources */,
 				4AFABAB326E0A7D000EB89FA /* UnivCoopICPrepaidItemType.swift in Sources */,
 				4AB55A9924FA1860009173B5 /* AppConstant.swift in Sources */,
+				4A3C0F0426FDD8E00097BC00 /* Account.swift in Sources */,
 				4A225E5D25ECF79F008A175F /* MainSettingVC.swift in Sources */,
 				4AFABA8626E0A7D000EB89FA /* NanacoCard.swift in Sources */,
 				4A225E6D25ECF7F1008A175F /* SegmentedControl+.swift in Sources */,
@@ -1287,11 +1287,11 @@
 			buildSettings = {
 				ARCHS = "$(ARCHS_STANDARD)";
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				CODE_SIGN_ENTITLEMENTS = ZhangBu_original/ZhangBu_original.entitlements;
+				CODE_SIGN_ENTITLEMENTS = ZhangBu_original/ZhangBu_originalRelease.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 2;
-				DEVELOPMENT_TEAM = GU698L3LKR;
+				CURRENT_PROJECT_VERSION = 5;
+				DEVELOPMENT_TEAM = V6349CSZZB;
 				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
 				INFOPLIST_FILE = "$(SRCROOT)/Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
@@ -1299,9 +1299,9 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 2.0;
+				MARKETING_VERSION = 1.1;
 				OTHER_LDFLAGS = "$(inherited)";
-				PRODUCT_BUNDLE_IDENTIFIER = "jp.iketen.RikeinaKakeinbo210902-2";
+				PRODUCT_BUNDLE_IDENTIFIER = "jp.iketen.RikeinaKakeinbo210902-3";
 				PRODUCT_NAME = ZhangBu_original;
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				REWARDEDINTERSTITIAL_ID = "ca-app-pub-3940256099942544/1712485313";
@@ -1318,11 +1318,11 @@
 			buildSettings = {
 				ARCHS = "$(ARCHS_STANDARD)";
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				CODE_SIGN_ENTITLEMENTS = ZhangBu_original/ZhangBu_original.entitlements;
+				CODE_SIGN_ENTITLEMENTS = ZhangBu_original/ZhangBu_originalRelease.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 2;
-				DEVELOPMENT_TEAM = GU698L3LKR;
+				CURRENT_PROJECT_VERSION = 5;
+				DEVELOPMENT_TEAM = V6349CSZZB;
 				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
 				INFOPLIST_FILE = "$(SRCROOT)/Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
@@ -1330,10 +1330,10 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 2.0;
+				MARKETING_VERSION = 1.1;
 				OTHER_LDFLAGS = "$(inherited)";
 				"PODS_CONFIGURATION_BUILD_DIR[sdk=iphoneos13.6]" = "${PODS_BUILD_DIR}/$(CONFIGURATION)$(EFFECTIVE_PLATFORM_NAME)";
-				PRODUCT_BUNDLE_IDENTIFIER = "jp.iketen.RikeinaKakeinbo210902-2";
+				PRODUCT_BUNDLE_IDENTIFIER = jp.iketen.RikeinaKakeibo;
 				PRODUCT_NAME = ZhangBu_original;
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SUPPORTED_PLATFORMS = "iphonesimulator iphoneos";

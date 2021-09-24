@@ -39,17 +39,22 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
   
         // マイグレーションが必要な時
         // レコードフォーマットを変更する場合、このバージョンも上げていく。
-        let migSchemaVersion: UInt64 = 3
+        let migSchemaVersion: UInt64 = 4
 
         // マイグレーション設定
-        var config = Realm.Configuration(
+        let config = Realm.Configuration(
             schemaVersion: migSchemaVersion,
             migrationBlock: { migration, oldSchemaVersion in
-                if (oldSchemaVersion < migSchemaVersion) {
-        }})
-        
-        
-        config.deleteRealmIfMigrationNeeded = true
+                if oldSchemaVersion == migSchemaVersion { return }
+                migration.enumerateObjects(ofType: Account.className()) { oldObj, newObj in
+                    if (oldSchemaVersion < 4) {
+                        //applestore公開時の日にちにする
+                        newObj!["createDate"] = "2021/9/23".toDate()!.date
+                    }
+                }
+            }
+        )
+
         Realm.Configuration.defaultConfiguration = config
         
         if realm.objects(CategoryList.self).count == 0 {

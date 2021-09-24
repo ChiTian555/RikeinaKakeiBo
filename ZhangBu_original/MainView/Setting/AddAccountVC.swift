@@ -154,12 +154,21 @@ class AddAccountVC: UIViewController {
             if chargeAccountNameTextField.text == "" {
                 chargeAccountNameTextField.text = allAccount.first?.name
             }
+        } else if edittingTextField == accountTipeTextField {
+            if accountTipeTextField.text == "" {
+                accountTipeTextField.text = accountTypeTitle.first
+            }
         }
     }
 
     @objc func goNext() {
         let firstResponderIndex = textFields.firstIndex{($0.isFirstResponder)}!
         textFields[firstResponderIndex + 1].becomeFirstResponder()
+        if textFields[firstResponderIndex] == accountTipeTextField {
+            if accountTipeTextField.text == "" {
+                accountTipeTextField.text = accountTypeTitle.first
+            }
+        }
     }
     
     func searchICCard() {
@@ -271,7 +280,8 @@ class AddAccountVC: UIViewController {
         let parentNC = parentTBC.selectedViewController as! UINavigationController
         if let parentVC = parentNC.topViewController as? AccountSettingVC {
             // ユーザデフォルトでラベル更新
-            parentVC.load()
+            parentVC.accounts.append(newAccount)
+            parentVC.reloadData()
         } else if let parentVC = parentNC.topViewController as? AddCategoryViewController {
             //　銀行口座追加の画面から来た場合
             parentVC.addNewAccount(newAccount.name)

@@ -11,31 +11,26 @@ import Realm
 
 final class Payment: Object, Codable, MyRealmFunction {
     
+    // migration:3
     @objc dynamic var id: Int = 0
     @objc dynamic var isUsePoketMoney: Bool = true
-    
     /// 0 -> pay, 1 -> get, 2 -> trade
     @objc dynamic var mainCategoryNumber: Int = 0 {
         didSet { if mainCategoryNumber == 1 { isUsePoketMoney = false } }
     }
     @objc dynamic var price: Int = 0
     @objc dynamic var date: Date = Date()
-    
     @objc dynamic var category = String()
-    
-    //(2.0)に実装
-    @objc dynamic var userCategory = String()
-    
+    @objc dynamic var userCategory = String() //(1.0)に実装
     @objc dynamic var memo = String()
-    // 出金、入金の支払い方法
-    @objc dynamic var paymentMethod = String()
-    // 金銭移動の出金講座
-    @objc dynamic var withdrawal = String()
+    @objc dynamic var paymentMethod = String() // 出金、入金の支払い方法
+    @objc dynamic var withdrawal = String() // 金銭移動の出金講座
+    
+    // migration:4
+    @objc dynamic var avoidSpending = false
 
     // 初期設定
-    override static func primaryKey() -> String? {
-        return "id"
-    }
+    override static func primaryKey() -> String? { return "id" }
     
     class func make() -> Self {
         let me = Self()
@@ -87,19 +82,19 @@ final class Payment: Object, Codable, MyRealmFunction {
     override func save() {
         super.save()
         updatePocketMoney(added: true)
-        Account.updateBalance(newPayment: self)
+        if !avoidSpending { Account.updateBalance(newPayment: self) }
     }
     
     // データを削除(Delete)するためのコード
     override func delete() {
         self.updatePocketMoney(added: false)
-        Account.updateBalance(newPayment: nil, deletePayment: self)
+        if !avoidSpending { Account.updateBalance(newPayment: nil, deletePayment: self) }
         super.delete()
     }
     
     func updatePocketMoney(added: Bool) {
         if self.isUsePoketMoney {
-            var nowPoketMoney = ud.integer(forKey: .pocketMoney) ?? 0
+            var nowPoketMoney = ud.integer(forKey: .pocketMoney) 
             nowPoketMoney += self.price * ((added) ? 1 : -1)
             ud.setInteger(nowPoketMoney, forKey: .pocketMoney)
         }

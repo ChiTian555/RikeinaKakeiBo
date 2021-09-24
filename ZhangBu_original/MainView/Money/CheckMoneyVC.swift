@@ -636,39 +636,39 @@ extension CheckMoneyVC: UITableViewDelegate {
     
     //画面を閉じるときに、通知を表示
     @objc func willResignActive() {
-        
-        if let alert = self.presentedViewController as? UIAlertController {
-            if alert.title == "確認モード" {
-                DispatchQueue.main.async { [self] in
-                    var account = String()
-                    var accountBudged = String()
-                    guard let index = self.checkMoneyTableView.indexPathForSelectedRow
-                    else { return }
-                    let row = index.row - self.userBudget.count
-                    account = accountLists[row].name
-                    accountBudged = "¥\(accountLists[row].balance)"
-                    let content = UNMutableNotificationContent()
-                    content.title = "確認モード"
-                    content.body = "\(account)の残高は\(accountBudged)でした。\n確認ください"
-                    content.sound = UNNotificationSound.default
-                    
-                    // タイマーの時間（秒）をセット
-                    let timer = 1
-                    // ローカル通知リクエストを作成
-                    let trigger = UNTimeIntervalNotificationTrigger(timeInterval: TimeInterval(timer), repeats: false)
-                    //カレンダーでのトリガーをできるようにする。
-                    let identifier = NSUUID().uuidString
-                    uuID = identifier
-                    
-                    // 直ぐに通知を表示
-                    let request = UNNotificationRequest(identifier: identifier,
-                                                        content: content, trigger: trigger)
-                    
-                    UNUserNotificationCenter.current().add(request) { (error) in
-                        print(error?.localizedDescription)
-                    }
-                }
+        print("アプリが閉じられました。")
+        if let alert = self.presentedViewController as? UIAlertController,
+           alert.title == "確認モード" {
+            DispatchQueue.main.async { [self] in
+                print("通知を送信します。")
+                var account = String()
+                var accountBudged = String()
+                guard let index = self.checkMoneyTableView.indexPathForSelectedRow
+                else { return }
+                let row = index.row - self.userBudget.count
+                account = accountLists[row].name
+                accountBudged = "¥\(accountLists[row].balance)"
+                let content = UNMutableNotificationContent()
+                content.title = "確認モード"
+                content.body = "\(account)の残高は\(accountBudged)でした。\n確認ください"
+                content.sound = .defaultCritical
                 
+                // タイマーの時間（秒）をセット
+                let timer = 2
+                // ローカル通知リクエストを作成
+                let trigger = UNTimeIntervalNotificationTrigger(timeInterval: TimeInterval(timer), repeats: false)
+                //カレンダーでのトリガーをできるようにする。
+                let identifier = NSUUID().uuidString
+                uuID = identifier
+                
+                // 直ぐに通知を表示
+                let request = UNNotificationRequest(identifier: identifier,
+                                                    content: content, trigger: trigger)
+                
+                UNUserNotificationCenter.current().add(request) { (error) in
+                    if let error = error { print(error) }
+                    else { print( "登録完了" ) }
+                }
             }
         }
     }
@@ -677,6 +677,9 @@ extension CheckMoneyVC: UITableViewDelegate {
         print("Activeになった、が呼ばれた")
         if let alert = self.presentedViewController as? UIAlertController {
             alert.dismiss(animated: true, completion: nil)
+
+            //通知がたまらないように削除
+            UNUserNotificationCenter.current().removeAllDeliveredNotifications()
             
             //選択されてた口座の場所を取得
             guard let index = self.checkMoneyTableView.indexPathForSelectedRow
@@ -685,9 +688,6 @@ extension CheckMoneyVC: UITableViewDelegate {
             let checkAlert = MyAlert("残高確認","残金は一致しましたか？")
             checkAlert.addActions("いいえ", type: .cancel) { (cAlert) in
                 self.checkMoneyTableView.deselectRow(at: index, animated: true)
-                //通知がたまらないように削除
-                UNUserNotificationCenter.current()
-                    .removeDeliveredNotifications(withIdentifiers: [self.uuID])
                 //誤差分を記入
                 
                 let alert = MyAlert("残高調整","現在の残高を入力してください。")
@@ -711,9 +711,6 @@ extension CheckMoneyVC: UITableViewDelegate {
                 
                 let nowAccount = self.accountLists[index.row - self.userBudget.count]
                 self.checkMoneyTableView.deselectRow(at: index, animated: true)
-                //通知がたまらないように削除
-                UNUserNotificationCenter.current()
-                    .removeDeliveredNotifications(withIdentifiers: [self.uuID])
                 
                 //最終確認日を更新
                 let newCheck = Check()
