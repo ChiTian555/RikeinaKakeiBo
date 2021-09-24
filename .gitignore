@@ -16,13 +16,13 @@
 !examples/ios/objc/Migration/RealmTemplates/*.realm
 *.realm.lock
 
+# Podsごと
+# Pods/
+
 # core
 core
 core-*
 realm-core-*-xcframework
-
-# もう、ポッドごと消そう。
-Pods/
 
 # sh build.sh test
 build/
@@ -35,6 +35,9 @@ build/
 /docs/objc_output
 /docs/swift_output
 /Realm/RLMPlatform.h
+
+# firebase
+.firebase
 
 # XCode
 *.bak
