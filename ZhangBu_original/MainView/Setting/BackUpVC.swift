@@ -220,12 +220,18 @@ class BackUpVC: MainBaceVC {
     }
 
     func createAndLoadInterstitial() {
-        GADRewardedAd.load(withAdUnitID: adUnitID(.reward), request: GADRequest()) { (ad, error) in
+        // adUnitID(.reward)
+        GADRewardedAd.load(withAdUnitID: "ca-app-pub-1418323261004756/2792755777",
+                           request: GADRequest()) { (ad, error) in
             self.interstitial = ad
             if let error = error {
                 print("Failed to load interstitial ad with error:\(error.localizedDescription)")
                 HUD.hide()
-                HUD.flash(.label("広告を読み込めませんでした"))
+                HUD.flash(.label("広告を読み込めませんでした")) { [self] _ in
+                    if error.localizedDescription.contains("Publisher data not found.") {
+                        if willSave != nil { saveAndLoad(); rewarded = false }
+                    }
+                }
                 return
             }
             print("Loading Succeeded")
