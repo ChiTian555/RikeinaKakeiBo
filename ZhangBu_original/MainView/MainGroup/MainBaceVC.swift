@@ -12,19 +12,7 @@ class MainBaceVC: UIViewController {
     
     private let ud = UserDefaults.standard
     
-    override func viewDidLoad() {
-        super.viewDidLoad()
-        if let nv = self.navigationController as? MainNC {
-            nv.loadColor()
-        }
-        let alpha = 1 - CGFloat(ud.integer(forKey: .alpha)) / 100
-        view.backgroundColor = UIColor.systemBackground.withAlphaComponent(alpha)
-    }
-    
     override func viewWillAppear(_ animated: Bool) {
-        if let nv = self.navigationController as? MainNC {
-            nv.loadColor()
-        }
         let alpha = 1 - CGFloat(ud.integer(forKey: .alpha)) / 100
         view.backgroundColor = UIColor.systemBackground.withAlphaComponent(alpha)
     }

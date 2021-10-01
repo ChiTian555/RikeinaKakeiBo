@@ -12,6 +12,9 @@ import CropViewController
 
 class AdvancedSettingVC: MainBaceVC {
     
+    private var nBar: UINavigationBar? { navigationController?.navigationBar }
+    private var tBar: UITabBar? { tabBarController?.tabBar }
+    
     var cells = [UITableViewCell]()
     let ud = UserDefaults.standard
     //cellTipe: 1 -> normalCell, 2 -> ButtonCell, 3 -> SliderCell, 4 -> selectColor
@@ -220,12 +223,17 @@ extension AdvancedSettingVC: UIPickerViewDataSource, UIPickerViewDelegate, Custo
         colorView.backgroundColor = colors[row]
         switch settingTitle[pickerView.tag].name {
         case "テーマ色の変更":
-            let colorImage = UIImage.colorImage(color: colors[row].withAlphaComponent(0.7))
-            self.tabBarController?.tabBar.backgroundImage = colorImage
-            self.navigationController?.navigationBar.setBackgroundImage(colorImage, for: .default)
+            let color = colors[row].withAlphaComponent(0.7)
+            tBar?.standardAppearance.backgroundColor = color
+            if #available(iOS 15.0, *) {
+                tBar?.scrollEdgeAppearance?.backgroundColor = color
+            }
+            nBar?.standardAppearance.backgroundColor = color
+            nBar?.scrollEdgeAppearance?.backgroundColor = color
+//            UINavigationBar.appearance().setBackgroundImage(colorImage, for: .default)
         case "ボタンの色変更":
-            self.navigationController?.navigationBar.tintColor = colors[row]
-            self.tabBarController?.tabBar.tintColor = colors[row]
+            nBar?.tintColor = colors[row]
+            tBar?.tintColor = colors[row]
         default: break
         }
         
@@ -236,22 +244,24 @@ extension AdvancedSettingVC: UIPickerViewDataSource, UIPickerViewDelegate, Custo
     }
     
     func didCancel(sender: CustomKeyboard) {
-        let colorImage = UIImage.colorImage(color: ud.color(forKey: .userColor))
-        self.tabBarController?.tabBar.backgroundImage = colorImage
-        self.navigationController?.navigationBar.setBackgroundImage(colorImage, for: .default)
+        tBar?.standardAppearance.backgroundColor = .user
+        if #available(iOS 15.0, *) {
+            tBar?.scrollEdgeAppearance?.backgroundColor = .user
+        }
+        nBar?.standardAppearance.backgroundColor = .user
+        nBar?.scrollEdgeAppearance?.backgroundColor = .user
         
         sender.resignFirstResponder()
         settingTableView.isUserInteractionEnabled = true
     }
     
     func didDone(sender: CustomKeyboard) {
+        let selectedRow = sender.pickerView!.selectedRow(inComponent: 0)
         switch settingTitle[sender.tag].name {
         case "テーマ色の変更":
-            ud.setColor(colors[sender.pickerView!.selectedRow(inComponent: 0)].withAlphaComponent(0.7),
-                        forKey: .userColor)
+            ud.setColor(colors[selectedRow].withAlphaComponent(0.7), forKey: .userColor)
             alphaLabel.layer.borderColor = ud.color(forKey: .userColor).cgColor
-        case "ボタンの色変更":
-            ud.setColor(colors[sender.pickerView!.selectedRow(inComponent: 0)], forKey: .buttonColor)
+        case "ボタンの色変更": ud.setColor(colors[selectedRow], forKey: .buttonColor)
         default: break
         }
         sender.resignFirstResponder()

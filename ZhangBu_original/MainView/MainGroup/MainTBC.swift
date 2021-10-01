@@ -18,8 +18,6 @@ class MainTBC: UITabBarController, UITabBarControllerDelegate {
         super.viewDidLoad()
         
         self.delegate = self
-        let colorImage = UIImage.colorImage(color: UserDefaults.standard.color(forKey: .userColor))
-        self.tabBar.backgroundImage = colorImage
         
         let Images: [(image: UIImage,title: String)] =
             [(UIImage.fontAwesomeIcon(name: .yenSign, style: .solid, textColor: .white, size: size),"残高"),
@@ -34,16 +32,21 @@ class MainTBC: UITabBarController, UITabBarControllerDelegate {
                 self.tabBar.items![i].badgeColor = .systemRed
             }
         }
-        self.tabBar.tintColor = UserDefaults.standard.color(forKey: .buttonColor)
-        self.tabBar.unselectedItemTintColor = UIColor.label.withAlphaComponent(0.7)
+        tabBar.tintColor = .button
+        let itemApp = UITabBarItemAppearance()
+        let color = UIColor.systemBackground.withAlphaComponent(0.7)
+        itemApp.normal.iconColor = color
+        itemApp.normal.titleTextAttributes = [.foregroundColor:color]
+        let barApp = UITabBarAppearance()
+        barApp.backgroundColor = .user
+        barApp.stackedLayoutAppearance = itemApp
+        if #available(iOS 15.0, *) { tabBar.scrollEdgeAppearance = barApp }
         setStartStep()
     }
     
     func setColor(color: UIColor? = nil) {
-        if let color = color {
-            self.tabBar.tintColor = color
-        }
-        self.tabBar.tintColor = UserDefaults.standard.color(forKey: .buttonColor)
+        if let color = color { self.tabBar.tintColor = color }
+        else { self.tabBar.tintColor = .button }
     }
     
     func setStartStep() {

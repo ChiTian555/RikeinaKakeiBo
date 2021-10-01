@@ -220,9 +220,7 @@ class BackUpVC: MainBaceVC {
     }
 
     func createAndLoadInterstitial() {
-        // adUnitID(.reward)
-        GADRewardedAd.load(withAdUnitID: "ca-app-pub-1418323261004756/2792755777",
-                           request: GADRequest()) { (ad, error) in
+        GADRewardedAd.load(withAdUnitID: adUnitID(.reward), request: GADRequest()) { (ad, error) in
             self.interstitial = ad
             if let error = error {
                 print("Failed to load interstitial ad with error:\(error.localizedDescription)")

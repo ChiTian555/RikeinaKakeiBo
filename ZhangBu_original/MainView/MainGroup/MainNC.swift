@@ -12,23 +12,20 @@ class MainNC: UINavigationController {
     
     private let ud = UserDefaults.standard
     
-    override func viewDidLoad() {
-        super.viewDidLoad()
+    override func viewWillAppear(_ animated: Bool) {
         loadColor()
     }
     
     func loadColor() {
-        self.navigationBar.barStyle = .default
-        self.navigationBar.tintColor = ud.color(forKey: .buttonColor)
-        let colorImage = UIImage.colorImage(color: ud.color(forKey: .userColor))
-        // ナビゲーションを透明にする処理
-        self.navigationBar.setBackgroundImage(colorImage, for: .default)
-        
+        let app = UINavigationBarAppearance()
+        app.backgroundColor = .user
+//        navigationBar.setBackgroundImage(colorImage, for: .default)
+        navigationBar.standardAppearance = app
+        navigationBar.scrollEdgeAppearance = app
+        navigationBar.tintColor = .button
     }
     
     override func pushViewController(_ viewController: UIViewController, animated: Bool) {
-        let colorImage = UIImage.colorImage(color: UserDefaults.standard.color(forKey: .userColor))
-        self.navigationBar.setBackgroundImage(colorImage, for: .default)
         let transition: CATransition = CATransition()
         transition.duration = 0.4
         transition.type = CATransitionType.push

@@ -25,4 +25,9 @@ extension UIColor {
         return lhsRed == rhsRed && lhsGreen == rhsGreen && lhsBlue == rhsBlue
     }
     
+    private class var ud: UserDefaults { UserDefaults.standard }
+    
+    class var user: UIColor { ud.color(forKey: .userColor) }
+    class var button: UIColor { ud.color(forKey: .buttonColor) }
+    
 }

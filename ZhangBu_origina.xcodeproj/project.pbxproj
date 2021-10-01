@@ -1290,7 +1290,7 @@
 				CODE_SIGN_ENTITLEMENTS = ZhangBu_original/ZhangBu_originalRelease.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 5;
+				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = V6349CSZZB;
 				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
 				INFOPLIST_FILE = "$(SRCROOT)/Info.plist";
@@ -1299,9 +1299,9 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.1;
+				MARKETING_VERSION = 2.0;
 				OTHER_LDFLAGS = "$(inherited)";
-				PRODUCT_BUNDLE_IDENTIFIER = "jp.iketen.RikeinaKakeinbo210902-3";
+				PRODUCT_BUNDLE_IDENTIFIER = "jp.iketen.RikeinaKakeinbo211001-1";
 				PRODUCT_NAME = ZhangBu_original;
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				REWARDEDINTERSTITIAL_ID = "ca-app-pub-3940256099942544/1712485313";
@@ -1321,7 +1321,7 @@
 				CODE_SIGN_ENTITLEMENTS = ZhangBu_original/ZhangBu_originalRelease.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 5;
+				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = V6349CSZZB;
 				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
 				INFOPLIST_FILE = "$(SRCROOT)/Info.plist";
@@ -1330,7 +1330,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.1;
+				MARKETING_VERSION = 2.0;
 				OTHER_LDFLAGS = "$(inherited)";
 				"PODS_CONFIGURATION_BUILD_DIR[sdk=iphoneos13.6]" = "${PODS_BUILD_DIR}/$(CONFIGURATION)$(EFFECTIVE_PLATFORM_NAME)";
 				PRODUCT_BUNDLE_IDENTIFIER = jp.iketen.RikeinaKakeibo;
