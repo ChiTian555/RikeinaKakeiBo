@@ -20,10 +20,10 @@ class MainTBC: UITabBarController, UITabBarControllerDelegate {
         self.delegate = self
         
         let Images: [(image: UIImage,title: String)] =
-            [(UIImage.fontAwesomeIcon(name: .yenSign, style: .solid, textColor: .white, size: size),"残高"),
-             (UIImage.fontAwesomeIcon(name: .chartPie, style: .solid, textColor: .white, size: size),"一覧"),
-             (UIImage.fontAwesomeIcon(name: .edit, style: .solid, textColor: .white, size: size),"記入"),
-             (UIImage.fontAwesomeIcon(name: .cogs, style: .solid, textColor: .white, size: size),"設定")]
+        [(UIImage.fontAwesomeIcon(name: .yenSign, style: .solid, textColor: .white, size: size),"残高".l),
+         (UIImage.fontAwesomeIcon(name: .chartPie, style: .solid, textColor: .white, size: size),"一覧".l),
+         (UIImage.fontAwesomeIcon(name: .edit, style: .solid, textColor: .white, size: size),"記入".l),
+         (UIImage.fontAwesomeIcon(name: .cogs, style: .solid, textColor: .white, size: size),"設定".l)]
         
         if let count = self.tabBar.items?.count {
             for i in 0 ..< count {

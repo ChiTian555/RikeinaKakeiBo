@@ -91,7 +91,7 @@ class AddCategoryViewController: MainBaceVC, UITableViewDataSource {
                 return list.map({$0}).contains(account)
             }
         }
-        self.navigationItem.title = "\(categoryList.name)の内容"
+        self.navigationItem.title = "\\0の内容".l(categoryList.name)
         setButtonColor()
     }
     
@@ -112,10 +112,10 @@ class AddCategoryViewController: MainBaceVC, UITableViewDataSource {
         let cell = tableView.dequeueReusableCell(withIdentifier: "Cell")!.create()
         
         if list.count == 0 {
-            cell.textLabel?.text = "右上の'menu'から、\(categoryList.name)を追加しよう!"
+            cell.textLabel?.text = "右上の'menu'から、\\0を追加しよう!".l(categoryList.name)
             cell.selectionStyle = .none
         } else {
-            cell.textLabel?.text = list[indexPath.row]
+            cell.textLabel?.text = list[indexPath.row].l
         }
         
         return cell.set()
@@ -134,7 +134,7 @@ class AddCategoryViewController: MainBaceVC, UITableViewDataSource {
     func addCategory() {
         
         if categoryList.selectAccount && accountList.count == 0 {
-            HUD.flash(.label("追加できる口座がありません。\n携帯をシャッフルして、\n新規口座を作成しましょう。"), delay: 1.0)
+            HUD.flash(.label("追加できる口座がありません\n携帯をシャッフルして\n新規口座を作成しましょう".l))
             return
         }
         
@@ -143,17 +143,17 @@ class AddCategoryViewController: MainBaceVC, UITableViewDataSource {
             return
         }
         
-        let textAlert = UIAlertController(title: "項目を追加します", message: "追加する内容を入力ください", preferredStyle: .alert)
+        let textAlert = UIAlertController(title: "項目を追加します".l, message: "追加する内容を入力ください".l, preferredStyle: .alert)
         let okAction = UIAlertAction(title: "OK", style: .default) { (action) in
             let text = textAlert.textFields!.first!.text!
             if text.count == 0 {
-                HUD.flash(.labeledError(title: "入力エラー", subtitle: "空欄があります") , delay: 1.5)
+                HUD.flash(.labeledError(title: "入力エラー".l, subtitle: "空欄があります".l))
                 return
             }
             if text.count > 5 && !self.categoryList.selectAccount {
                 textAlert.dismiss(animated: true, completion: nil)
-                HUD.flash(.labeledError(title: "入力エラー",
-                                        subtitle: "1~5字で入力してください。"),
+                HUD.flash(.labeledError(title: "入力エラー".l,
+                                        subtitle: "1~5字で入力してください。".l),
                           delay: 2){_ in
                     self.present(textAlert, animated: true, completion: nil)
                     
@@ -162,8 +162,8 @@ class AddCategoryViewController: MainBaceVC, UITableViewDataSource {
             }
             if self.list.map({$0}).contains(text) {
                 textAlert.dismiss(animated: true, completion: nil)
-                HUD.flash(.labeledError(title: "入力エラー",
-                                        subtitle: "重複しています"),
+                HUD.flash(.labeledError(title: "入力エラー".l,
+                                        subtitle: "重複しています".l),
                           delay: 2){_ in
                     self.present(textAlert, animated: true, completion: nil)
                 }
@@ -194,7 +194,7 @@ class AddCategoryViewController: MainBaceVC, UITableViewDataSource {
         textAlert.addAction(okAction)
         textAlert.addAction(cancelAction)
         textAlert.addTextField { (textField) in
-            textField.placeholder = "ここに\(self.categoryList.name)入力"
+            textField.placeholder = "ここに\\0を入力".l(self.categoryList.name.l)
             if self.categoryList.selectAccount {
                 self.settingTextField = textField
                 self.addPickerView()
@@ -238,7 +238,6 @@ extension AddCategoryViewController: UITableViewDelegate {
         let sourceItem = list.remove(at: sourceIndexPath.row)
         list.insert(sourceItem, at: destinationIndexPath.row)
         categoryList.upDateList(newList: list, changeName: nil)
-        
     }
     
 //    func tableView(_ tableView: UITableView, titleForDeleteConfirmationButtonForRowAt indexPath: IndexPath) -> String? {

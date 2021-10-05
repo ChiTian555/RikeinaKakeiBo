@@ -18,7 +18,7 @@
 		4A07BC0B25ED3B330077BC44 /* BackGround.jpeg in Resources */ = {isa = PBXBuildFile; fileRef = 4A07BC0825ED3B330077BC44 /* BackGround.jpeg */; };
 		4A07BC0C25ED3B330077BC44 /* WalkThroughVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4A07BC0925ED3B330077BC44 /* WalkThroughVC.swift */; };
 		4A225E3025ECF718008A175F /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 4A225E2F25ECF718008A175F /* Main.storyboard */; };
-		4A225E5225ECF79F008A175F /* AddCategoryViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4A225E3F25ECF79A008A175F /* AddCategoryViewController.swift */; };
+		4A225E5225ECF79F008A175F /* AddCategoryVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4A225E3F25ECF79A008A175F /* AddCategoryVC.swift */; };
 		4A225E5325ECF79F008A175F /* SendForFriendVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4A225E4125ECF79A008A175F /* SendForFriendVC.swift */; };
 		4A225E5425ECF79F008A175F /* ConectPaymentVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4A225E4225ECF79A008A175F /* ConectPaymentVC.swift */; };
 		4A225E5525ECF79F008A175F /* EditMemoViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4A225E4325ECF79A008A175F /* EditMemoViewController.swift */; };
@@ -36,7 +36,7 @@
 		4A225E7025ECF7F1008A175F /* UIView+.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4A225E6625ECF7F1008A175F /* UIView+.swift */; };
 		4A225E7125ECF7F1008A175F /* UIViewController+.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4A225E6725ECF7F1008A175F /* UIViewController+.swift */; };
 		4A225E7225ECF7F1008A175F /* String+.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4A225E6825ECF7F1008A175F /* String+.swift */; };
-		4A225E7325ECF7F1008A175F /* NSObjectProtocolExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4A225E6925ECF7F1008A175F /* NSObjectProtocolExtension.swift */; };
+		4A225E7325ECF7F1008A175F /* NSObjectProtocol+.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4A225E6925ECF7F1008A175F /* NSObjectProtocol+.swift */; };
 		4A225E7425ECF7F1008A175F /* UIImage+.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4A225E6A25ECF7F1008A175F /* UIImage+.swift */; };
 		4A225E7525ECF7F1008A175F /* UIColor+.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4A225E6B25ECF7F1008A175F /* UIColor+.swift */; };
 		4A26A05826E30E3F00D0CEE1 /* CustomTextFields.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4A26A05726E30E3F00D0CEE1 /* CustomTextFields.swift */; };
@@ -103,6 +103,8 @@
 		4AC8906924DE5D0A00A4948A /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 4AC8906724DE5D0A00A4948A /* LaunchScreen.storyboard */; };
 		4AC8909124E63B8200A4948A /* MyTextField.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4AC8909024E63B8200A4948A /* MyTextField.swift */; };
 		4AC890A824EB9FC100A4948A /* CustomKeyboard.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4AC890A724EB9FC100A4948A /* CustomKeyboard.swift */; };
+		4ADA8163270C4DB80002E2B1 /* EventVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4ADA8162270C4DB80002E2B1 /* EventVC.swift */; };
+		4ADA8165270C50D60002E2B1 /* Memory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4ADA8164270C50D60002E2B1 /* Memory.swift */; };
 		4AE495302505F5E0003D739C /* cordFont6.otf in Resources */ = {isa = PBXBuildFile; fileRef = 4AE4952F2505F5E0003D739C /* cordFont6.otf */; };
 		4AFA4CE226DFCC8500D7095A /* CustomAlert.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4AFA4CE126DFCC8500D7095A /* CustomAlert.swift */; };
 		4AFA4CE426DFE8DD00D7095A /* NFCReader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4AFA4CE326DFE8DD00D7095A /* NFCReader.swift */; };
@@ -218,7 +220,7 @@
 		4A07BC0925ED3B330077BC44 /* WalkThroughVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WalkThroughVC.swift; sourceTree = "<group>"; };
 		4A22316726F68EAD00C2C603 /* ZhangBu_originalRelease.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = ZhangBu_originalRelease.entitlements; sourceTree = "<group>"; };
 		4A225E2F25ECF718008A175F /* Main.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = Main.storyboard; sourceTree = "<group>"; };
-		4A225E3F25ECF79A008A175F /* AddCategoryViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AddCategoryViewController.swift; sourceTree = "<group>"; };
+		4A225E3F25ECF79A008A175F /* AddCategoryVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AddCategoryVC.swift; sourceTree = "<group>"; };
 		4A225E4125ECF79A008A175F /* SendForFriendVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SendForFriendVC.swift; sourceTree = "<group>"; };
 		4A225E4225ECF79A008A175F /* ConectPaymentVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ConectPaymentVC.swift; sourceTree = "<group>"; };
 		4A225E4325ECF79A008A175F /* EditMemoViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EditMemoViewController.swift; sourceTree = "<group>"; };
@@ -236,7 +238,7 @@
 		4A225E6625ECF7F1008A175F /* UIView+.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UIView+.swift"; sourceTree = "<group>"; };
 		4A225E6725ECF7F1008A175F /* UIViewController+.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UIViewController+.swift"; sourceTree = "<group>"; };
 		4A225E6825ECF7F1008A175F /* String+.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "String+.swift"; sourceTree = "<group>"; };
-		4A225E6925ECF7F1008A175F /* NSObjectProtocolExtension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NSObjectProtocolExtension.swift; sourceTree = "<group>"; };
+		4A225E6925ECF7F1008A175F /* NSObjectProtocol+.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "NSObjectProtocol+.swift"; sourceTree = "<group>"; };
 		4A225E6A25ECF7F1008A175F /* UIImage+.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UIImage+.swift"; sourceTree = "<group>"; };
 		4A225E6B25ECF7F1008A175F /* UIColor+.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UIColor+.swift"; sourceTree = "<group>"; };
 		4A26A05726E30E3F00D0CEE1 /* CustomTextFields.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomTextFields.swift; sourceTree = "<group>"; };
@@ -279,9 +281,10 @@
 		4A68941E26F5B40700CFBBE7 /* ?PaymentListViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "?PaymentListViewController.swift"; sourceTree = "<group>"; };
 		4A68941F26F5B40700CFBBE7 /* PaymentListVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PaymentListVC.swift; sourceTree = "<group>"; };
 		4A75ED8726EA027D00046A00 /* InstractVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InstractVC.swift; sourceTree = "<group>"; };
-		4AA22DF926E0E383005282F7 /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hans"; path = "zh-Hans.lproj/Localizable.strings"; sourceTree = "<group>"; };
+		4AA22DF926E0E383005282F7 /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hans"; path = "zh-Hans.lproj/Localizable.strings"; sourceTree = "<group>"; usesTabs = 0; };
 		4AA22DFA26E0E383005282F7 /* ja */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ja; path = ja.lproj/Localizable.strings; sourceTree = "<group>"; };
 		4AA22DFB26E0E383005282F7 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Localizable.strings; sourceTree = "<group>"; };
+		4AA409E52707FA2800B7D9B2 /* experiment.playground */ = {isa = PBXFileReference; lastKnownFileType = file.playground; path = experiment.playground; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
 		4AB55A6224FA00B6009173B5 /* Passcode.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = Passcode.storyboard; sourceTree = "<group>"; };
 		4AB55A6724FA015A009173B5 /* InputPasscodeKeyboardView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = InputPasscodeKeyboardView.swift; sourceTree = "<group>"; };
 		4AB55A6824FA015B009173B5 /* InputPasscodeKeyboardView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = InputPasscodeKeyboardView.xib; sourceTree = "<group>"; };
@@ -309,6 +312,8 @@
 		4AC8906824DE5D0A00A4948A /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		4AC8909024E63B8200A4948A /* MyTextField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyTextField.swift; sourceTree = "<group>"; };
 		4AC890A724EB9FC100A4948A /* CustomKeyboard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomKeyboard.swift; sourceTree = "<group>"; };
+		4ADA8162270C4DB80002E2B1 /* EventVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventVC.swift; sourceTree = "<group>"; };
+		4ADA8164270C50D60002E2B1 /* Memory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Memory.swift; sourceTree = "<group>"; };
 		4AE4952F2505F5E0003D739C /* cordFont6.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = cordFont6.otf; sourceTree = "<group>"; };
 		4AFA4CE126DFCC8500D7095A /* CustomAlert.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomAlert.swift; sourceTree = "<group>"; };
 		4AFA4CE326DFE8DD00D7095A /* NFCReader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NFCReader.swift; sourceTree = "<group>"; };
@@ -405,6 +410,7 @@
 			children = (
 				4A07BB5225ED1F460077BC44 /* UserDefault.swift */,
 				4AFAB9AE26E0748E00EB89FA /* MyRealm.swift */,
+				4ADA8164270C50D60002E2B1 /* Memory.swift */,
 				4A07BB5325ED1F460077BC44 /* Receipt.swift */,
 				4A3C0F0D26FDD9820097BC00 /* CategoryList.swift */,
 				4A3C0F0F26FDD9C70097BC00 /* Payment.swift */,
@@ -438,7 +444,7 @@
 		4A225E3E25ECF79A008A175F /* AddPayment */ = {
 			isa = PBXGroup;
 			children = (
-				4A225E3F25ECF79A008A175F /* AddCategoryViewController.swift */,
+				4A225E3F25ECF79A008A175F /* AddCategoryVC.swift */,
 				4A225E4025ECF79A008A175F /* Conect */,
 				4A225E4325ECF79A008A175F /* EditMemoViewController.swift */,
 				4A3C0F0926FDD94F0097BC00 /* AddPaymentVC.swift */,
@@ -453,14 +459,6 @@
 				4A225E4225ECF79A008A175F /* ConectPaymentVC.swift */,
 			);
 			path = Conect;
-			sourceTree = "<group>";
-		};
-		4A225E4525ECF79B008A175F /* Money */ = {
-			isa = PBXGroup;
-			children = (
-				4A225E4625ECF79B008A175F /* CheckMoneyVC.swift */,
-			);
-			path = Money;
 			sourceTree = "<group>";
 		};
 		4A225E4725ECF79C008A175F /* MainGroup */ = {
@@ -496,7 +494,7 @@
 				4A225E6625ECF7F1008A175F /* UIView+.swift */,
 				4A225E6725ECF7F1008A175F /* UIViewController+.swift */,
 				4A225E6825ECF7F1008A175F /* String+.swift */,
-				4A225E6925ECF7F1008A175F /* NSObjectProtocolExtension.swift */,
+				4A225E6925ECF7F1008A175F /* NSObjectProtocol+.swift */,
 				4A225E6A25ECF7F1008A175F /* UIImage+.swift */,
 				4A225E6B25ECF7F1008A175F /* UIColor+.swift */,
 			);
@@ -702,6 +700,7 @@
 		4AC8905B24DE5D0800A4948A /* ZhangBu_original */ = {
 			isa = PBXGroup;
 			children = (
+				4AA409E52707FA2800B7D9B2 /* experiment.playground */,
 				4A22316726F68EAD00C2C603 /* ZhangBu_originalRelease.entitlements */,
 				4A63CE4A2513512300888C27 /* CustomItem */,
 				4A225E6125ECF7F1008A175F /* Extension */,
@@ -729,7 +728,8 @@
 			children = (
 				4A225E4725ECF79C008A175F /* MainGroup */,
 				4A225E3E25ECF79A008A175F /* AddPayment */,
-				4A225E4525ECF79B008A175F /* Money */,
+				4A225E4625ECF79B008A175F /* CheckMoneyVC.swift */,
+				4ADA8162270C4DB80002E2B1 /* EventVC.swift */,
 				4A225E4B25ECF79D008A175F /* Setting */,
 				4A68941C26F5B40700CFBBE7 /* GraphPage */,
 				4A225E5125ECF79F008A175F /* TestAddMobViewController.swift */,
@@ -1001,7 +1001,7 @@
 				4AFABA7126E0A7D000EB89FA /* FeliCaServiceCode.swift in Sources */,
 				4AB55A9E24FA18F8009173B5 /* CryptAlgorithm.swift in Sources */,
 				4A225E7425ECF7F1008A175F /* UIImage+.swift in Sources */,
-				4A225E5225ECF79F008A175F /* AddCategoryViewController.swift in Sources */,
+				4A225E5225ECF79F008A175F /* AddCategoryVC.swift in Sources */,
 				4AFABA6E26E0A7D000EB89FA /* JapanNFCReaderError.swift in Sources */,
 				4AFABA9926E0A7D000EB89FA /* NanacoCardData.swift in Sources */,
 				4AFABAA126E0A7D000EB89FA /* RakutenEdyReader.swift in Sources */,
@@ -1039,6 +1039,7 @@
 				4AFABA7B26E0A7D000EB89FA /* JapanNFCReaderSessionDelegate.swift in Sources */,
 				4AFABA8026E0A7D000EB89FA /* WaonReader.swift in Sources */,
 				4AFABA8826E0A7D000EB89FA /* NTasuReader.swift in Sources */,
+				4ADA8163270C4DB80002E2B1 /* EventVC.swift in Sources */,
 				4A07BC0125ED34AA0077BC44 /* CheckEMailVC.swift in Sources */,
 				4AFABA9126E0A7D000EB89FA /* ICUCard.swift in Sources */,
 				4A225E5A25ECF79F008A175F /* MainNC.swift in Sources */,
@@ -1125,10 +1126,11 @@
 				4AFABA8426E0A7D000EB89FA /* FeliCaSystem.swift in Sources */,
 				4A225E7525ECF7F1008A175F /* UIColor+.swift in Sources */,
 				4AC8909124E63B8200A4948A /* MyTextField.swift in Sources */,
+				4ADA8165270C50D60002E2B1 /* Memory.swift in Sources */,
 				4AFA4CE226DFCC8500D7095A /* CustomAlert.swift in Sources */,
 				4A26A05C26E39E9500D0CEE1 /* LabelWithPlaceHolder.swift in Sources */,
 				4A75ED8826EA027D00046A00 /* InstractVC.swift in Sources */,
-				4A225E7325ECF7F1008A175F /* NSObjectProtocolExtension.swift in Sources */,
+				4A225E7325ECF7F1008A175F /* NSObjectProtocol+.swift in Sources */,
 				4AFABA8326E0A7D000EB89FA /* OkicaReader.swift in Sources */,
 				4AFABA8226E0A7D000EB89FA /* OkicaCardItemType.swift in Sources */,
 			);

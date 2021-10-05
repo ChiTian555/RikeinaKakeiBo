@@ -17,19 +17,19 @@ final class WalkThroughVC: UIViewController, EAIntroDelegate, UNUserNotification
         super.viewDidLoad()
 
         let page1 = EAIntroPage()
-        page1.title = "はじめまして！"
-        page1.desc = "アプリをインストールいただき\nありがとうございます！"
+        page1.title = "はじめまして！".l
+        page1.desc = "アプリをインストールいただき\nありがとうございます！".l
         
         pages.append(page1)
         
         let page2 = EAIntroPage()
-        page2.title = "こちは、iPhoneアプリ\n「理系な家継簿」です!"
-        page2.desc = "これからも、アプリ開発を続けますので\nご支援よろしくお願いします！"
+        page2.title = "こちらは、iPhoneアプリ\n「理系な家継簿」です!".l
+        page2.desc = "これからも、アプリ開発を続けますので\nご支援よろしくお願いします！".l
         pages.append(page2)
 
         let page3 = EAIntroPage()
-        page3.title = "家計簿を作り上げる\nのは、そう\nあなた自身です!"
-        page3.desc = "理想の家計簿に仕上げていきましょう!"
+        page3.title = "家計簿を作り上げる\nのは、そう\nあなた自身です!".l
+        page3.desc = "理想の家計簿に仕上げていきましょう!".l
         page3.descFont = UIFont.systemFont(ofSize: 15, weight: .light)
         page3.titleFont = UIFont(name: "Helvetica-Bold", size: 32)
         page3.titleColor = UIColor.orange
@@ -37,8 +37,8 @@ final class WalkThroughVC: UIViewController, EAIntroDelegate, UNUserNotification
         pages.append(page3)
         
         let page4 = EAIntroPage()
-        page4.title = "設定ページに意見箱を\n設けてます"
-        page4.desc = "皆さんの貴重なご意見、感想を\nお待ちしております!"
+        page4.title = "設定ページに意見箱を\n設けてます".l
+        page4.desc = "皆さんの貴重なご意見、感想を\nお待ちしております!".l
         pages.append(page4)
         
         pages.forEach { (page) in

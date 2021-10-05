@@ -124,7 +124,7 @@ extension UserDefaults {
         var color: UIColor!
         switch key {
         case .userColor:
-            color = UIColor.orange
+            color = UIColor.orange.withAlphaComponent(0.7)
         case .buttonColor:
             color = UIColor.blue
         }

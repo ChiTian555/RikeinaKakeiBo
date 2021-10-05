@@ -8,10 +8,20 @@
 
 import Foundation
 
+
+public func l(_ key: String,_ args:String...) -> String {
+    var localizedStr = NSLocalizedString(key , bundle: Bundle.main, comment: "")
+    localizedStr = localizedStr.isEmpty ? key : localizedStr
+    args.enumerated().forEach {
+        localizedStr = localizedStr.replacingOccurrences(of: "\\\($0)", with: $1) }
+    return localizedStr
+}
+
+
 extension String {
 
-    // MARK: - Function
 
+    // MARK: - Function
     func hmac(algorithm: CryptoAlgorithm) -> String {
         let key: String = AppConstant.PASSCODE_HASH
         var result: [CUnsignedChar]
@@ -28,4 +38,20 @@ extension String {
         }
         return hash as String
     }
+    
+    func l(_ args:String...) -> String {
+        var localizedStr = NSLocalizedString(self , bundle: Bundle.main, comment: "")
+        localizedStr = localizedStr.isEmpty ? self : localizedStr
+        args.enumerated().forEach {
+            localizedStr = localizedStr.replacingOccurrences(of: "\\\($0)", with: $1) }
+        return localizedStr
+    }
+    
+    var l: String {
+        var localizedStr = NSLocalizedString(self , bundle: Bundle.main, comment: "")
+        return localizedStr.isEmpty ? self : localizedStr
+    }
+    
 }
+
+

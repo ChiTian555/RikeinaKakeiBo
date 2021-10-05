@@ -12,9 +12,7 @@ import UIKit
 extension UISegmentedControl {
     
     public var selectedTitle: String {
-        get {
-            return self.titleForSegment(at: self.selectedSegmentIndex) ?? ""
-        }
+        get { return self.titleForSegment(at: self.selectedSegmentIndex) ?? "" }
     }
     
 }

@@ -11,6 +11,7 @@ target 'ZhangBu_original' do
   # Pods for ZhangBu_original
   
   pod 'EAIntroView'
+  pod 'FSCalendar'
   pod 'CropViewController'
   pod 'UITextView+Placeholder'
   pod 'PKHUD'

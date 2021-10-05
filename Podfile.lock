@@ -34,6 +34,7 @@ PODS:
   - FirebaseFirestore/WithLeveldb (8.7.0):
     - FirebaseFirestore/Base
   - FontAwesome.swift (1.9.1)
+  - FSCalendar (2.8.2)
   - Google-Mobile-Ads-SDK (8.11.0):
     - GoogleAppMeasurement (< 9.0, >= 7.0)
     - GoogleUserMessagingPlatform (>= 1.1)
@@ -97,6 +98,7 @@ DEPENDENCIES:
   - Firebase/Auth
   - FirebaseFirestore (from `https://github.com/invertase/firestore-ios-sdk-frameworks.git`)
   - FontAwesome.swift
+  - FSCalendar
   - Google-Mobile-Ads-SDK
   - Instructions
   - PKHUD
@@ -116,6 +118,7 @@ SPEC REPOS:
     - FirebaseCore
     - FirebaseCoreDiagnostics
     - FontAwesome.swift
+    - FSCalendar
     - Google-Mobile-Ads-SDK
     - GoogleAppMeasurement
     - GoogleDataTransport
@@ -152,6 +155,7 @@ SPEC CHECKSUMS:
   FirebaseCoreDiagnostics: b63732f581a1c6a453ec7241f9ab60b3a5bd3450
   FirebaseFirestore: 0f0d98ab906dbf65c82d070dd1a0c53da48d74dd
   FontAwesome.swift: 6b52cb7be66eacd28cbfaa0ca7ffd0de4a186a1d
+  FSCalendar: e6a2eb9c571bf0719ed797ef807e08426753c241
   Google-Mobile-Ads-SDK: be2192b51b74d74a6ed70590c2e8275412f1b71e
   GoogleAppMeasurement: 2be61ce546ad074dbe4dd545f222ac6033bb1d9e
   GoogleDataTransport: 85fd18ff3019bb85d3f2c551d04c481dedf71fc9
@@ -168,6 +172,6 @@ SPEC CHECKSUMS:
   SwiftDate: 72d28954e8e1c6c1c0f917ccc8005e4f83c7d4b2
   "UITextView+Placeholder": d7b0c400921f66523f3a85d74f774512e14f6502
 
-PODFILE CHECKSUM: 31668106c060637422a5b7b6debd4ce7053f8477
+PODFILE CHECKSUM: 04c4fbc0ef3bb59a7b7251bbd550ec9f9f1633a9
 
 COCOAPODS: 1.11.2
