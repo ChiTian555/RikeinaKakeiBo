@@ -7,6 +7,7 @@
 //
 
 import Foundation
+import UIKit
 
 
 public func l(_ key: String,_ args:String...) -> String {
@@ -19,7 +20,6 @@ public func l(_ key: String,_ args:String...) -> String {
 
 
 extension String {
-
 
     // MARK: - Function
     func hmac(algorithm: CryptoAlgorithm) -> String {
@@ -48,10 +48,22 @@ extension String {
     }
     
     var l: String {
-        var localizedStr = NSLocalizedString(self , bundle: Bundle.main, comment: "")
+        let localizedStr = NSLocalizedString(self , bundle: Bundle.main, comment: "")
         return localizedStr.isEmpty ? self : localizedStr
+    }
+    
+    func attribute(size:Int) -> NSMutableAttributedString {
+        return NSMutableAttributedString()
     }
     
 }
 
+//MARK: UIFont
 
+extension UIFont {
+    static func getEncryption(_ size:CGFloat) -> UIFont {
+        let ud = UserDefaults.standard
+        if ud.bool(forKey: .isCordMode) { return UIFont(name: "cordFont", size: size)! }
+        return UIFont.systemFont(ofSize: size + 10.0, weight: .semibold)
+    }
+}

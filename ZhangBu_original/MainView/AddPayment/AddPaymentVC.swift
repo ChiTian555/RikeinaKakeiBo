@@ -479,8 +479,7 @@ class AddPaymentVC: MainBaceVC, UITableViewDataSource, UITableViewDelegate {
             alert.addActions("キャンセル", type: .cancel, nil)
             alert.addActions("削除", type: .destructive) { _ in
                 c.delete()
-                HUD.flash(.labeledSuccess(title: "成功", subtitle: "一覧画面に\n戻ります"))
-                { _ in
+                self.flashHud(.labeledSuccess(title: "成功", subtitle: "一覧画面に\n戻ります")){ _ in
                     self.navigationController?.popViewController(animated: true)
                 }
             }
@@ -686,7 +685,7 @@ extension AddPaymentVC: UIScrollViewDelegate {
         alert.addActions("削除", type: .destructive) { [self] _ in
             receipts[pictureNumber].delete()
             receipts.remove(at: pictureNumber)
-            HUD.flash(.labeledSuccess(title: "成功", subtitle: nil)) { _ in setImage() }
+            self.flashHud(.labeledSuccess(title: "成功", subtitle: nil)) { _ in setImage() }
         }
         present(alert.controller, animated: true, completion: nil)
     }

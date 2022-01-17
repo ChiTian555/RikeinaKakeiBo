@@ -8,6 +8,38 @@
 
 import Foundation
 import UIKit
+import PKHUD
+
+//MARK: UIView
+
+extension UIView {
+    
+    private var ud: UserDefaults { return UserDefaults.standard }
+    
+    public func setBackGroundPicture(alpha: CGFloat? = nil) {
+        self.backgroundColor = .systemBackground
+        let finalAlpha: CGFloat
+        //背景画像を入れる器
+        let currentBackGround = UIImageView(frame: self.bounds)
+        if alpha == nil {
+            finalAlpha = CGFloat(ud.integer(forKey: .alpha)) / 100
+        } else {
+            finalAlpha = alpha!
+        }
+        currentBackGround.image = ud.image(forKey: .backGraundPicture)?.alpha(finalAlpha)
+        self.addSubview(currentBackGround)
+        self.sendSubviewToBack(currentBackGround)
+    }
+    
+    static func getOneColorView(color:UIColor) -> UIView {
+        let view = UIView()
+        view.backgroundColor = color
+        return view
+    }
+    
+}
+
+//MARK: UIViewCOntroller
 
 // UIViewControllerの拡張
 extension UIViewController {
@@ -78,5 +110,16 @@ extension UIViewController {
         present(alert, animated: true)
     }
     
+    
+    /// カスタマイズされた、PKHudのつーる。
+    /// - Parameters:
+    ///   - content: type of hud
+    ///   - delay: delay time
+    ///   - completion: function after flash
+    func flashHud(_ content: HUDContentType,
+                  _ delay:Double = 2.0,
+                  completion: ((Bool)->Void)? = nil) {
+        HUD.flash(content, onView: view, delay: delay, completion: completion)
+    }
     
 }

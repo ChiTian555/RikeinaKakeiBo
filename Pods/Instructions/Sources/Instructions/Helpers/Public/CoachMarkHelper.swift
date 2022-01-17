@@ -120,12 +120,10 @@ public class CoachMarkHelper {
     /// The default cutout path expands the given rectangle by a few points and rounds its corners.
     /// If the default behavior is undesirable, a custom `cutoutPathMaker` should be provided.
     ///
-    /// If `pointOfInterest` is `nil`,
-    ///
     /// - Parameters:
     ///   - frame: The frame used to generate the cutout path.
-    ///   - superview: The superview defining the coordinate system.
     ///   - pointOfInterest: The point of interest towards which the arrow points.
+    ///   - superview: The superview defining the coordinate system.
     ///   - cutoutPathMaker: a block customizing the cutout path.
     /// - Returns: A instance of `CoachMark` configured with the provided parameters.
     public func makeCoachMark(
@@ -152,19 +150,24 @@ public class CoachMarkHelper {
     /// coach mark.
     ///
     /// - Parameters:
-    ///   - frame: The frame used to generate the cutout path.
-    ///   - superview: The superview defining the coordinate system.
     ///   - pointOfInterest: The point of interest towards which the arrow points.
-    ///   - cutoutPathMaker: a block customizing the cutout path.
+    ///   - superview: The superview defining the coordinate system.
     /// - Returns: A instance of `CoachMark` configured with the provided parameters.
     public func makeCoachMark(
         pointOfInterest: CGPoint? = nil,
         in superview: UIView?
     ) -> CoachMark {
         var coachMark = CoachMark()
+        
+        let frame: CGRect?
+        if let point = pointOfInterest {
+            frame = .init(origin: point, size: .zero)
+        } else {
+            frame = nil
+        }
 
         update(coachMark: &coachMark,
-               usingFrame: nil,
+               usingFrame: frame,
                pointOfInterest: pointOfInterest,
                superview: superview,
                cutoutPathMaker: nil)
@@ -216,7 +219,7 @@ public class CoachMarkHelper {
     /// - Parameter view: the view around which create the cutoutPath
     /// - Parameter pointOfInterest: the point of interest toward which the arrow
     ///                              should point
-    /// - Parameter bezierPathBlock: a block customizing the cutoutPath
+    /// - Parameter cutoutPathMaker: a block customizing the cutoutPath
     public func updateCurrentCoachMark(usingView view: UIView? = nil,
                                        pointOfInterest: CGPoint? = nil,
                                        cutoutPathMaker: CutoutPathMaker? = nil) {

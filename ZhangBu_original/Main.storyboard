@@ -2093,7 +2093,7 @@ Cg
                                             </constraints>
                                         </tableViewCellContentView>
                                     </tableViewCell>
-                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" misplaced="YES" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" reuseIdentifier="CellSlider" translatesAutoresizingMaskIntoConstraints="NO" id="OUe-vg-nsj">
+                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" fixedFrame="YES" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" reuseIdentifier="CellSlider" translatesAutoresizingMaskIntoConstraints="NO" id="OUe-vg-nsj">
                                         <rect key="frame" x="0.0" y="159" width="414" height="96.5"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="OUe-vg-nsj" id="Exi-9B-tpu">
@@ -2504,7 +2504,7 @@ Cg
     </scenes>
     <inferredMetricsTieBreakers>
         <segue reference="Snu-5f-SOw"/>
-        <segue reference="oMd-rQ-ZRf"/>
+        <segue reference="et4-P5-WlF"/>
     </inferredMetricsTieBreakers>
     <resources>
         <image name="arrow.up.arrow.down.circle" catalog="system" width="128" height="121"/>

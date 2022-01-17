@@ -99,11 +99,8 @@ private extension CoachMarkBodyDefaultView {
     // MARK: Builders
     func makeHintTextView() -> UITextView {
         let textView = UITextView().preparedForAutoLayout()
-        #if targetEnvironment(macCatalyst)
-        #else
-        textView.layoutManager.hyphenationFactor = 1.0
-        #endif
-        textView.textAlignment = .justified
+
+        textView.textAlignment = .left
         textView.textColor = InstructionsColor.coachMarkLabel
         textView.font = UIFont.systemFont(ofSize: 15.0)
 
@@ -116,12 +113,20 @@ private extension CoachMarkBodyDefaultView {
         textView.isScrollEnabled = false
         textView.isUserInteractionEnabled = false
 
-        textView.setContentCompressionResistancePriority(UILayoutPriority.required,
-                                                         for: .horizontal)
+        if #available(iOS 15.0, *) {
+            textView.setContentCompressionResistancePriority(UILayoutPriority.defaultHigh - 1,
+                                                             for: .horizontal)
+        } else {
+            textView.setContentCompressionResistancePriority(UILayoutPriority.required,
+                                                             for: .horizontal)
+        }
+
         textView.setContentCompressionResistancePriority(UILayoutPriority.required,
                                                          for: .vertical)
-        textView.setContentHuggingPriority(UILayoutPriority.defaultHigh, for: .horizontal)
-        textView.setContentHuggingPriority(UILayoutPriority.defaultHigh, for: .vertical)
+        textView.setContentHuggingPriority(UILayoutPriority.defaultHigh,
+                                           for: .horizontal)
+        textView.setContentHuggingPriority(UILayoutPriority.defaultHigh,
+                                           for: .vertical)
 
         return textView
     }
@@ -135,10 +140,22 @@ private extension CoachMarkBodyDefaultView {
 
         label.isUserInteractionEnabled = false
 
-        label.setContentCompressionResistancePriority(UILayoutPriority.required, for: .horizontal)
-        label.setContentCompressionResistancePriority(UILayoutPriority.required, for: .vertical)
-        label.setContentHuggingPriority(UILayoutPriority.required, for: .horizontal)
-        label.setContentHuggingPriority(UILayoutPriority.defaultLow, for: .vertical)
+        if #available(iOS 15.0, *) {
+            label.setContentCompressionResistancePriority(UILayoutPriority.defaultHigh,
+                                                          for: .horizontal)
+            label.setContentHuggingPriority(UILayoutPriority.init(765),
+                                            for: .horizontal)
+        } else {
+            label.setContentCompressionResistancePriority(UILayoutPriority.required,
+                                                          for: .horizontal)
+            label.setContentHuggingPriority(UILayoutPriority.defaultLow,
+                                            for: .horizontal)
+        }
+
+        label.setContentCompressionResistancePriority(UILayoutPriority.required,
+                                                      for: .vertical)
+        label.setContentHuggingPriority(UILayoutPriority.defaultLow,
+                                        for: .vertical)
 
         return label
     }

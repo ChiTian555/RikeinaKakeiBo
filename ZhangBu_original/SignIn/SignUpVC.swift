@@ -74,8 +74,8 @@ class SignUpVC: UIViewController, UITextFieldDelegate {
                         SignInVC.showErrorIfNeeded(error, target: self)
                         return
                     }
-                    HUD.flash(.labeledSuccess(title: "サインアップ成功",
-                                              subtitle: "メールアドレスを確認ください")) {_ in
+                    self.flashHud(.labeledSuccess(title: "サインアップ成功",
+                                                  subtitle: "メールアドレスを確認ください")) {_ in
                         // 仮登録完了画面へ遷移する処理
                         self.performSegue(withIdentifier: "toCheck", sender: user)
                     }

@@ -105,10 +105,10 @@ install_xcframework() {
   echo "Copied $source to $destination"
 }
 
-install_xcframework "${PODS_ROOT}/FirebaseFirestore/FirebaseFirestore/FirebaseFirestore.xcframework" "FirebaseFirestore/Base" "framework" "ios-arm64_armv7" "ios-arm64_x86_64-maccatalyst" "ios-arm64_i386_x86_64-simulator"
-install_xcframework "${PODS_ROOT}/FirebaseFirestore/FirebaseFirestore/gRPC-Core.xcframework" "FirebaseFirestore/Base" "framework" "ios-arm64_x86_64-maccatalyst" "ios-arm64_armv7" "ios-arm64_i386_x86_64-simulator"
-install_xcframework "${PODS_ROOT}/FirebaseFirestore/FirebaseFirestore/gRPC-C++.xcframework" "FirebaseFirestore/Base" "framework" "ios-arm64_i386_x86_64-simulator" "ios-arm64_x86_64-maccatalyst" "ios-arm64_armv7"
+install_xcframework "${PODS_ROOT}/FirebaseFirestore/FirebaseFirestore/FirebaseFirestore.xcframework" "FirebaseFirestore/Base" "framework" "ios-arm64_x86_64-maccatalyst" "ios-arm64_i386_x86_64-simulator" "ios-arm64_armv7"
+install_xcframework "${PODS_ROOT}/FirebaseFirestore/FirebaseFirestore/gRPC-Core.xcframework" "FirebaseFirestore/Base" "framework" "ios-arm64_armv7" "ios-arm64_x86_64-maccatalyst" "ios-arm64_i386_x86_64-simulator"
+install_xcframework "${PODS_ROOT}/FirebaseFirestore/FirebaseFirestore/gRPC-C++.xcframework" "FirebaseFirestore/Base" "framework" "ios-arm64_x86_64-maccatalyst" "ios-arm64_i386_x86_64-simulator" "ios-arm64_armv7"
 install_xcframework "${PODS_ROOT}/FirebaseFirestore/FirebaseFirestore/BoringSSL-GRPC.xcframework" "FirebaseFirestore/Base" "framework" "ios-arm64_armv7" "ios-arm64_i386_x86_64-simulator" "ios-arm64_x86_64-maccatalyst"
-install_xcframework "${PODS_ROOT}/FirebaseFirestore/FirebaseFirestore/abseil.xcframework" "FirebaseFirestore/Base" "framework" "ios-arm64_x86_64-maccatalyst" "ios-arm64_i386_x86_64-simulator" "ios-arm64_armv7"
+install_xcframework "${PODS_ROOT}/FirebaseFirestore/FirebaseFirestore/abseil.xcframework" "FirebaseFirestore/Base" "framework" "ios-arm64_armv7" "ios-arm64_x86_64-maccatalyst" "ios-arm64_i386_x86_64-simulator"
 install_xcframework "${PODS_ROOT}/FirebaseFirestore/FirebaseFirestore/leveldb-library.xcframework" "FirebaseFirestore/WithLeveldb" "framework" "ios-arm64_x86_64-maccatalyst" "ios-arm64_armv7" "ios-arm64_i386_x86_64-simulator"
 

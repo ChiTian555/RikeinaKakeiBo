@@ -76,7 +76,7 @@ class BackUpVC: MainBaceVC {
         alert.addActions("ログアウト") { _ in
             do {
                 try Auth.auth().signOut()
-                HUD.flash(.success) { _ in 
+                self.flashHud(.success) { _ in 
                     self.navigationController?.popViewController(animated: true)
                 }
             }
@@ -220,12 +220,13 @@ class BackUpVC: MainBaceVC {
     }
 
     func createAndLoadInterstitial() {
-        GADRewardedAd.load(withAdUnitID: adUnitID(.reward), request: GADRequest()) { (ad, error) in
+        GADRewardedAd.load(withAdUnitID: adUnitID(.reward), request: GADRequest()) {
+            (ad, error) in
             self.interstitial = ad
             if let error = error {
                 print("Failed to load interstitial ad with error:\(error.localizedDescription)")
                 HUD.hide()
-                HUD.flash(.label("広告を読み込めませんでした")) { [self] _ in
+                self.flashHud(.label("広告を読み込めませんでした")) { [self] _ in
                     if error.localizedDescription.contains("Publisher data not found.") {
                         if willSave != nil { saveAndLoad(); rewarded = false }
                     }

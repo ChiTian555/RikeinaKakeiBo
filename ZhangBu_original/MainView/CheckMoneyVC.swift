@@ -220,7 +220,7 @@ extension CheckMoneyVC: UITableViewDelegate {
             myAlert.addActions("キャンセル", type: .cancel) { _ in completionHandler(false) }
             myAlert.addActions("変更", type: .destructive) { (alert) in
                 guard let text = alert.tFs.first?.text, text != "" else {
-                    HUD.flash(.labeledError(title: "Error", subtitle: "空欄があります")) { _ in
+                    self.flashHud(.labeledError(title: "Error", subtitle: "空欄があります")) { _ in
                         self.present(alert.controller, animated: true, completion: nil)
                     }
                     return
@@ -445,7 +445,7 @@ extension CheckMoneyVC: UITableViewDelegate {
             }
             textAlert.addActions("確定") { (tAlert) in
                 guard let price = Int(tAlert.tFs.first?.text ?? "") else {
-                    HUD.flash(.labeledError(title: "Error", subtitle: "入力にミスがあります")){_ in
+                    self.flashHud(.labeledError(title: "Error", subtitle: "入力にミスがあります")){_ in
                         self.present(tAlert.controller, animated: true, completion: nil)
                     }; return
                 }
@@ -519,9 +519,9 @@ extension CheckMoneyVC: UITableViewDelegate {
             print("price:",price,"\nsum:",sum)
             
             if price == sum * -1 {
-                HUD.flash(.label("引き落とし金額と、家計簿の記録が一致しました。")) { _ in
-                    HUD.flash(.labeledSuccess(title: "引き落とし登録完了",
-                                              subtitle: "家計簿を更新しました。。"))
+                self.flashHud(.label("引き落とし金額と、家計簿の記録が一致しました。")) { _ in
+                    self.flashHud(.labeledSuccess(title: "引き落とし登録完了",
+                                                  subtitle: "家計簿を更新しました。"))
                     let newPayment = Payment.make()
                     newPayment.mainCategoryNumber = 2
                     newPayment.price = sum * -1 //>0
@@ -555,7 +555,7 @@ extension CheckMoneyVC: UITableViewDelegate {
                                                   subtitle: "家計簿を更新しました。。"))
                         self.reloadData()
                     }
-                    HUD.flash(.label("引き落とし金額と、家計簿の記録が一致しません。")) {_ in
+                    self.flashHud(.label("引き落とし金額と、家計簿の記録が一致しません。")) {_ in
                         self.present(alert.controller,
                                      animated: true, completion: nil)
                     }
@@ -588,7 +588,7 @@ extension CheckMoneyVC: UITableViewDelegate {
                                                   subtitle: "家計簿を更新しました。"))
                         self.reloadData()
                     }
-                    HUD.flash(.label("引き落とし金額と、家計簿の記録が一致しません。")) {_ in
+                    self.flashHud(.label("引き落とし金額と、家計簿の記録が一致しません。")) {_ in
                         self.present(alert.controller,
                                      animated: true, completion: nil)
                     }
@@ -623,7 +623,7 @@ extension CheckMoneyVC: UITableViewDelegate {
                     tbc.setStartStep()
                 }
             } else {
-                HUD.flash(.label("残高不一致")) {_ in
+                self.flashHud(.label("残高不一致")) {_ in
                     let adjustBalance = balance - account.balance
                     self.adjustBalance(account: account,
                                        adjustBalance: adjustBalance)

@@ -1,8 +1,5 @@
 # Uncomment the next line to define a global platform for your project
-platform :ios, '11.0'
-
-install! 'cocoapods',
-:deterministic_uuids => false
+# platform :ios, '9.0'
 
 target 'ZhangBu_original' do
   # Comment the next line if you don't want to use dynamic frameworks
@@ -21,10 +18,11 @@ target 'ZhangBu_original' do
   pod 'Siren'
   pod 'Instructions'
   pod 'RealmSwift'
-  
+
   pod 'Firebase/Auth'
   pod 'Google-Mobile-Ads-SDK'
   # ここは、コンパイルされたファイルをダウンロードするため、ギットを指定している。
   pod 'FirebaseFirestore', :git => 'https://github.com/invertase/firestore-ios-sdk-frameworks.git'
-  
+
+
 end

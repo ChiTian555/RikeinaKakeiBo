@@ -23,7 +23,7 @@ class EventVC: UIViewController {
         eventEditor.addTextField("イベント名".l)
         eventEditor.addActions("イベント名".l, type: .cancel, nil)
         eventEditor.addActions("追加".l) { alert in
-            <#code#>
+            //
         }
     }
 }

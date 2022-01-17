@@ -101,27 +101,26 @@ extension AdvancedSettingVC: UITableViewDataSource, UITableViewDelegate {
                 let colorView = cell.contentView.viewWithTag(1)!
                 colorView.layer.cornerRadius = colorView.bounds.height / 2
                 colorView.clipsToBounds = true
-                let pickerView = UIPickerView()
-                var index: Int!
+//                let pickerView = UIPickerView()
+//                var index: Int!
                 if settingTitle[row].name == "テーマ色の変更" {
                     let color = ud.color(forKey: .userColor)
                     colorView.backgroundColor = color
-                    index = colors.firstIndex(where: {$0.isEqualTo(color)})!
+//                    index = colors.firstIndex(where: {$0.isEqualTo(color)})!
                 } else if settingTitle[row].name == "ボタンの色変更" {
                     let color = ud.color(forKey: .buttonColor).withAlphaComponent(1)
                     colorView.backgroundColor = color
-                    index = colors.firstIndex(where: {$0.isEqualTo(color)})!
+//                    index = colors.firstIndex(where: {$0.isEqualTo(color)})!
                 }
                 let pickerLabel = CustomKeyboard(frame: cell.bounds)
                 pickerLabel.tag = row
-                pickerView.delegate = self
-                pickerView.dataSource = self
-                pickerView.backgroundColor = .clear
-                pickerView.tag = row
-                pickerView.selectRow(index, inComponent: 0, animated: false)
-                pickerLabel.inputView = pickerView
                 pickerLabel.delegate = self
                 pickerLabel.backgroundColor = .clear
+                let rect = CGRect(x: 0, y: 0, width: view.bounds.width, height: view.bounds.height * 0.5)
+                let colorPicker = ColorPicker(frame: rect)
+                colorPicker.tag = row
+                colorPicker.delegate = self
+                pickerLabel.inputView = colorPicker
                 cell.contentView.addSubview(pickerLabel)
             default:
                 break
@@ -154,8 +153,6 @@ extension AdvancedSettingVC: UITableViewDataSource, UITableViewDelegate {
         if titleText == "背景画像とテーマ色" {
             
             switch settingTitle[indexPath.row].name {
-            case "テーマ色の変更":
-                break
             case "背景画像を選択":
                 self.pickUpPicture()
             case "背景画像を削除":
@@ -171,72 +168,31 @@ extension AdvancedSettingVC: UITableViewDataSource, UITableViewDelegate {
                 alert.addAction(cancelAction)
                 alert.addAction(okAction)
                 self.present(alert, animated: true, completion: nil)
-            default:
-                break
+            default: break
             }
-            
         }
     }
-    
 }
 
-extension AdvancedSettingVC: UIPickerViewDataSource, UIPickerViewDelegate, CustomKeyboardDelegate {
+extension AdvancedSettingVC: CustomKeyboardDelegate, ColorPickerDelegate {
     
-    
-    var colors: [UIColor] {
-        let colorArray: [UIColor] = [
-            
-            .purple,
-            .magenta,
-            .red,
-            .orange,
-            .yellow,
-            .green,
-            .cyan,
-            .blue,
-            .brown,
-            .darkGray,
-            .lightGray
-            
-        ]
-        return colorArray
-    }
-    
-    func numberOfComponents(in pickerView: UIPickerView) -> Int {
-        return 1
-    }
-    
-    func pickerView(_ pickerView: UIPickerView, numberOfRowsInComponent component: Int) -> Int {
-        return colors.count
-    }
-    
-    func pickerView(_ pickerView: UIPickerView, viewForRow row: Int, forComponent component: Int, reusing view: UIView?) -> UIView {
-        let view = UIView(frame: CGRect(origin: .zero, size: CGSize(width: 80, height: 24)))
-        view.backgroundColor = colors[row]
-        view.layer.cornerRadius = 12
-        view.clipsToBounds = true
-        return view
-    }
-    
-    func pickerView(_ pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int) {
-        let colorView = cells[pickerView.tag].contentView.viewWithTag(1)!
-        colorView.backgroundColor = colors[row]
-        switch settingTitle[pickerView.tag].name {
+    func didChangedValue(sender: ColorPicker) {
+        let colorView = cells[sender.tag].contentView.viewWithTag(1)!
+        colorView.backgroundColor = sender.color
+        switch settingTitle[sender.tag].name {
         case "テーマ色の変更":
-            let color = colors[row].withAlphaComponent(0.7)
-            tBar?.standardAppearance.backgroundColor = color
+            tBar?.standardAppearance.backgroundColor = sender.color
             if #available(iOS 15.0, *) {
-                tBar?.scrollEdgeAppearance?.backgroundColor = color
+                tBar?.scrollEdgeAppearance?.backgroundColor = sender.color
             }
-            nBar?.standardAppearance.backgroundColor = color
-            nBar?.scrollEdgeAppearance?.backgroundColor = color
-//            UINavigationBar.appearance().setBackgroundImage(colorImage, for: .default)
+            nBar?.standardAppearance.backgroundColor = sender.color
+            nBar?.scrollEdgeAppearance?.backgroundColor = sender.color
+            //            UINavigationBar.appearance().setBackgroundImage(colorImage, for: .default)
         case "ボタンの色変更":
-            nBar?.tintColor = colors[row]
-            tBar?.tintColor = colors[row]
+            nBar?.tintColor = sender.color
+            tBar?.tintColor = sender.color
         default: break
         }
-        
     }
     
     func startEdit(sender: CustomKeyboard) {
@@ -256,17 +212,16 @@ extension AdvancedSettingVC: UIPickerViewDataSource, UIPickerViewDelegate, Custo
     }
     
     func didDone(sender: CustomKeyboard) {
-        let selectedRow = sender.pickerView!.selectedRow(inComponent: 0)
+        let picker = sender.inputView as! ColorPicker
         switch settingTitle[sender.tag].name {
         case "テーマ色の変更":
-            ud.setColor(colors[selectedRow].withAlphaComponent(0.7), forKey: .userColor)
+            ud.setColor(picker.color, forKey: .userColor)
             alphaLabel.layer.borderColor = ud.color(forKey: .userColor).cgColor
-        case "ボタンの色変更": ud.setColor(colors[selectedRow], forKey: .buttonColor)
+        case "ボタンの色変更": ud.setColor(picker.color, forKey: .buttonColor)
         default: break
         }
         sender.resignFirstResponder()
         settingTableView.isUserInteractionEnabled = true
-        
     }
     
 }
