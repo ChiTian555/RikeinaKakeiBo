@@ -38,8 +38,6 @@ class CheckMoneyVC: MainBaceVC {
     var accountLists: Results<Account>!
     var budgetsValue = [Int]()
     
-    
-    
     var coachController = CoachMarksController()
     /// .0: step3, .1: step4 初期ステップのうむを格納
     private var condition = (false,false)
@@ -70,7 +68,7 @@ class CheckMoneyVC: MainBaceVC {
     //tableView更新
     func reloadData() {
         accountLists = Account.readAll()
-        let pocketMoney = ud.integer(forKey: .pocketMoney) ?? 0
+        let pocketMoney = ud.integer(forKey: .pocketMoney)
         budgetsValue = [pocketMoney, accountLists.sum(ofProperty: "balance") - pocketMoney]
         checkMoneyTableView.reloadData()
     }
@@ -103,9 +101,6 @@ extension CheckMoneyVC: UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         
-        var font = UIFont()
-        if ud.bool(forKey: .isCordMode) { font = UIFont(name: "cordFont", size: 25)! }
-        else { font = UIFont.systemFont(ofSize: 20, weight: .semibold) }
         var cell: UITableViewCell!
         if indexPath.row < userBudget.count {
             
@@ -113,9 +108,12 @@ extension CheckMoneyVC: UITableViewDataSource {
             let labelName = cell.viewWithTag(1) as! UILabel
             let labelBudget = cell.viewWithTag(2) as! UILabel
             labelName.text = userBudget[indexPath.row]
-            labelBudget.font = font
-            labelBudget.text = "¥\(budgetsValue[indexPath.row])"
+//            labelBudget.font = font
+//            labelBudget.text = "¥\(budgetsValue[indexPath.row])"
             labelBudget.textColor = budgetsValue[indexPath.row] < 0 ? .systemRed : .label
+            
+            
+            labelBudget.attributedText = "¥\(budgetsValue[indexPath.row])".code(20)
             
             if indexPath.row == 0 {
                 //初期ステップ3
@@ -126,12 +124,12 @@ extension CheckMoneyVC: UITableViewDataSource {
             
         } else if accountLists.count >= 1 {
             cell = tableView.dequeueReusableCell(withIdentifier: "Cell2")!.create()
+            let nowAccount =  accountLists[indexPath.row - userBudget.count]
             let nameLabel = cell.viewWithTag(1) as! UILabel
             let balanceLabel = cell.viewWithTag(2) as! UILabel
             let typeLabel = cell.viewWithTag(3) as! UILabel
             let checkLabel = cell.viewWithTag(4) as! UILabel
-            balanceLabel.font = font
-            let nowAccount =  accountLists[indexPath.row - userBudget.count]
+            balanceLabel.attributedText = "¥\(nowAccount.balance)".code(20)
             nameLabel.text = nowAccount.name
             typeLabel.text = nowAccount.type
             
@@ -139,31 +137,17 @@ extension CheckMoneyVC: UITableViewDataSource {
             let checkedMonth: String = lastCheck != nil ? "\(lastCheck!.checkDate.inDefaultRegion().month)" : "--"
             let checkedDay: String = lastCheck != nil ? "\(lastCheck!.checkDate.inDefaultRegion().day)" : "--"
             let checkedBalance: String = lastCheck != nil ? "\(lastCheck!.balance)" : "--"
-            let attriStr = NSMutableAttributedString()
             let isCredit = nowAccount.type.first == "④"
             let title = isCredit ? ("最終引き落とし日","金額") : ("最終確認日","残高")
             
-            if ud.bool(forKey: .isCordMode) {
-                attriStr.append(
-                    NSAttributedString(string: "\(title.0): \(checkedMonth)/\(checkedDay)\n\(title.1): ")
-                )
-                attriStr.append(
-                    NSAttributedString(string: "¥\(checkedBalance)",
-                                       attributes: [NSAttributedString.Key.font :
-                                                        UIFont(name: "cordFont", size: 20)!])
-                )
-            } else {
-                attriStr.append(
-                    NSAttributedString(string: "\(title.0): \(checkedMonth)/\(checkedDay)\n\(title.1): ¥\(checkedBalance)")
-                )
-            }
-            checkLabel.attributedText = attriStr
+            checkLabel.attributedText = StringUtil(size: 14).getText(
+                "\(title.0): \(checkedMonth)/\(checkedDay)\n\(title.1):".deco,
+                "¥\(checkedBalance)".deco(.myFont(.codeWithSize(17)))
+            )
             balanceLabel.textColor = nowAccount.balance < 0 ? .systemRed : .label
-            balanceLabel.text = "¥\(nowAccount.balance)"
+            balanceLabel.attributedText = "¥\(nowAccount.balance)".code(20)
             balanceLabel.textAlignment = .right
-            if nowAccount.isMustCheck() {
-                startStepCells.append((cell, nowAccount.type))
-            }
+            if nowAccount.isMustCheck() { startStepCells.append((cell, nowAccount.type)) }
             
         } else {
             //まだ口座登録されてない時

@@ -242,24 +242,9 @@ class PaymentListVC: MainBaceVC, UITextFieldDelegate, CustomKeyboardDelegate, UI
      円グラフをセットアップする
      */
     func setChart(dataPoints: [String], values: [Int]) {
-        let attrStr = NSMutableAttributedString()
-        if UserDefaults.standard.bool(forKey: .isCordMode) {
-            attrStr.append(NSAttributedString(string: "計:", attributes: [
-                NSAttributedString.Key.font : UIFont.systemFont(ofSize: 14, weight: .regular),
-                NSAttributedString.Key.foregroundColor : UIColor.label
-            ]))
-            attrStr.append(NSAttributedString(string: "¥\(values.reduce(0) { $0 + $1 })",
-                attributes: [
-                    NSAttributedString.Key.font : UIFont(name: "cordFont", size: 20)!,
-                    NSAttributedString.Key.foregroundColor : UIColor.label
-                ]))
-        } else {
-            attrStr.append(NSAttributedString(string: "計:¥\(values.reduce(0) { $0 + $1 })", attributes: [
-                NSAttributedString.Key.font : UIFont.systemFont(ofSize: 14, weight: .regular),
-                NSAttributedString.Key.foregroundColor : UIColor.label
-            ]))
-        }
-        pieChartView.centerAttributedText = attrStr
+        pieChartView.centerAttributedText = StringUtil(size: 14).getText(
+            "計:".deco, "¥\(values.reduce(0) { $0 + $1 })".deco(.myFont(.codeWithSize(20)))
+        )
         pieChartView.noDataFont =  UIFont.systemFont(ofSize: 14, weight: .regular)
         pieChartView.holeColor = UIColor.secondarySystemBackground
 //        pieChartView.highlightPerTapEnabled = false

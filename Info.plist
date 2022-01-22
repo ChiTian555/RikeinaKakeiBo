@@ -192,6 +192,7 @@
 	<array>
 		<string>cordFont6.otf</string>
 		<string>えり字.otf</string>
+		<string>codeIn.otf</string>
 	</array>
 	<key>UIApplicationSceneManifest</key>
 	<dict>

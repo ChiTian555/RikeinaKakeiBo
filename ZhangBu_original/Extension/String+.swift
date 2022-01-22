@@ -52,26 +52,20 @@ extension String {
         return localizedStr.isEmpty ? self : localizedStr
     }
     
-    func attribute(size:Int) -> NSMutableAttributedString {
-        let r = self.match("\\d*")
-        return NSMutableAttributedString()
-    }
-    
-    func match(_ pattern: String) -> [NSTextCheckingResult] {
-        guard let regex = try? NSRegularExpression(pattern: pattern, options: NSRegularExpression.Options()) else {
-            return []
-        }
-        return regex.matches(in: self, options: .anchored, range: NSMakeRange(0, self.count))
-    }
-    
 }
 
 //MARK: UIFont
 
 extension UIFont {
+    private static var ud : UserDefaults { .standard }
     static func getEncryption(_ s:CGFloat) -> UIFont {
         let ud = UserDefaults.standard
         if ud.bool(forKey:.isCordMode) { return UIFont(name: "cordIn",size: 1.15 * s)! }
         return UIFont.systemFont(ofSize: s, weight: .semibold)
+    }
+    static func codeFont(_ size: CGFloat) -> UIFont {
+        return ud.bool(forKey: .isCordMode) ?
+        UIFont(name: "codeIn",size: size * 1.15)! :
+        UIFont.systemFont(ofSize: size)
     }
 }
