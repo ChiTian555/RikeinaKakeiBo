@@ -53,7 +53,15 @@ extension String {
     }
     
     func attribute(size:Int) -> NSMutableAttributedString {
+        let r = self.match("\\d*")
         return NSMutableAttributedString()
+    }
+    
+    func match(_ pattern: String) -> [NSTextCheckingResult] {
+        guard let regex = try? NSRegularExpression(pattern: pattern, options: NSRegularExpression.Options()) else {
+            return []
+        }
+        return regex.matches(in: self, options: .anchored, range: NSMakeRange(0, self.count))
     }
     
 }
@@ -61,9 +69,9 @@ extension String {
 //MARK: UIFont
 
 extension UIFont {
-    static func getEncryption(_ size:CGFloat) -> UIFont {
+    static func getEncryption(_ s:CGFloat) -> UIFont {
         let ud = UserDefaults.standard
-        if ud.bool(forKey: .isCordMode) { return UIFont(name: "cordFont", size: size)! }
-        return UIFont.systemFont(ofSize: size + 10.0, weight: .semibold)
+        if ud.bool(forKey:.isCordMode) { return UIFont(name: "cordIn",size: 1.15 * s)! }
+        return UIFont.systemFont(ofSize: s, weight: .semibold)
     }
 }

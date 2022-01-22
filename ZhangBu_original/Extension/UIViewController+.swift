@@ -43,6 +43,18 @@ extension UIView {
 
 // UIViewControllerの拡張
 extension UIViewController {
+    
+    var nBar: UINavigationBar? { navigationController?.navigationBar }
+    var tBar: UITabBar? { tabBarController?.tabBar }
+    
+    func setBarColor(color: UIColor) {
+        tBar?.standardAppearance.backgroundColor = color
+        if #available(iOS 15.0, *) {
+            tBar?.scrollEdgeAppearance?.backgroundColor = color
+        }
+        nBar?.standardAppearance.backgroundColor = color
+        nBar?.scrollEdgeAppearance?.backgroundColor = color
+    }
 
     // この画面のナビゲーションバーを設定するメソッド
     public func setupNavigationBarTitle(_ title: String) {
@@ -52,9 +64,8 @@ extension UIViewController {
         attributes[NSAttributedString.Key.font] = UIFont(name: "HiraKakuProN-W6", size: 14.0)
         attributes[NSAttributedString.Key.foregroundColor]  = UIColor.label
 
-        self.navigationController!.navigationBar.isTranslucent = false
-//        self.navigationController!.navigationBar.barTintColor = UIColor(code: "#333333")
-        self.navigationController!.navigationBar.titleTextAttributes = attributes
+        nBar?.isTranslucent = false
+        nBar?.titleTextAttributes = attributes
 
         // タイトルを入れる
         self.navigationItem.title = title

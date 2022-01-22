@@ -12,9 +12,6 @@ import CropViewController
 
 class AdvancedSettingVC: MainBaceVC {
     
-    private var nBar: UINavigationBar? { navigationController?.navigationBar }
-    private var tBar: UITabBar? { tabBarController?.tabBar }
-    
     var cells = [UITableViewCell]()
     let ud = UserDefaults.standard
     //cellTipe: 1 -> normalCell, 2 -> ButtonCell, 3 -> SliderCell, 4 -> selectColor
@@ -103,15 +100,6 @@ extension AdvancedSettingVC: UITableViewDataSource, UITableViewDelegate {
                 colorView.clipsToBounds = true
 //                let pickerView = UIPickerView()
 //                var index: Int!
-                if settingTitle[row].name == "テーマ色の変更" {
-                    let color = ud.color(forKey: .userColor)
-                    colorView.backgroundColor = color
-//                    index = colors.firstIndex(where: {$0.isEqualTo(color)})!
-                } else if settingTitle[row].name == "ボタンの色変更" {
-                    let color = ud.color(forKey: .buttonColor).withAlphaComponent(1)
-                    colorView.backgroundColor = color
-//                    index = colors.firstIndex(where: {$0.isEqualTo(color)})!
-                }
                 let pickerLabel = CustomKeyboard(frame: cell.bounds)
                 pickerLabel.tag = row
                 pickerLabel.delegate = self
@@ -120,6 +108,13 @@ extension AdvancedSettingVC: UITableViewDataSource, UITableViewDelegate {
                 let colorPicker = ColorPicker(frame: rect)
                 colorPicker.tag = row
                 colorPicker.delegate = self
+                if settingTitle[row].name == "テーマ色の変更" {
+                    colorView.backgroundColor = .user
+                    colorPicker.color = .user
+                } else if settingTitle[row].name == "ボタンの色変更" {
+                    colorView.backgroundColor = .button
+                    colorPicker.color = .button
+                }
                 pickerLabel.inputView = colorPicker
                 cell.contentView.addSubview(pickerLabel)
             default:
@@ -180,14 +175,7 @@ extension AdvancedSettingVC: CustomKeyboardDelegate, ColorPickerDelegate {
         let colorView = cells[sender.tag].contentView.viewWithTag(1)!
         colorView.backgroundColor = sender.color
         switch settingTitle[sender.tag].name {
-        case "テーマ色の変更":
-            tBar?.standardAppearance.backgroundColor = sender.color
-            if #available(iOS 15.0, *) {
-                tBar?.scrollEdgeAppearance?.backgroundColor = sender.color
-            }
-            nBar?.standardAppearance.backgroundColor = sender.color
-            nBar?.scrollEdgeAppearance?.backgroundColor = sender.color
-            //            UINavigationBar.appearance().setBackgroundImage(colorImage, for: .default)
+        case "テーマ色の変更": setBarColor(color: sender.color)
         case "ボタンの色変更":
             nBar?.tintColor = sender.color
             tBar?.tintColor = sender.color
@@ -200,12 +188,16 @@ extension AdvancedSettingVC: CustomKeyboardDelegate, ColorPickerDelegate {
     }
     
     func didCancel(sender: CustomKeyboard) {
-        tBar?.standardAppearance.backgroundColor = .user
-        if #available(iOS 15.0, *) {
-            tBar?.scrollEdgeAppearance?.backgroundColor = .user
+        
+        switch settingTitle[sender.tag].name {
+        case "テーマ色の変更":
+            setBarColor(color: .user)
+            (sender.inputView as! ColorPicker).color = .user
+        case "ボタンの色変更":
+            nBar?.tintColor = .button
+            tBar?.tintColor = .button
+        default: break
         }
-        nBar?.standardAppearance.backgroundColor = .user
-        nBar?.scrollEdgeAppearance?.backgroundColor = .user
         
         sender.resignFirstResponder()
         settingTableView.isUserInteractionEnabled = true
