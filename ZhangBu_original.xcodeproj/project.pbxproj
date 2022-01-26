@@ -102,7 +102,6 @@
 		4ADA8165270C50D60002E2B1 /* Memory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4ADA8164270C50D60002E2B1 /* Memory.swift */; };
 		4ADC304E2793E9AC00FD40CA /* String+.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4ADC30492793E9A700FD40CA /* String+.swift */; };
 		4ADC304F2793E9AC00FD40CA /* UIObject+.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4ADC304A2793E9A700FD40CA /* UIObject+.swift */; };
-		4ADC30502793E9AC00FD40CA /* util+.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4ADC304B2793E9A700FD40CA /* util+.swift */; };
 		4ADC30512793E9AC00FD40CA /* UIColor+.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4ADC304C2793E9A900FD40CA /* UIColor+.swift */; };
 		4ADC30522793E9AC00FD40CA /* UIViewController+.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4ADC304D2793E9AC00FD40CA /* UIViewController+.swift */; };
 		4AFA4CE226DFCC8500D7095A /* CustomAlert.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4AFA4CE126DFCC8500D7095A /* CustomAlert.swift */; };
@@ -179,6 +178,7 @@
 		4AFABAB126E0A7D000EB89FA /* TransitICReader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4AFABA1226E0A43700EB89FA /* TransitICReader.swift */; };
 		4AFABAB226E0A7D000EB89FA /* RyutoCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4AFABA0B26E0A43700EB89FA /* RyutoCard.swift */; };
 		4AFABAB326E0A7D000EB89FA /* UnivCoopICPrepaidItemType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4AFABA1626E0A43700EB89FA /* UnivCoopICPrepaidItemType.swift */; };
+		4AFB8BA927A1006700052941 /* util+.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4AFB8BA827A1006700052941 /* util+.swift */; };
 		560512E7ADD35DF0C2E70B76 /* Pods_ZhangBu_original.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8969DC734FFD044D5C25FCEC /* Pods_ZhangBu_original.framework */; };
 /* End PBXBuildFile section */
 
@@ -309,8 +309,7 @@
 		4ADA8162270C4DB80002E2B1 /* EventVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventVC.swift; sourceTree = "<group>"; };
 		4ADA8164270C50D60002E2B1 /* Memory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Memory.swift; sourceTree = "<group>"; };
 		4ADC30492793E9A700FD40CA /* String+.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "String+.swift"; sourceTree = "<group>"; };
-		4ADC304A2793E9A700FD40CA /* UIObject+.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = "UIObject+.swift"; path = "../../../../Desktop/Extension的副本/UIObject+.swift"; sourceTree = "<group>"; };
-		4ADC304B2793E9A700FD40CA /* util+.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = "util+.swift"; path = "../../../../Desktop/Extension的副本/util+.swift"; sourceTree = "<group>"; };
+		4ADC304A2793E9A700FD40CA /* UIObject+.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UIObject+.swift"; sourceTree = "<group>"; };
 		4ADC304C2793E9A900FD40CA /* UIColor+.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UIColor+.swift"; sourceTree = "<group>"; };
 		4ADC304D2793E9AC00FD40CA /* UIViewController+.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UIViewController+.swift"; sourceTree = "<group>"; };
 		4AFA4CE126DFCC8500D7095A /* CustomAlert.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomAlert.swift; sourceTree = "<group>"; };
@@ -387,6 +386,7 @@
 		4AFABA1926E0A43700EB89FA /* WaonCardData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = WaonCardData.swift; path = Sources/FeliCa/Waon/WaonCardData.swift; sourceTree = "<group>"; };
 		4AFABA1A26E0A43700EB89FA /* WaonCardItemType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = WaonCardItemType.swift; path = Sources/FeliCa/Waon/WaonCardItemType.swift; sourceTree = "<group>"; };
 		4AFABA1B26E0A43700EB89FA /* WaonReader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = WaonReader.swift; path = Sources/FeliCa/Waon/WaonReader.swift; sourceTree = "<group>"; };
+		4AFB8BA827A1006700052941 /* util+.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "util+.swift"; sourceTree = "<group>"; };
 		8969DC734FFD044D5C25FCEC /* Pods_ZhangBu_original.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_ZhangBu_original.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		B479B2FAE17081EEBA5A5655 /* Pods-ZhangBu_original.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ZhangBu_original.release.xcconfig"; path = "Target Support Files/Pods-ZhangBu_original/Pods-ZhangBu_original.release.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -490,7 +490,7 @@
 				4ADC304C2793E9A900FD40CA /* UIColor+.swift */,
 				4ADC304A2793E9A700FD40CA /* UIObject+.swift */,
 				4ADC304D2793E9AC00FD40CA /* UIViewController+.swift */,
-				4ADC304B2793E9A700FD40CA /* util+.swift */,
+				4AFB8BA827A1006700052941 /* util+.swift */,
 			);
 			path = Extension;
 			sourceTree = "<group>";
@@ -1067,7 +1067,6 @@
 				4AFABA7A26E0A7D000EB89FA /* ICUReader.swift in Sources */,
 				4AFABA8126E0A7D000EB89FA /* FeliCaReaderSessionDelegate.swift in Sources */,
 				4AFABA7526E0A7D000EB89FA /* DriversLicenseReaderStatus.swift in Sources */,
-				4ADC30502793E9AC00FD40CA /* util+.swift in Sources */,
 				4A63CE4C2513516000888C27 /* CustomSlider.swift in Sources */,
 				4AFABA7C26E0A7D000EB89FA /* ICUCardData.swift in Sources */,
 				4A07BC0325ED34AA0077BC44 /* SignUpVC.swift in Sources */,
@@ -1137,6 +1136,7 @@
 				4A75ED8826EA027D00046A00 /* InstractVC.swift in Sources */,
 				4AFABA8326E0A7D000EB89FA /* OkicaReader.swift in Sources */,
 				4AFABA8226E0A7D000EB89FA /* OkicaCardItemType.swift in Sources */,
+				4AFB8BA927A1006700052941 /* util+.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
