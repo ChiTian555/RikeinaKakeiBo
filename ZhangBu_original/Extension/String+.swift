@@ -63,9 +63,9 @@ extension UIFont {
         if ud.bool(forKey:.isCordMode) { return UIFont(name: "cordIn",size: 1.15 * s)! }
         return UIFont.systemFont(ofSize: s, weight: .semibold)
     }
-    static func codeFont(_ size: CGFloat) -> UIFont {
+    static func codeFont(_ size: CGFloat, weight: Weight = .regular) -> UIFont {
         return ud.bool(forKey: .isCordMode) ?
         UIFont(name: "codeIn",size: size * 1.15)! :
-        UIFont.systemFont(ofSize: size)
+        UIFont.systemFont(ofSize: size, weight: weight)
     }
 }

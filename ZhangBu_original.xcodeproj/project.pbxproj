@@ -71,7 +71,6 @@
 		4A68942226F5B40700CFBBE7 /* PaymentListVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4A68941F26F5B40700CFBBE7 /* PaymentListVC.swift */; };
 		4A75ED8826EA027D00046A00 /* InstractVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4A75ED8726EA027D00046A00 /* InstractVC.swift */; };
 		4A7A8ADB279AE8A400E551BF /* cordFont6.otf in Resources */ = {isa = PBXBuildFile; fileRef = 4A7A8ADA279AE8A400E551BF /* cordFont6.otf */; };
-		4A7A8AE3279AF0C200E551BF /* codeIn.otf in Resources */ = {isa = PBXBuildFile; fileRef = 4A7A8AE2279AF0C200E551BF /* codeIn.otf */; };
 		4AA22DFC26E0E383005282F7 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 4AA22DF826E0E383005282F7 /* Localizable.strings */; };
 		4AB55A6324FA00B6009173B5 /* Passcode.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 4AB55A6224FA00B6009173B5 /* Passcode.storyboard */; };
 		4AB55A6924FA015B009173B5 /* InputPasscodeKeyboardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4AB55A6724FA015A009173B5 /* InputPasscodeKeyboardView.swift */; };
@@ -179,6 +178,7 @@
 		4AFABAB226E0A7D000EB89FA /* RyutoCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4AFABA0B26E0A43700EB89FA /* RyutoCard.swift */; };
 		4AFABAB326E0A7D000EB89FA /* UnivCoopICPrepaidItemType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4AFABA1626E0A43700EB89FA /* UnivCoopICPrepaidItemType.swift */; };
 		4AFB8BA927A1006700052941 /* util+.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4AFB8BA827A1006700052941 /* util+.swift */; };
+		4AFB8BB127A12D2100052941 /* codeIn.otf in Resources */ = {isa = PBXBuildFile; fileRef = 4AFB8BB027A12D2100052941 /* codeIn.otf */; };
 		560512E7ADD35DF0C2E70B76 /* Pods_ZhangBu_original.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8969DC734FFD044D5C25FCEC /* Pods_ZhangBu_original.framework */; };
 /* End PBXBuildFile section */
 
@@ -272,7 +272,6 @@
 		4A68941F26F5B40700CFBBE7 /* PaymentListVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PaymentListVC.swift; sourceTree = "<group>"; };
 		4A75ED8726EA027D00046A00 /* InstractVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InstractVC.swift; sourceTree = "<group>"; };
 		4A7A8ADA279AE8A400E551BF /* cordFont6.otf */ = {isa = PBXFileReference; lastKnownFileType = file; name = cordFont6.otf; path = ../../../Font/cordFont6.otf; sourceTree = "<group>"; };
-		4A7A8AE2279AF0C200E551BF /* codeIn.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = codeIn.otf; sourceTree = "<group>"; };
 		4AA22DF926E0E383005282F7 /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hans"; path = "zh-Hans.lproj/Localizable.strings"; sourceTree = "<group>"; usesTabs = 0; };
 		4AA22DFA26E0E383005282F7 /* ja */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ja; path = ja.lproj/Localizable.strings; sourceTree = "<group>"; };
 		4AA22DFB26E0E383005282F7 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Localizable.strings; sourceTree = "<group>"; };
@@ -387,6 +386,7 @@
 		4AFABA1A26E0A43700EB89FA /* WaonCardItemType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = WaonCardItemType.swift; path = Sources/FeliCa/Waon/WaonCardItemType.swift; sourceTree = "<group>"; };
 		4AFABA1B26E0A43700EB89FA /* WaonReader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = WaonReader.swift; path = Sources/FeliCa/Waon/WaonReader.swift; sourceTree = "<group>"; };
 		4AFB8BA827A1006700052941 /* util+.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "util+.swift"; sourceTree = "<group>"; };
+		4AFB8BB027A12D2100052941 /* codeIn.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = codeIn.otf; sourceTree = "<group>"; };
 		8969DC734FFD044D5C25FCEC /* Pods_ZhangBu_original.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_ZhangBu_original.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		B479B2FAE17081EEBA5A5655 /* Pods-ZhangBu_original.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ZhangBu_original.release.xcconfig"; path = "Target Support Files/Pods-ZhangBu_original/Pods-ZhangBu_original.release.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -711,8 +711,8 @@
 				4A225E6125ECF7F1008A175F /* Extension */,
 				4A3C0F0B26FDD96F0097BC00 /* AppDelegate.swift */,
 				4AC8905E24DE5D0800A4948A /* SceneDelegate.swift */,
+				4AFB8BB027A12D2100052941 /* codeIn.otf */,
 				4A7A8ADA279AE8A400E551BF /* cordFont6.otf */,
-				4A7A8AE2279AF0C200E551BF /* codeIn.otf */,
 				4AB55BDE2504B600009173B5 /* えり字.otf */,
 				4AB55BD025022976009173B5 /* RootVC.swift */,
 				4A07BB5125ED1F460077BC44 /* Data */,
@@ -907,7 +907,7 @@
 				4A52B832251C7F71008D07FD /* Icon-App-29x29@2x.jpg in Resources */,
 				4A52B82B251C7F71008D07FD /* Icon-App-20x20@2x.jpg in Resources */,
 				4AA22DFC26E0E383005282F7 /* Localizable.strings in Resources */,
-				4A7A8AE3279AF0C200E551BF /* codeIn.otf in Resources */,
+				4AFB8BB127A12D2100052941 /* codeIn.otf in Resources */,
 				4A52B82D251C7F71008D07FD /* Icon-App-40x40@2x.jpg in Resources */,
 				4A52B830251C7F71008D07FD /* Icon-App-76x76@1x.jpg in Resources */,
 				4A52B833251C7F71008D07FD /* README.md in Resources */,

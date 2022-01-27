@@ -158,7 +158,7 @@ extension CheckMoneyVC: UITableViewDataSource {
             cell.selectionStyle = .none
         }
         
-        return cell.set()
+        return cell.setColor()
     }
 }
 

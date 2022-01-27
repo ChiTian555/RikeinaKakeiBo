@@ -118,7 +118,7 @@ class AddCategoryViewController: MainBaceVC, UITableViewDataSource {
             cell.textLabel?.text = list[indexPath.row].l
         }
         
-        return cell.set()
+        return cell.setColor()
     }
     
     @IBAction func tappedAdd() {

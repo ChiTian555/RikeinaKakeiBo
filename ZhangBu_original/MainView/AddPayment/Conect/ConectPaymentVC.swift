@@ -81,7 +81,7 @@ extension ConectPaymentVC: UITableViewDataSource, UITableViewDelegate {
         dateLabel.text = dateFormatter.string(from: payments[indexPath.row].date)
         memoLabel.text = payments[indexPath.row].memo
     
-        return cell.set()
+        return cell.setColor()
     }
     
     

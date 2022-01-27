@@ -122,17 +122,20 @@ extension UserDefaults {
     @discardableResult
     func color(forKey key: UserDefaults.ColorKey, alpha: CGFloat? = nil) -> UIColor {
         var color: UIColor!
-        switch key {
-        case .userColor:
-            color = UIColor.orange.withAlphaComponent(0.7)
-        case .buttonColor:
-            color = UIColor.blue
-        }
+        
         guard let colorData = ud.data(forKey: key.strKey) else { return color }
         if let udColor = try? (NSKeyedUnarchiver.unarchiveTopLevelObjectWithData(colorData) as? UIColor) {
             color = udColor
+        } else {
+            switch key {
+            case .userColor:
+                color = UIColor.orange.withAlphaComponent(0.7)
+            case .buttonColor:
+                color = UIColor.blue
+            }
         }
         return alpha == nil ? color : color.withAlphaComponent(alpha!)
+        
     }
     
 }

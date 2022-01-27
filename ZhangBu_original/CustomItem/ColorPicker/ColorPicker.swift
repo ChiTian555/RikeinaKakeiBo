@@ -27,8 +27,7 @@ class ColorPicker: UIView {
             return UIColor(red: c[0], green: c[1], blue: c[2], alpha: c[3])
         }
         set(color) {
-            let c = color.cgColor.components! + [color.cgColor.alpha]
-            let cFloat = c.map { return Float($0) }
+            let cFloat = color.cgColor.components!.map { return Float($0) }
             setValues(components: cFloat)
         }
     }
@@ -59,7 +58,7 @@ class ColorPicker: UIView {
         colorView.backgroundColor = color
     }
     
-    @IBAction private func valueCanged(_ sender: UISlider) {
+    @IBAction private func touchUpSlider(_ sender: UISlider) {
         valueLabel[sender.tag].text = sender.tag != 3 ?
         String(format: "%.0f", 255.0 * sender.value):
         String(format: "%.2f", 1.0 * sender.value)
@@ -67,4 +66,9 @@ class ColorPicker: UIView {
         delegate?.didChangedValue(sender: self)
     }
     
+    @IBAction func valueChanged(_ sender: UISlider) {
+        valueLabel[sender.tag].text = sender.tag != 3 ?
+        String(format: "%.0f", 255.0 * sender.value):
+        String(format: "%.2f", 1.0 * sender.value)
+    }
 }

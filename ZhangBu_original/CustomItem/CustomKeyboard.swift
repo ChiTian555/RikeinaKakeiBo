@@ -61,7 +61,7 @@ class CustomKeyboard: UIControl {
 
     override var inputAccessoryView: UIView? {
         let toolbar = MyToolBar(self, type: .cancelAndDone(cancel: #selector(cancel),
-                                                               done: #selector(done)))
+                                                           done: #selector(done)))
         return toolbar
     }
     

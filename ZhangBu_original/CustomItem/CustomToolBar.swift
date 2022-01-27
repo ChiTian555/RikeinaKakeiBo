@@ -28,7 +28,7 @@ class MyToolBar: UIToolbar {
         }
         super.init(frame: barFrame)
         self.isTranslucent = true
-        self.tintColor = ud.color(forKey: .userColor, alpha: 70)
+        self.tintColor = ud.color(forKey: .userColor)
         
         let spaceButton = UIBarButtonItem(barButtonSystemItem: .flexibleSpace,
                                           target: nil, action: nil)

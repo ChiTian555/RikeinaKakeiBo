@@ -173,7 +173,7 @@ extension CategoryStatisticsVC: UITableViewDataSource, UITableViewDelegate {
         monthLabel.text = "\(tableViewDatas[indexPath.row].month)月"
         priceLabel.text = "¥ \(tableViewDatas[indexPath.row].price)"
         priceLabel.font = font
-        return cell.set()
+        return cell.setColor()
     }
     
 }

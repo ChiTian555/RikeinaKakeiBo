@@ -98,8 +98,6 @@ extension AdvancedSettingVC: UITableViewDataSource, UITableViewDelegate {
                 let colorView = cell.contentView.viewWithTag(1)!
                 colorView.layer.cornerRadius = colorView.bounds.height / 2
                 colorView.clipsToBounds = true
-//                let pickerView = UIPickerView()
-//                var index: Int!
                 let pickerLabel = CustomKeyboard(frame: cell.bounds)
                 pickerLabel.tag = row
                 pickerLabel.delegate = self
@@ -108,19 +106,16 @@ extension AdvancedSettingVC: UITableViewDataSource, UITableViewDelegate {
                 let colorPicker = ColorPicker(frame: rect)
                 colorPicker.tag = row
                 colorPicker.delegate = self
-                if settingTitle[row].name == "テーマ色の変更" {
-                    colorView.backgroundColor = .user
-                    colorPicker.color = .user
-                } else if settingTitle[row].name == "ボタンの色変更" {
-                    colorView.backgroundColor = .button
-                    colorPicker.color = .button
-                }
+                let color: UIColor = settingTitle[row].name == "テーマ色の変更" ? .user : .button
+                colorView.backgroundColor = color
+                colorPicker.color = color
+                
                 pickerLabel.inputView = colorPicker
                 cell.contentView.addSubview(pickerLabel)
             default:
                 break
             }
-            cells.append(cell.set())
+            cells.append(cell.setColor())
         }
         settingTableView.reloadData()
     }

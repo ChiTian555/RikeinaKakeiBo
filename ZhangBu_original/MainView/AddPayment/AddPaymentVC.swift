@@ -296,26 +296,25 @@ class AddPaymentVC: MainBaceVC, UITableViewDataSource, UITableViewDelegate {
             let mode = mainCategory
             if menu == "金額" {
                 let colors: [UIColor] = [.systemRed,.systemGreen,.systemBlue]
-                let currrentFont = ( ud.bool(forKey: .isCordMode) ?
-                                        UIFont(name: "cordFont", size: 35) :
-                                        UIFont.systemFont(ofSize: 35, weight: .light) )
-                
                 cell = settingTableView.dequeueReusableCell(withIdentifier: "Cell1")!.create()
                 let newTF = cell.contentView.viewWithTag(3) as! UITextField
+                let currrentFont: UIFont = .codeFont(35, weight: .light)
                 textFieldSet.addTextField(tF: newTF, name: menu, type: .inputNum) { (me) in
                     me.tF.text = allReset ? "" : self.tFManager.getCurrentText(name: menu)
-                    me.tF.attributedPlaceholder = NSAttributedString(string: "ここに金額を入力", attributes: [.font: UIFont.systemFont(ofSize: 35, weight: .thin)])
-                    me.tF.font = currrentFont
+                    me.tF.font = .codeFont(35, weight: .light)
                     me.tF.textColor = colors[mode]
+                    me.tF.attributedPlaceholder = StringUtil(size: 30).getText(
+                        "ここに金額を入力".deco(.sysFont(.weight(.thin)))
+                    )
                 }
                 labelZero = cell.contentView.viewWithTag(1) as! UILabel
                 labelYen = cell.contentView.viewWithTag(2) as! UILabel
                 
-                labelZero.textColor = colors[mode]
                 labelYen.textColor = colors[mode]
-                labelZero.text = (mode == 0 ? "-" : "")
                 labelYen.font = currrentFont
-                labelZero.font = currrentFont
+                labelZero.attributedText = StringUtil(size: 35).getText(
+                    (mode == 0 ? "-" : "").deco(.font(currrentFont), .color(colors[mode]))
+                )
             } else if menu != "メモ" {
                 cell = settingTableView.dequeueReusableCell(withIdentifier: "Cell2")!.create()
 
@@ -352,7 +351,7 @@ class AddPaymentVC: MainBaceVC, UITableViewDataSource, UITableViewDelegate {
                 newLabel.text = (allReset ? "" : memoLabel.text)
                 memoLabel = newLabel
             }
-            cells.append(cell.set())
+            cells.append(cell.setColor())
         }
         textFieldSet.setToolBars()
         textFieldSet.tag = mainCategory

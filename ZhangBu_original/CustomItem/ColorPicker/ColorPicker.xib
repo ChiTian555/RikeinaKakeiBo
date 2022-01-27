@@ -47,7 +47,8 @@
                                     <rect key="frame" x="76" y="16" width="280" height="31"/>
                                     <color key="tintColor" systemColor="systemRedColor"/>
                                     <connections>
-                                        <action selector="valueCanged:" destination="-1" eventType="touchUpInside" id="byF-2b-zPp"/>
+                                        <action selector="touchUpSlider:" destination="-1" eventType="touchUpInside" id="iLQ-ns-bgI"/>
+                                        <action selector="valueChanged:" destination="-1" eventType="valueChanged" id="SHS-8R-8Bi"/>
                                     </connections>
                                 </slider>
                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="赤" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="MCM-pI-eGY">
@@ -88,7 +89,8 @@
                                     <rect key="frame" x="76" y="16" width="280" height="31"/>
                                     <color key="tintColor" systemColor="systemGreenColor"/>
                                     <connections>
-                                        <action selector="valueCanged:" destination="-1" eventType="touchUpInside" id="7c9-R7-GY0"/>
+                                        <action selector="touchUpSlider:" destination="-1" eventType="touchUpInside" id="KnR-ZY-3lk"/>
+                                        <action selector="valueChanged:" destination="-1" eventType="valueChanged" id="5xs-zq-8Md"/>
                                     </connections>
                                 </slider>
                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="緑" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="nJS-gP-23B">
@@ -130,7 +132,8 @@
                                     <rect key="frame" x="76" y="16" width="280" height="31"/>
                                     <color key="tintColor" systemColor="systemBlueColor"/>
                                     <connections>
-                                        <action selector="valueCanged:" destination="-1" eventType="touchUpInside" id="c48-QF-Nxp"/>
+                                        <action selector="touchUpSlider:" destination="-1" eventType="touchUpInside" id="cwY-yX-Vri"/>
+                                        <action selector="valueChanged:" destination="-1" eventType="valueChanged" id="kOb-29-ZQo"/>
                                     </connections>
                                 </slider>
                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="青" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="M8V-Bv-BHT">
@@ -172,7 +175,8 @@
                                     <rect key="frame" x="76" y="16.5" width="280" height="31"/>
                                     <color key="tintColor" systemColor="systemGrayColor"/>
                                     <connections>
-                                        <action selector="valueCanged:" destination="-1" eventType="touchUpInside" id="9Mf-UQ-f6Z"/>
+                                        <action selector="touchUpSlider:" destination="-1" eventType="touchUpInside" id="T0q-U5-rf6"/>
+                                        <action selector="valueChanged:" destination="-1" eventType="valueChanged" id="On5-v2-gzI"/>
                                     </connections>
                                 </slider>
                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="α" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Z5q-tF-wJ7">

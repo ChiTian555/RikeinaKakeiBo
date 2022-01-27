@@ -34,21 +34,26 @@ struct StringUtil {
             var para = [NSAttributedString.Key:Any]()
             a.deco.forEach { (decoType) in
                 switch decoType {
+                case .color(let color): para[.foregroundColor] = color
                 case .myFont(let f):
                     switch f {
                     case .code: para[.font] = UIFont.codeFont(size)
                     case .name(let name): para[.font] = UIFont(name: name, size: size)
                     case .codeWithSize(let s): para[.font] = UIFont.codeFont(s)
-                    case .withSize(let s): para[.font] = UIFont.systemFont(ofSize: s)
                     case .nameWithSize(let (name, s)): para[.font] = UIFont(name: name, size: s)
-                    case .withSizeAndWeight(let (s, weight)):
-                        para[.font] = UIFont.systemFont(ofSize: s, weight: weight)
                     }
-                case .color(let color):
-                    para[.foregroundColor] = color
+                case .sysFont(let f):
+                    switch f {
+                    case .size(let s): para[.font] = UIFont.systemFont(ofSize: s)
+                    case .sizeAndWeight(let (s, weight)):
+                        para[.font] = UIFont.systemFont(ofSize: s, weight: weight)
+                    case .weight(let weight):
+                        para[.font] = UIFont.systemFont(ofSize: size, weight: weight)
+                    }
+                case .font(let selectedFont): para[.font] = selectedFont
                 }
-                if para[.font] == nil { para[.font] = UIFont.systemFont(ofSize: size) }
             }
+            if para[.font] == nil { para[.font] = UIFont.systemFont(ofSize: size) }
             text.append(NSAttributedString(string: a.text, attributes: para))
         }; return text
     }
@@ -60,12 +65,17 @@ extension String {
         case code
         case codeWithSize(CGFloat)
         case name(String)
-        case withSize(CGFloat)
-        case withSizeAndWeight((CGFloat,UIFont.Weight))
         case nameWithSize((String,CGFloat))
     }
+    enum SysFont {
+        case size(CGFloat)
+        case sizeAndWeight((CGFloat,UIFont.Weight))
+        case weight(UIFont.Weight)
+    }
     enum Decolate {
+        case font(UIFont)
         case myFont(MyFont)
+        case sysFont(SysFont)
         case color(UIColor)
     }
     func deco(_ deco: Decolate...) -> (String,[Decolate]) { return (self,deco) }

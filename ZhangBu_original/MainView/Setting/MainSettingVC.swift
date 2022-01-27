@@ -256,7 +256,7 @@ extension MainSettingVC: UITableViewDataSource {
                 startStepLabel.backgroundColor = .clear
             }
         }
-        return cell.set()
+        return cell.setColor()
     }
     
     //CGRectを簡単に作る

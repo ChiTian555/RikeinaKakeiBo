@@ -259,13 +259,7 @@ class PaymentListVC: MainBaceVC, UITextFieldDelegate, CustomKeyboardDelegate, UI
         pieChartView.legend.enabled = false
         pieChartView.drawEntryLabelsEnabled = true
         pieChartView.entryLabelColor = .label
-        pieChartView.entryLabelFont = UIFont.systemFont(ofSize: 10, weight: .light)
-//        let l = pieChartView.legend
-//        l.font = UIFont.systemFont(ofSize: 14)
-//        l.horizontalAlignment = .right
-//        l.verticalAlignment = .top
-//        l.xOffset = 2
-//        l.orientation = .vertical
+        pieChartView.entryLabelFont = UIFont.systemFont(ofSize: 12, weight: .light)
         
         pieChartView.usePercentValuesEnabled = true
         pieChartView.accessibilityNavigationStyle = .combined
@@ -275,11 +269,9 @@ class PaymentListVC: MainBaceVC, UITextFieldDelegate, CustomKeyboardDelegate, UI
         for i in 0..<dataPoints.count {
             let dataEntry = PieChartDataEntry(value: Double(values[i]),
                                               label: "\(dataPoints[i])")
-//            let dataEntry = ChartDataEntry(x: Double(i), y: values[i], data: dataPoints[i] as AnyObject)
             dataEntries.append(dataEntry)
         }
         let set = PieChartDataSet(entries: dataEntries, label: nil)
-        
         set.sliceSpace = 2
         
         if dataPoints.count != 0 {
@@ -299,13 +291,6 @@ class PaymentListVC: MainBaceVC, UITextFieldDelegate, CustomKeyboardDelegate, UI
             colors = set.colors.prefix(dataPoints.count) + []
 
         }
-//            + ChartColorTemplates.vordiplom()
-//            + ChartColorTemplates.colorful()
-//            + ChartColorTemplates.joyful()
-//            + ChartColorTemplates.liberty()
-//            + ChartColorTemplates.pastel()
-//            + [UIColor(red: 51/255, green: 181/255, blue: 229/255, alpha: 1)]
-//            + ChartColorTemplates.colorFromString(String)
         
         set.valueLinePart1OffsetPercentage = 0.5
         set.valueLineVariableLength = true
@@ -325,11 +310,7 @@ class PaymentListVC: MainBaceVC, UITextFieldDelegate, CustomKeyboardDelegate, UI
         pFormatter.multiplier = 1
         pFormatter.percentSymbol = "%"
         pieChartData.setValueFormatter(DefaultValueFormatter(formatter: pFormatter))
-        if UserDefaults.standard.bool(forKey: .isCordMode) {
-            pieChartData.setValueFont(UIFont(name: "cordFont", size: 18)!)
-        } else {
-            pieChartData.setValueFont(.systemFont(ofSize: 12, weight: .light))
-        }
+        pieChartData.setValueFont(.codeFont(14))
         pieChartData.setValueTextColor(.label)
         
         pieChartView.data = pieChartData
@@ -370,11 +351,7 @@ extension PaymentListVC: UITableViewDelegate, UITableViewDataSource {
             let dateLabel = cell.contentView.viewWithTag(2) as! UILabel
             let priceLabel = cell.contentView.viewWithTag(3) as! UILabel
             let colorView = cell.contentView.viewWithTag(4)
-            if UserDefaults.standard.bool(forKey: .isCordMode) {
-                priceLabel.font = UIFont(name: "cordFont", size: 25)
-            } else {
-                priceLabel.font = UIFont.systemFont(ofSize: 17, weight: .regular)
-            }
+            priceLabel.font = .codeFont(17)
             cell.tag = indexPath.row
             let price = payments[indexPath.row].price
 
@@ -411,7 +388,7 @@ extension PaymentListVC: UITableViewDelegate, UITableViewDataSource {
             cell = UITableViewCell()
         }
         
-        return cell.set()
+        return cell.setColor()
         
     }
     

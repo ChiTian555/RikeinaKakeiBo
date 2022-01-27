@@ -42,7 +42,6 @@ extension NFCReader: FeliCaReaderSessionDelegate {
     func japanNFCReaderSession(didInvalidateWithError error: Error) {
         print("japanNFCReaderSession")
         DispatchQueue.main.async {
-            
             if error.localizedDescription == "Session invalidated by user" { return }
             print("\(error.localizedDescription)")
             if self.finished { return }

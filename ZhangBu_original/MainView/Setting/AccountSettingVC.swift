@@ -90,7 +90,7 @@ extension AccountSettingVC: UITableViewDataSource {
             label.text = accounts[indexPath.row].name
             label.textAlignment = .left
         }
-        return cell.set()
+        return cell.setColor()
     }
     
 }

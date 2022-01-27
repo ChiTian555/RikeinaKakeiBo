@@ -23,7 +23,7 @@ extension UITableViewCell {
     /**
      タップされたときの色を決定する。
      */
-    public func set() -> UITableViewCell {
+    public func setColor() -> UITableViewCell {
         let ud = UserDefaults.standard
         if self.backgroundColor != UIColor.clear {
             self.backgroundColor = self.backgroundColor?.withAlphaComponent(0.2)
