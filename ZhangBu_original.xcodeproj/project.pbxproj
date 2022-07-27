@@ -269,6 +269,7 @@
 		4A68941D26F5B40700CFBBE7 /* CategoryStatisticsVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CategoryStatisticsVC.swift; sourceTree = "<group>"; };
 		4A68941E26F5B40700CFBBE7 /* ?PaymentListViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "?PaymentListViewController.swift"; sourceTree = "<group>"; };
 		4A68941F26F5B40700CFBBE7 /* PaymentListVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PaymentListVC.swift; sourceTree = "<group>"; };
+		4A6ED7E428910872009AC0E1 /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = SOURCE_ROOT; };
 		4A75ED8726EA027D00046A00 /* InstractVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InstractVC.swift; sourceTree = "<group>"; };
 		4AA22DF926E0E383005282F7 /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hans"; path = "zh-Hans.lproj/Localizable.strings"; sourceTree = "<group>"; usesTabs = 0; };
 		4AA22DFA26E0E383005282F7 /* ja */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ja; path = ja.lproj/Localizable.strings; sourceTree = "<group>"; };
@@ -682,6 +683,7 @@
 				4AC8905B24DE5D0800A4948A /* ZhangBu_original */,
 				4AB55AA424FA3588009173B5 /* Info.plist */,
 				4A3C0EFD26FDD6320097BC00 /* GoogleService-Info.plist */,
+				4A6ED7E428910872009AC0E1 /* README.md */,
 				4AA22DF726E0E383005282F7 /* Language */,
 				4AFABA2426E0A43700EB89FA /* TRETJapanNFCReader */,
 				4AB55AB524FE3089009173B5 /* Icons */,
