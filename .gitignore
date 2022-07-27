@@ -17,7 +17,7 @@
 *.realm.lock
 
 # Podsごと
-# Pods/
+Pods/
 
 # core
 core
@@ -25,7 +25,7 @@ core-*
 realm-core-*-xcframework
 
 # sh build.sh test
-build/
+# build/
 
 
 # sh build.sh cocoapods-setup

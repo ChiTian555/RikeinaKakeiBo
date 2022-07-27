@@ -42,6 +42,8 @@ final class Account: Object, Codable, MyRealmFunction {
             try! myRealm.write() {
                 self.check.append(check)
             }
+            myRealm.beginWrite()
+            
         }
     }
     

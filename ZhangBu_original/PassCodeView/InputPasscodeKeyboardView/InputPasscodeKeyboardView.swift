@@ -24,7 +24,7 @@ protocol InputPasscodeKeyboardDelegate: NSObjectProtocol {
 
 class InputPasscodeKeyboardView: CustomViewBase {
     
-    let cordFont = UIFont(name: "cordFont", size: 35)!
+    let cordFont = UIFont(name: "codeIn", size: 35)!
     
     let systemFont = UIFont.systemFont(ofSize: 27, weight: .thin)
 

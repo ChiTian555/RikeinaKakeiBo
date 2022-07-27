@@ -70,7 +70,6 @@
 		4A68942126F5B40700CFBBE7 /* ?PaymentListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4A68941E26F5B40700CFBBE7 /* ?PaymentListViewController.swift */; };
 		4A68942226F5B40700CFBBE7 /* PaymentListVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4A68941F26F5B40700CFBBE7 /* PaymentListVC.swift */; };
 		4A75ED8826EA027D00046A00 /* InstractVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4A75ED8726EA027D00046A00 /* InstractVC.swift */; };
-		4A7A8ADB279AE8A400E551BF /* cordFont6.otf in Resources */ = {isa = PBXBuildFile; fileRef = 4A7A8ADA279AE8A400E551BF /* cordFont6.otf */; };
 		4AA22DFC26E0E383005282F7 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 4AA22DF826E0E383005282F7 /* Localizable.strings */; };
 		4AB55A6324FA00B6009173B5 /* Passcode.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 4AB55A6224FA00B6009173B5 /* Passcode.storyboard */; };
 		4AB55A6924FA015B009173B5 /* InputPasscodeKeyboardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4AB55A6724FA015A009173B5 /* InputPasscodeKeyboardView.swift */; };
@@ -271,7 +270,6 @@
 		4A68941E26F5B40700CFBBE7 /* ?PaymentListViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "?PaymentListViewController.swift"; sourceTree = "<group>"; };
 		4A68941F26F5B40700CFBBE7 /* PaymentListVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PaymentListVC.swift; sourceTree = "<group>"; };
 		4A75ED8726EA027D00046A00 /* InstractVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InstractVC.swift; sourceTree = "<group>"; };
-		4A7A8ADA279AE8A400E551BF /* cordFont6.otf */ = {isa = PBXFileReference; lastKnownFileType = file; name = cordFont6.otf; path = ../../../Font/cordFont6.otf; sourceTree = "<group>"; };
 		4AA22DF926E0E383005282F7 /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hans"; path = "zh-Hans.lproj/Localizable.strings"; sourceTree = "<group>"; usesTabs = 0; };
 		4AA22DFA26E0E383005282F7 /* ja */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ja; path = ja.lproj/Localizable.strings; sourceTree = "<group>"; };
 		4AA22DFB26E0E383005282F7 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Localizable.strings; sourceTree = "<group>"; };
@@ -712,7 +710,6 @@
 				4A3C0F0B26FDD96F0097BC00 /* AppDelegate.swift */,
 				4AC8905E24DE5D0800A4948A /* SceneDelegate.swift */,
 				4AFB8BB027A12D2100052941 /* codeIn.otf */,
-				4A7A8ADA279AE8A400E551BF /* cordFont6.otf */,
 				4AB55BDE2504B600009173B5 /* えり字.otf */,
 				4AB55BD025022976009173B5 /* RootVC.swift */,
 				4A07BB5125ED1F460077BC44 /* Data */,
@@ -913,7 +910,6 @@
 				4A52B833251C7F71008D07FD /* README.md in Resources */,
 				4AB55A6A24FA015B009173B5 /* InputPasscodeKeyboardView.xib in Resources */,
 				4A52B829251C7F71008D07FD /* Icon-App-20x20@3x.jpg in Resources */,
-				4A7A8ADB279AE8A400E551BF /* cordFont6.otf in Resources */,
 				4A52B831251C7F71008D07FD /* Icon-App-40x40@3x.jpg in Resources */,
 				4A52B835251C7F71008D07FD /* iTunesArtwork@3x.jpg in Resources */,
 				4A63CE42251070AC00888C27 /* VFW14fWB.png in Resources */,

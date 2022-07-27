@@ -19,13 +19,10 @@ class MyToolBar: UIToolbar {
     init(_ target: Any?,type:ToolBarType) {
         let width = UIScreen.main.bounds.size.width
         let height = UIScreen.main.bounds.size.height
-        var barFrame: CGRect!
         //iPhone X 以降で、以下のコードが実行されます
-        if height > 800.0 && height < 1000.0 {
-            barFrame = CGRect(x: 0, y: height * 0.92, width: width, height: 42)
-        } else {
-            barFrame = CGRect(x: 0, y: height * 0.92, width: width, height: 37)
-        }
+        let barHeight: CGFloat = height > 800.0 && height < 1000.0 ? 42 : 37
+        let barFrame = CGRect(x: 0, y: height * 0.92, width: width, height: barHeight)
+
         super.init(frame: barFrame)
         self.isTranslucent = true
         self.tintColor = ud.color(forKey: .userColor)

@@ -55,7 +55,6 @@ extension UIViewController {
         nBar?.standardAppearance.backgroundColor = color
         nBar?.scrollEdgeAppearance?.backgroundColor = color
     }
-
     // この画面のナビゲーションバーを設定するメソッド
     public func setupNavigationBarTitle(_ title: String) {
 

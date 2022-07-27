@@ -184,7 +184,6 @@ class BackUpVC: MainBaceVC {
         let documents = db.collection("users").document(user.uid)
 
         documents.getDocument { (document, error) in
-            
             guard let date = ( document?["uploadDate"] as? String ) else {
                 HUD.flash(.labeledError(title: "Error", subtitle: "ファイルが\n見つかりませんでした。")); return
             }

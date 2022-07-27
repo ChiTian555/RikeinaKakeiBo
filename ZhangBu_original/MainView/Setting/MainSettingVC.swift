@@ -78,7 +78,7 @@ class MainSettingVC: MainBaceVC, UIViewControllerTransitioningDelegate {
         if sender.isOn {
             let alert = UIAlertController(title: "暗号の確認", message: nil, preferredStyle: .alert)
             
-            let cordFont = UIFont(name: "cordFont", size: 27)!
+            let cordFont = UIFont(name: "codeIn", size: 27)!
             let systemFont = UIFont.systemFont(ofSize: 13, weight: .light)
             
             let numbers: [Int] = Array(0...9).shuffled()[0..<5] + []

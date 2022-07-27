@@ -106,7 +106,7 @@ class CategoryStatisticsVC: MainBaceVC {
 
         leftAxis.decimals = 0
         if UserDefaults.standard.bool(forKey: .isCordMode) {
-            leftAxis.labelFont = UIFont(name: "cordFont", size: 15)!
+            leftAxis.labelFont = UIFont(name: "cordIn", size: 15)!
         } else {
             leftAxis.labelFont = UIFont.systemFont(ofSize: 10, weight: .regular)
         }
@@ -138,7 +138,7 @@ class CategoryStatisticsVC: MainBaceVC {
         set1.barBorderColor = .label
         set1.drawValuesEnabled = false
         if UserDefaults.standard.bool(forKey: .isCordMode) {
-            set1.valueFont = UIFont(name: "cordFont", size: 17)!
+            set1.valueFont = UIFont(name: "cordIn", size: 17)!
         } else {
             set1.valueFont = UIFont.systemFont(ofSize: 10, weight: .regular)
         }
@@ -166,7 +166,7 @@ extension CategoryStatisticsVC: UITableViewDataSource, UITableViewDelegate {
         
         var font = UIFont()
         if UserDefaults.standard.bool(forKey: .isCordMode) {
-            font = UIFont(name: "cordFont", size: 25)!
+            font = UIFont(name: "cordIn", size: 25)!
         } else {
             font = UIFont.systemFont(ofSize: 17, weight: .regular)
         }

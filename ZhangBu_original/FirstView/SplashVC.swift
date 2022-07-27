@@ -137,27 +137,6 @@ final class SplashVC: MainBaceVC {
     
     }
     
-//    override func motionBegan(_ motion: UIEvent.EventSubtype, with event: UIEvent?) {
-//
-//        guard motion == .motionShake else { return }
-//
-//        if let timer = timer {
-//            timer.invalidate()
-//        }
-//
-//        let alert = UIAlertController(title: "メニュー", message: "画面を\n→スワイプ：出費手入力画面へ\n←スワイプ：レシートの撮影", preferredStyle: .alert)
-//        let swipeGuestureRight = UISwipeGestureRecognizer(target: self, action: #selector(swiped(_:)))
-//        swipeGuestureRight.direction = .right
-//        let swipeGuestureLeft = UISwipeGestureRecognizer(target: self, action: #selector(swiped(_:)))
-//        swipeGuestureLeft.direction = .left
-//        present(alert, animated: true, completion: {
-//
-//            alert.view.superview?.addGestureRecognizer(swipeGuestureRight)
-//            alert.view.superview?.addGestureRecognizer(swipeGuestureLeft)
-//            alert.view.superview?.isUserInteractionEnabled = true
-//        })
-//    }
-    
     @objc private func swiped(_ sender: UISwipeGestureRecognizer) {
         switch sender.direction {
         case .left: goToAddPayment()
